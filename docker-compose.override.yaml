@@ -1,0 +1,14 @@
+services:
+  web:
+    volumes:
+      # On développe l'application Symfony dans le dossier ./app
+      # On mappe UNIQUEMENT le dossier de l'application Symfony vers le serveur
+      - ./app:/var/www/html
+    ports:
+      # Accès Web sur http://localhost:8008
+      - "8008:80"
+
+  db:
+    ports:
+      # Accès BDD sur localhost:3308
+      - "3308:3306"

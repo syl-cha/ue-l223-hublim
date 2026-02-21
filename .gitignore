@@ -1,0 +1,44 @@
+###> INFRASTRUCTURE & DOCKER ###
+# Les variables d'environnement locales contenant les secrets de la base de données
+/.env.local
+###< INFRASTRUCTURE & DOCKER ###
+
+
+###> SYMFONY (Dossier /app) ###
+# Dépendances (gérées par Composer)
+/app/vendor/
+
+# Dossiers générés automatiquement par Symfony (Cache, Logs, Sessions)
+/app/var/
+
+# Fichiers d'environnement locaux de Symfony
+/app/.env.local
+/app/.env.*.local
+/app/.env.test.local
+
+# Fichiers compilés pour le front-end (Webpack Encore ou AssetMapper)
+/app/public/build/
+/app/public/bundles/
+
+# PHPUnit (Tests)
+/app/phpunit.xml
+/app/.phpunit.result.cache
+###< SYMFONY ###
+
+
+###> HUBLIM (Spécifique au projet) ###
+# On ignore les images uploadées (avatars, cartes) en local pour ne pas polluer Git
+/app/public/uploads/
+###< HUBLIM ###
+
+
+###> IDE & SYSTEME ###
+# Fichiers de configuration des éditeurs de code
+.idea/
+.vscode/
+*.swp
+
+# Fichiers systèmes (macOS / Windows)
+.DS_Store
+Thumbs.db
+###< IDE & SYSTEME ###

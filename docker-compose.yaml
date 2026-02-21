@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hublim-apache-php
+    restart: unless-stopped
+    ports:
+      - "${APACHE_PORT:-8000}:80"
+    volumes:
+      # Montage du code de l'application Symfony 8.0
+      - ${APP_PATH:-./app}:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11.4.10
+    container_name: hublim-mariadb
+    restart: unless-stopped
+    environment:
+      # Variables d'environnement spécifiques à MariaDB/MySQL
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: hublim-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "${PHPMYADMIN_PORT:-8080}:80"
+    environment:
+      # Liaison avec le conteneur MariaDB
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  db_data:
