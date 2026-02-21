@@ -1,8 +1,13 @@
 # Makefile - HubLim (Windows / macOS / Linux via Docker)
 
 # --- Variables ---
-DOCKER_COMP = docker compose
-# On cible le conteneur 'web' défini dans notre docker-compose.yml
+# On vérifie si un fichier .env.local existe. Si oui, on force Docker à le lire en priorité.
+ifneq (,$(wildcard ./.env.local))
+    DOCKER_COMP = docker compose --env-file .env --env-file .env.local
+else
+    DOCKER_COMP = docker compose
+endif
+
 PHP_CONT = $(DOCKER_COMP) exec -u www-data web php
 SYMFONY = $(PHP_CONT) bin/console
 
@@ -29,9 +34,11 @@ bash:
 ## [LEAD DEV UNIQUEMENT] Initialise le projet Symfony 8.0 vide depuis zéro
 init-project:
 	@echo "Création du squelette Symfony 8.0..."
-	$(DOCKER_COMP) exec -u www-data web composer create-project symfony/skeleton:"^8.0" .
+	$(DOCKER_COMP) exec -u 0 web composer create-project symfony/skeleton:"^8.0" .
 	@echo "Installation du pack Webapp..."
-	$(DOCKER_COMP) exec -u www-data web composer require webapp
+	$(DOCKER_COMP) exec -u 0 web composer require webapp
+	@echo "Correction des permissions..."
+	$(DOCKER_COMP) exec -u 0 web chown -R www-data:www-data /var/www/html
 	@echo "Le projet est initialisé ! Pensez à commiter les fichiers générés."
 
 ## Installation complète (Composer + Database + Assets)
