@@ -1,0 +1,67 @@
+[
+  {
+    "nom": "Pédagogie & Savoirs",
+    "slug": "pedagogie-savoirs",
+    "description": "Partage de connaissances, entraide scolaire et matériel éducatif.",
+    "sous_categories": [
+      { "nom": "Livres & Manuels", "slug": "livres-manuels" },
+      { "nom": "Tutorat & Soutien", "slug": "tutorat-soutien" },
+      { "nom": "Groupes de travail", "slug": "groupes-travail" },
+      { "nom": "Partage de fiches & Notes", "slug": "fiches-notes" }
+    ]
+  },
+  {
+    "nom": "Vie de Campus & Logement",
+    "slug": "vie-campus-logement",
+    "description": "Tout pour s'installer et vivre sereinement à Limoges.",
+    "sous_categories": [
+      { "nom": "Colocation & Recherche toit", "slug": "colocation-logement" },
+      { "nom": "Équipement & Mobilier", "slug": "equipement-mobilier" },
+      { "nom": "Conseils & Bons plans locaux", "slug": "conseils-locaux" },
+      { "nom": "Covoiturage & Transports", "slug": "covoiturage" }
+    ]
+  },
+  {
+    "nom": "Services & Coups de main",
+    "slug": "services-entraide",
+    "description": "Échanger du temps et des compétences.",
+    "sous_categories": [
+      { "nom": "Bricolage & Dépannage", "slug": "bricolage" },
+      { "nom": "Informatique & Tech", "slug": "informatique-tech" },
+      { "nom": "Garde d'animaux & Plantes", "slug": "garde-animaux-plantes" },
+      { "nom": "Langues & Tandems", "slug": "langues-tandems" }
+    ]
+  },
+  {
+    "nom": "Loisirs, Sport & Culture",
+    "slug": "loisirs-culture",
+    "description": "Pour se détendre et partager ses passions.",
+    "sous_categories": [
+      { "nom": "Partenaires de Sport", "slug": "partenaires-sport" },
+      { "nom": "Musique & Jam sessions", "slug": "musique" },
+      { "nom": "Jeux & Divertissement", "slug": "jeux" },
+      { "nom": "Sorties & Billetterie", "slug": "sorties-billetterie" }
+    ]
+  },
+  {
+    "nom": "Échanges d'Idées & Projets",
+    "slug": "idees-projets",
+    "description": "L'espace pour l'esprit, les débats et l'innovation.",
+    "sous_categories": [
+      { "nom": "Café Philo & Débats", "slug": "cafe-philo-debats" },
+      { "nom": "Appel à projets & Collaborations", "slug": "appel-projets" },
+      { "nom": "Initiatives Citoyennes & Écologie", "slug": "initiatives-citoyennes" },
+      { "nom": "Inspirations & Lectures", "slug": "inspirations-lectures" }
+    ]
+  },
+  {
+    "nom": "Événements & Rencontres",
+    "slug": "evenements",
+    "description": "Organiser des moments conviviaux.",
+    "sous_categories": [
+      { "nom": "Soirées & Repas", "slug": "soirees-repas" },
+      { "nom": "Ateliers & Workshops", "slug": "ateliers" },
+      { "nom": "Vie Associative", "slug": "vie-associative" }
+    ]
+  }
+]

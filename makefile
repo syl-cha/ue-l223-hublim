@@ -29,6 +29,10 @@ logs:
 bash:
 	$(DOCKER_COMP) exec -it web bash
 
+## Lance une commande Composer (ex: make comp c="require --dev orm-fixtures")
+comp:
+	$(DOCKER_COMP) exec -u 0 web composer $(c)
+
 # --- Commandes Projet (Symfony & Composer) ---
 
 ## [LEAD DEV UNIQUEMENT] Initialise le projet Symfony 8.0 vide depuis zéro

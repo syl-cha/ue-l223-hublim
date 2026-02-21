@@ -1,0 +1,327 @@
+[
+  {
+    "type": "DEUST",
+    "theme": "Sciences",
+    "nom": "Animation et gestion des activités physiques, sportives et culturelles"
+  },
+  {
+    "type": "DEUST",
+    "theme": "Sciences",
+    "nom": "Préparateur technicien en pharmacie"
+  },
+  {
+    "type": "DEUST",
+    "theme": "Sciences",
+    "nom": "Webmaster et métiers de l'internet"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Chimie"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Génie civil"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Informatique"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Mathématiques"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Physique chimie"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Physique"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "STAPS : Activités physiques adaptées et santé"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "STAPS : Education et motricité"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "STAPS : Entrainement sportif"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "STAPS : Management du Sport"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Sciences de la vie et de la terre"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences",
+    "nom": "Sciences pour la santé"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Administration économique et sociale"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Administration publique"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Droit"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Économie – Gestion"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Histoire"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Géographie et aménagement"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Langues étrangères appliquées"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Langues littératures et civilisations étrangères et régionales"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Lettres"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Sciences de l'éducation et de la formation"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Sciences du langage"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Sociologie"
+  },
+  {
+    "type": "LICENCES",
+    "theme": "Sciences Humaines",
+    "nom": "Professorat des écoles"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Génie biologique"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Génie civil - construction durable"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Génie électrique et informatique industrielle"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Génie industriel et maintenance"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Génie mécanique et productique"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Hygiène, sécurité, environnement"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Informatique"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Mesures physiques"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences",
+    "nom": "Métiers du multimédia et de l'internet"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Droit Eco Gestion",
+    "nom": "Gestion des entreprises et des administrations"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Droit Eco Gestion",
+    "nom": "Techniques de commercialisation"
+  },
+  {
+    "type": "B.U.T.",
+    "theme": "Sciences Humaines",
+    "nom": "Carrières sociales"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Gestion et accompagnement de projets pédagogiques"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers de l'énergétique, de l'environnement et du génie climatique"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers de l'informatique : application web"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers de l'informatique : conduite de projets"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers du BTP : bâtiment et construction"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers du BTP : génie civil et construction"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers du BTP : travaux publics"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers de la protection et de la gestion de l'environnement"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Métiers des ressources naturelles et de la forêt"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Productions animales"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences",
+    "nom": "Tourisme et Loisirs Sportifs"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Assurance, Banque, Finance : Chargé de clientèle"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Activités juridiques : Mandataire judiciaire à la protection des majeurs"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Activités juridiques : Métiers du droit de l'immobilier"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Métiers du notariat"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Droit Eco Gestion",
+    "nom": "Management et gestion des organisations"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences Humaines",
+    "nom": "Aménagement paysager : Conception, gestion, entretien"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences Humaines",
+    "nom": "Métiers de la médiation scientifique et techniques"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences Humaines",
+    "nom": "Métiers du livre : Documentation et bibliothèques"
+  },
+  {
+    "type": "LICENCES PROFESSIONNELLES",
+    "theme": "Sciences Humaines",
+    "nom": "Protection et valorisation du patrimoine historique et culturel"
+  },
+  {
+    "type": "GRADE LICENCE (SANTÉ)",
+    "theme": "Sciences",
+    "nom": "Diplôme de formation générale en sciences médicales"
+  },
+  {
+    "type": "GRADE LICENCE (SANTÉ)",
+    "theme": "Sciences",
+    "nom": "Diplôme de formation générale en sciences maïeutiques"
+  },
+  {
+    "type": "GRADE LICENCE (SANTÉ)",
+    "theme": "Sciences",
+    "nom": "Diplôme de formation générale en sciences pharmaceutiques"
+  },
+  {
+    "type": "GRADE LICENCE (SANTÉ)",
+    "theme": "Sciences",
+    "nom": "Certificat de capacité d'orthoptiste"
+  },
+  {
+    "type": "GRADE LICENCE (SANTÉ)",
+    "theme": "Sciences",
+    "nom": "Diplôme d'état d'ergothérapeute"
+  }
+]

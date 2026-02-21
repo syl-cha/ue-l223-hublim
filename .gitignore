@@ -1,6 +1,8 @@
 ###> INFRASTRUCTURE & DOCKER ###
 # Les variables d'environnement locales contenant les secrets de la base de données
 /.env.local
+# Copie de l'arborescence
+tree.txt
 ###< INFRASTRUCTURE & DOCKER ###
 
 
