@@ -4,46 +4,93 @@
 
 {% block body %}
 <div class="container mt-4">
-    <h1>Tableau de bord HubLim</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>Tableau de bord HubLim</h1>
+    </div>
     <hr>
 
     <div class="row">
         {# Section Utilisateurs #}
-        <div class="col-md-6">
-            <h2> Utilisateurs ({{ users|length }})</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Email</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                        <tr>
-                            <td>{{ user.firstName }} {{ user.lastName }}</td>
-                            <td>{{ user.email }}</td>
-                        </tr>
-                    {% else %}
-                        <tr><td colspan="2">Aucun utilisateur en base.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0"> Utilisateurs ({{ users|length }})</h2>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Profil</th>
+                                <th>Formation</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ user.firstName }} {{ user.lastName }}</strong><br>
+                                        <small class="text-muted">{{ user.email }}</small>
+                                    </td>
+                                    <td>
+                                        <small class="badge border text-dark bg-light">
+                                            {{ user.studyField.name|default('N/A') }}
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info text-dark">
+                                            {{ user.status.label.value|capitalize }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="3" class="text-center">Aucun utilisateur en base.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         {# Section Cartes #}
-        <div class="col-md-6">
-            <h2> Cartes ({{ cards|length }})</h2>
-            <div class="list-group">
-                {% for card in cards %}
-                    <div class="list-group-item">
-                        <h5 class="mb-1">{{ card.title }}</h5>
-                        <p class="mb-1">{{ card.description }}</p>
-                        <small>Statut : <strong>{{ card.state.value }}</strong></small>
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h2 class="h5 mb-0"> Cartes ({{ cards|length }})</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for card in cards %}
+                            <div class="col-12 mb-3">
+                                <div class="border rounded p-3">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 class="text-primary">{{ card.title }}</h5>
+                                        <span class="badge bg-warning text-dark">Statut :{{ card.state.value }}</span>
+                                    </div>
+                                    <p class="text-secondary small">{{ card.description }}</p>
+                                    
+                                    <hr class="my-2">
+                                    
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-light text-dark border">
+                                              {{ card.category.name }}
+                                            </span>
+                                        </div>
+                                        <small class="text-muted">
+                                            Par : <strong>{{ card.user.firstName }}</strong> 
+                                            ({{ card.user.studyField.theme }})
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="col-12">
+                                <p class="text-muted text-center">Aucune carte trouvée.</p>
+                            </div>
+                        {% endfor %}
                     </div>
-                {% else %}
-                    <p class="text-muted">Aucune carte trouvée.</p>
-                {% endfor %}
+                </div>
             </div>
         </div>
     </div>
