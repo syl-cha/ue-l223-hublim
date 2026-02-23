@@ -40,9 +40,14 @@ logs:
 bash:
 	$(DOCKER_COMP) exec -it web bash
 
-## Lance une commande Composer (Créera les fichiers avec VOS droits)
+## Lance une commande Composer (Gère les permissions automatiquement)
 comp:
-	$(DOCKER_COMP) exec -u $(HOST_USER) web composer $(c)
+	@echo "📦 Exécution de composer $(c)..."
+	$(DOCKER_COMP) exec -e COMPOSER_ALLOW_SUPERUSER=1 -u 0 web composer $(c)
+	@echo "🔧 Réattribution des droits..."
+	@$(DOCKER_COMP) exec -u 0 web chown $(HOST_USER) composer.json composer.lock symfony.lock 2>/dev/null || true
+	@$(DOCKER_COMP) exec -u 0 web chown -R www-data:www-data vendor var
+	@echo "✅ Terminé !"
 
 # --- Commandes Projet (Symfony & Composer) ---
 
@@ -107,7 +112,7 @@ db-hard-reset:
 	$(SYMFONY) doctrine:fixtures:load --no-interaction
 
 	@echo "✅ Hard-reset terminé ! Pensez à vérifier git status et commiter le nouveau fichier de migration."
-	
+
 
 ## Lance une commande Symfony arbitraire (Créera les fichiers avec VOS droits)
 sf:
