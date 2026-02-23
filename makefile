@@ -1,7 +1,9 @@
 # Makefile - HubLim (Windows / macOS / Linux via Docker)
 
 # --- Variables ---
-# On vérifie si un fichier .env.local existe. Si oui, on force Docker à le lire en priorité.
+# On récupère dynamiquement l'ID de votre utilisateur local (ex: 1000:1000)
+HOST_USER = $(shell id -u):$(shell id -g)
+
 ifneq (,$(wildcard ./.env.local))
     DOCKER_COMP = docker compose --env-file .env --env-file .env.local
 else
@@ -29,9 +31,9 @@ logs:
 bash:
 	$(DOCKER_COMP) exec -it web bash
 
-## Lance une commande Composer (ex: make comp c="require --dev orm-fixtures")
+## Lance une commande Composer (Créera les fichiers avec VOS droits)
 comp:
-	$(DOCKER_COMP) exec -u 0 web composer $(c)
+	$(DOCKER_COMP) exec -u $(HOST_USER) web composer $(c)
 
 # --- Commandes Projet (Symfony & Composer) ---
 
@@ -47,13 +49,23 @@ init-project:
 
 ## Installation complète (Composer + Database + Assets)
 install:
+## Installation complète (Composer + Database + Assets)
+install:
 	@echo "--- 1. Configuration de l'environnement local ---"
-	$(DOCKER_COMP) exec -u www-data web sh -c 'if [ ! -f .env.local ]; then \
-		echo "DATABASE_URL=\"mysql://hublim_user:hublim_secure_pwd@db:3306/hublim_db?serverVersion=11.4.10-MariaDB\"" > .env.local; \
-	fi'
+	@if [ ! -f .env.local ]; then \
+		echo "⚠️ ATTENTION : Le fichier .env.local n'existe pas." ; \
+		echo "👉 Création d'un modèle de base..." ; \
+		echo "DB_ROOT_PASSWORD=votre_mot_de_passe_root_ici" > .env.local ; \
+		echo "DB_PASSWORD=votre_mot_de_passe_user_ici" >> .env.local ; \
+		echo "PHPMYADMIN_PORT=8888" >> .env.local ; \
+		echo "DATABASE_URL=\"mysql://hublim_root:votre_mot_de_passe_user_ici@db:3306/hublim_db?serverVersion=11.4.10-MariaDB\"" >> .env.local ; \
+		echo "🛑 ERREUR FATALE : Veuillez remplir vos vrais mots de passe dans le nouveau fichier .env.local avant de relancer 'make install'." ; \
+		exit 1 ; \
+	fi
 
 	@echo "--- 2. Fix des permissions locales ---"
-	$(DOCKER_COMP) exec -u 0 web chmod 644 .env.local
+# 	$(DOCKER_COMP) exec -u 0 web chmod 644 .env.local
+	chmod 644 .env.local
 
 	@echo "--- 3. Installation des dépendances (Composer) ---"
 	$(DOCKER_COMP) exec -u 0 web composer install
@@ -72,14 +84,14 @@ db-reset:
 	$(SYMFONY) doctrine:schema:drop --full-database --force
 
 	@echo "Exécution des migrations SQL (Création des nouvelles tables)..."
-	$(SYMFONY) doctrine:migrations:migrate --no-interaction
+	$(SYMFONY) doctrine:migrations:migrate --no-interaction --allow-no-migration
 
 	@echo "Chargement des fausses données (Fixtures)..."
 	$(SYMFONY) doctrine:fixtures:load --no-interaction
 
-## Lance une commande Symfony arbitraire (ex: make sf c="make:controller")
+## Lance une commande Symfony arbitraire (Créera les fichiers avec VOS droits)
 sf:
-	$(SYMFONY) $(c)
+	$(DOCKER_COMP) exec -u $(HOST_USER) web php bin/console $(c)
 
 ## Vide le cache Symfony
 cc:
