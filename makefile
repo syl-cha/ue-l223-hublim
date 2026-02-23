@@ -87,6 +87,28 @@ db-reset:
 	@echo "Chargement des fausses données (Fixtures)..."
 	$(SYMFONY) doctrine:fixtures:load --no-interaction
 
+
+## [DANGER] Supprime toutes les migrations, vide la BDD, et recrée une migration unique propre
+db-hard-reset:
+	@echo "🚨 ATTENTION : Suppression totale de la base et de l'historique des migrations..."
+	@echo "1. Suppression du schéma de base de données..."
+	$(SYMFONY) doctrine:schema:drop --full-database --force
+
+	@echo "2. Suppression des fichiers de migration existants..."
+	$(DOCKER_COMP) exec -u $(HOST_USER) web bash -c "rm -f migrations/Version*.php"
+
+	@echo "3. Génération d'une nouvelle migration globale depuis zéro..."
+	$(DOCKER_COMP) exec -u $(HOST_USER) web php bin/console make:migration --no-interaction
+
+	@echo "4. Exécution de la nouvelle migration..."
+	$(SYMFONY) doctrine:migrations:migrate --no-interaction --allow-no-migration
+
+	@echo "5. Chargement des fausses données (Fixtures)..."
+	$(SYMFONY) doctrine:fixtures:load --no-interaction
+
+	@echo "✅ Hard-reset terminé ! Pensez à vérifier git status et commiter le nouveau fichier de migration."
+	
+
 ## Lance une commande Symfony arbitraire (Créera les fichiers avec VOS droits)
 sf:
 	$(DOCKER_COMP) exec -u $(HOST_USER) web php bin/console $(c)
