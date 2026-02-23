@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -48,6 +50,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatarFileName = null;
+
+    /**
+     * @var Collection<int, Card>
+     */
+    #[ORM\OneToMany(targetEntity: Card::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $card;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Status $status = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
+    private ?StudyField $studyField = null;
+
+    /**
+     * @var Collection<int, Message>
+     */
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $messages;
+
+    /**
+     * @var Collection<int, Card>
+     */
+    #[ORM\ManyToMany(targetEntity: Card::class, inversedBy: 'fanUsers')]
+    private Collection $userFavoriteCards;
+
+    public function __construct()
+    {
+        $this->card = new ArrayCollection();
+        $this->messages = new ArrayCollection();
+        $this->userFavoriteCards = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -192,6 +226,114 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatarFileName(?string $avatarFileName): static
     {
         $this->avatarFileName = $avatarFileName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Card>
+     */
+    public function getCard(): Collection
+    {
+        return $this->card;
+    }
+
+    public function addCard(Card $card): static
+    {
+        if (!$this->card->contains($card)) {
+            $this->card->add($card);
+            $card->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCard(Card $card): static
+    {
+        if ($this->card->removeElement($card)) {
+            // set the owning side to null (unless already changed)
+            if ($card->getUser() === $this) {
+                $card->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getStudyField(): ?StudyField
+    {
+        return $this->studyField;
+    }
+
+    public function setStudyField(?StudyField $studyField): static
+    {
+        $this->studyField = $studyField;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Message>
+     */
+    public function getMessages(): Collection
+    {
+        return $this->messages;
+    }
+
+    public function addMessage(Message $message): static
+    {
+        if (!$this->messages->contains($message)) {
+            $this->messages->add($message);
+            $message->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMessage(Message $message): static
+    {
+        if ($this->messages->removeElement($message)) {
+            // set the owning side to null (unless already changed)
+            if ($message->getUser() === $this) {
+                $message->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Card>
+     */
+    public function getUserFavoriteCards(): Collection
+    {
+        return $this->userFavoriteCards;
+    }
+
+    public function addUserFavoriteCard(Card $userFavoriteCard): static
+    {
+        if (!$this->userFavoriteCards->contains($userFavoriteCard)) {
+            $this->userFavoriteCards->add($userFavoriteCard);
+        }
+
+        return $this;
+    }
+
+    public function removeUserFavoriteCard(Card $userFavoriteCard): static
+    {
+        $this->userFavoriteCards->removeElement($userFavoriteCard);
 
         return $this;
     }
