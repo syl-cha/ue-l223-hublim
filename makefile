@@ -49,19 +49,9 @@ init-project:
 
 ## Installation complète (Composer + Database + Assets)
 install:
-## Installation complète (Composer + Database + Assets)
-install:
 	@echo "--- 1. Configuration de l'environnement local ---"
-	@if [ ! -f .env.local ]; then \
-		echo "⚠️ ATTENTION : Le fichier .env.local n'existe pas." ; \
-		echo "👉 Création d'un modèle de base..." ; \
-		echo "DB_ROOT_PASSWORD=votre_mot_de_passe_root_ici" > .env.local ; \
-		echo "DB_PASSWORD=votre_mot_de_passe_user_ici" >> .env.local ; \
-		echo "PHPMYADMIN_PORT=8888" >> .env.local ; \
-		echo "DATABASE_URL=\"mysql://hublim_root:votre_mot_de_passe_user_ici@db:3306/hublim_db?serverVersion=11.4.10-MariaDB\"" >> .env.local ; \
-		echo "🛑 ERREUR FATALE : Veuillez remplir vos vrais mots de passe dans le nouveau fichier .env.local avant de relancer 'make install'." ; \
-		exit 1 ; \
-	fi
+	$(if $(wildcard .env.local),@echo "✅ Fichier .env.local détecté.",$(error 🛑 ERREUR : Le fichier .env.local est manquant !))
+	
 
 	@echo "--- 2. Fix des permissions locales ---"
 # 	$(DOCKER_COMP) exec -u 0 web chmod 644 .env.local
