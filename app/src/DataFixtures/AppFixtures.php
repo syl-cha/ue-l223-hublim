@@ -2,36 +2,50 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
+use App\Entity\Card;
+use App\Enum\CardState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-  public function load(ObjectManager $manager): void
-  {
-    // $product = new Product();
-    // $manager->persist($product);
+  private UserPasswordHasherInterface $hasher;
 
-    // Traduction des fichiers JSON pour les catégories et filières
-    // 1. on récupère le JSON
-    // 2. on le transforme en tableau associatif
-    // 3. on boucle et on créée les entités correspondantes.
-
-    // CATÉGORIES
-    $jsonCategories = file_get_contents(__DIR__ . '/data/categories.json');
-    $categoriesData = json_decode($jsonCategories, true);
-    foreach ($categoriesData as $categorie) {
-      // TODO
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
     }
 
-    // FILIÈRES
-    $jsonFilieres = file_get_contents(__DIR__ . '/data/filieres.json');
-    $filieresData = json_decode($jsonFilieres, true);
-    foreach ($filieresData as $filiere) {
-      // TODO
+    public function load(ObjectManager $manager): void
+    {
+        // 1. Création d'un Utilisateur de test
+        $user = new User();
+        $user->setEmail('etudiant@etu.unilim.fr');
+        $user->setFirstName('Lucie');
+        $user->setLastName('Lieuve');
+        $user->setIsVerified(true);
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setTwoFactorSecret('secret123'); // l'entité le demande en non null
+        
+        // Hashage du mot de passe
+        $password = $this->hasher->hashPassword($user, 'test1234');
+        $user->setPassword($password);
+
+        $manager->persist($user);
+
+        // 2. Création d'une Carte liée à cet utilisateur
+        
+        $card = new Card();
+        $card->setTitle('Ma première carte de révision');
+        $card->setDescription('Ceci est une description de test pour mon examen.');
+        $card->setState(CardState::DRAFT);
+        $card->setCreatedAt(new \DateTimeImmutable());
+
+        $manager->persist($card);
+
+        // 3. On envoie tout en base
+        $manager->flush();
     }
-
-
-    $manager->flush();
-  }
 }

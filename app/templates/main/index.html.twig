@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil HubLim{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Tableau de bord HubLim</h1>
+    <hr>
+
+    <div class="row">
+        {# Section Utilisateurs #}
+        <div class="col-md-6">
+            <h2> Utilisateurs ({{ users|length }})</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.firstName }} {{ user.lastName }}</td>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="2">Aucun utilisateur en base.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# Section Cartes #}
+        <div class="col-md-6">
+            <h2> Cartes ({{ cards|length }})</h2>
+            <div class="list-group">
+                {% for card in cards %}
+                    <div class="list-group-item">
+                        <h5 class="mb-1">{{ card.title }}</h5>
+                        <p class="mb-1">{{ card.description }}</p>
+                        <small>Statut : <strong>{{ card.state.value }}</strong></small>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucune carte trouvée.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
