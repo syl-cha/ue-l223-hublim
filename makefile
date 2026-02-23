@@ -1,5 +1,14 @@
 # Makefile - HubLim (Windows / macOS / Linux via Docker)
 
+# --- Détection de l'OS ---
+ifeq ($(OS),Windows_NT)
+    # Sous Windows, on ne fait rien pour le chmod
+    FIX_PERMS = @echo "ℹ️  OS Windows détecté : gestion des permissions ignorée."
+else
+    # Sous Linux / macOS, on applique les bonnes permissions
+    FIX_PERMS = chmod 644 .env.local
+endif
+
 # --- Variables ---
 # On récupère dynamiquement l'ID de votre utilisateur local (ex: 1000:1000)
 HOST_USER = $(shell id -u):$(shell id -g)
@@ -54,8 +63,7 @@ install:
 	
 
 	@echo "--- 2. Fix des permissions locales ---"
-# 	$(DOCKER_COMP) exec -u 0 web chmod 644 .env.local
-	chmod 644 .env.local
+	$(FIX_PERMS)
 
 	@echo "--- 3. Installation des dépendances (Composer) ---"
 	$(DOCKER_COMP) exec -u 0 web composer install
