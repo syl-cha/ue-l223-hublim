@@ -64,5 +64,7 @@ class AppFixtures extends Fixture
 
       // 6. On valide tout
       $manager->flush();
+
+      //TEST
     }
 }
