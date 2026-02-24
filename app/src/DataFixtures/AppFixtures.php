@@ -12,15 +12,21 @@ use App\Enum\CardState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker\Factory;
 
 class AppFixtures extends Fixture
 {
     private $hasher;
-    public function __construct(UserPasswordHasherInterface $hasher) { $this->hasher = $hasher; }
+    public function __construct(UserPasswordHasherInterface $hasher) { 
+      $this->hasher = $hasher; 
+    }
 
     public function load(ObjectManager $manager): void
     {
-        // 1. On crée la Catégorie (Besoin de : name, slug)
+      //On initialise Faker en français
+      $faker = Factory::create('fr_FR');
+
+      // 1. On crée la Catégorie (Besoin de : name, slug)
       $category = new Category();
       $category->setName('Informatique');
       $category->setSlug('informatique');
@@ -40,31 +46,41 @@ class AppFixtures extends Fixture
       $manager->persist($studyField);
 
       // 4. On crée l'utilisateur
-      $user = new User();
-      $user->setEmail('jeanne.salvadori@etu.unilim.fr');
-      $user->setFirstName('Jeanne');
-      $user->setLastName('Salvadori');
-      $user->setPassword($this->hasher->hashPassword($user, 'password'));
-      $user->setStatus($status);
-      $user->setStudyField($studyField);
-      $user->setCreatedAt(new \DateTimeImmutable());
-      $user->setIsVerified(true);
-      $user->setTwoFactorSecret('none');
-      $manager->persist($user);
+      $users = [];
+      for ($i = 0; $i < 5; $i++){
+        //On définit le nom d'abord pour pouvoir réutiliser les variables dans l'email
+        $firstName = $faker->firstName();
+        $lastName  = $faker->lastName();
 
-      // 5. On crée la carte
-      $card = new Card();
-      $card->setTitle('Titre de la carte');
-      $card->setDescription('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.');
-      $card->setState(CardState::DRAFT);
-      $card->setCreatedAt(new \DateTimeImmutable());
-      $card->setUser($user);
-      $card->setCategory($category);
-      $manager->persist($card);
+        //On crée l'utilisateur
+        $user = new User();
+        $user->setFirstName($firstName);
+        $user->setLastName($lastName);
+        $user->setEmail(strtolower($firstName . '.' . $lastName) . '@etu.unilim.fr');
+        $user->setPassword($this->hasher->hashPassword($user, 'password'));
+        $user->setStatus($status);
+        $user->setStudyField($studyField);
+        $user->setCreatedAt(new \DateTimeImmutable());
+        $user->setIsVerified(true);
+        $user->setTwoFactorSecret('none');
+        $manager->persist($user);
+        $users[] = $user;
+      }
+      
 
+      // 5. On crée les cartes
+      for ($i=0; $i < 20; $i++){
+        $card = new Card();
+        $card->setTitle($faker->sentence(6, true));
+        $card->setDescription($faker->paragraphs(3, true));
+        $card->setState(CardState::DRAFT);
+        $card->setCreatedAt(new \DateTimeImmutable());
+        $card->setUser($faker->randomElement($users));
+        $card->setCategory($category);
+        $manager->persist($card);
+      }
+      
       // 6. On valide tout
       $manager->flush();
-
-      //TEST
     }
 }
