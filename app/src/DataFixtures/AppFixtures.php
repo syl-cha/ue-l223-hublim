@@ -7,6 +7,7 @@ use App\Entity\Card;
 use App\Entity\Status;
 use App\Entity\Category;
 use App\Entity\StudyField;
+use App\Entity\Image;
 use App\Enum\StatusLabel; // N'oublie pas l'import de ton Enum
 use App\Enum\CardState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -107,6 +108,17 @@ class AppFixtures extends Fixture
         $card->setCreatedAt(new \DateTimeImmutable());
         $card->setUser($faker->randomElement($users));
         $card->setCategory($faker->randomElement($sousCategories));
+
+        $image = new Image();
+        $seed = $faker->unique()->numberBetween(1, 10000);
+        $imageUrl = "https://picsum.photos/seed/{$seed}/800/600";
+
+        $image->setFileName($imageUrl);
+        $image->setSize(0); 
+            
+        $card->addImage($image);
+        $manager->persist($image);
+
         $manager->persist($card);
       }
       
