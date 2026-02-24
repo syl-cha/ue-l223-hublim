@@ -26,11 +26,32 @@ class AppFixtures extends Fixture
       //On initialise Faker en français
       $faker = Factory::create('fr_FR');
 
-      // 1. On crée la Catégorie (Besoin de : name, slug)
-      $category = new Category();
-      $category->setName('Informatique');
-      $category->setSlug('informatique');
-      $manager->persist($category);
+      //On charge les catégories depuis le json
+      $categoryData = json_decode(file_get_contents(__DIR__ . '/data/categories.json'), true);
+
+      // 1. On crée les Catégorie (Besoin de : name, slug)
+      $categories = [];
+      $sousCategories = [];
+
+      foreach ($categoryData as $c){
+        $category = new Category();
+        $category -> setName($c['nom']);
+        $category -> setSlug($c['slug']);
+        $manager  -> persist($category);
+        $categories[] = $category;
+
+        if (isset($c['sous_categories'])) {
+          foreach ($c['sous_categories'] as $s_c){
+            $sousCategory = new Category();
+            $sousCategory -> setName($s_c['nom']);
+            $sousCategory -> setSlug($s_c['slug']);
+            $sousCategory -> setParent($category);
+
+            $manager->persist($sousCategory);
+            $sousCategories [] = $sousCategory;
+          }
+        }
+      }
 
       // 2. On crée le Statut (Besoin de : label)
       $status = new Status();
@@ -38,16 +59,23 @@ class AppFixtures extends Fixture
       $manager->persist($status);
 
       // 3. On crée le domaine d'étude (Besoin de : name, type, theme)
-      // C'EST ICI QUE SE TROUVAIT L'ERREUR "TYPE"
-      $studyField = new StudyField();
-      $studyField->setName('BTS SIO');
-      $studyField->setType('Formation Initiale'); // Ajout du type obligatoire
-      $studyField->setTheme('Développement');      // Ajout du theme obligatoire
-      $manager->persist($studyField);
+      //On charge les filières depuis le json
+      $filiereData = json_decode(file_get_contents(__DIR__ . '/data/filieres.json'), true);
+
+      $filieres = [];
+
+      foreach ($filiereData as $f){
+        $studyField = new StudyField();
+        $studyField -> setName($f['nom']);
+        $studyField -> setType($f['type']);
+        $studyField -> setTheme($f['theme']);     
+        $manager->persist($studyField);
+        $filieres[] = $studyField;
+      }
 
       // 4. On crée l'utilisateur
       $users = [];
-      for ($i = 0; $i < 5; $i++){
+      for ($i = 0; $i < 8; $i++){
         //On définit le nom d'abord pour pouvoir réutiliser les variables dans l'email
         $firstName = $faker->firstName();
         $lastName  = $faker->lastName();
@@ -59,7 +87,7 @@ class AppFixtures extends Fixture
         $user->setEmail(strtolower($firstName . '.' . $lastName) . '@etu.unilim.fr');
         $user->setPassword($this->hasher->hashPassword($user, 'password'));
         $user->setStatus($status);
-        $user->setStudyField($studyField);
+        $user->setStudyField($faker->randomElement($filieres));
         $user->setCreatedAt(new \DateTimeImmutable());
         $user->setIsVerified(true);
         $user->setTwoFactorSecret('none');
@@ -69,14 +97,16 @@ class AppFixtures extends Fixture
       
 
       // 5. On crée les cartes
+      $cardStates = [CardState::DRAFT, CardState::PUBLISHED, CardState::ARCHIVED];
+
       for ($i=0; $i < 20; $i++){
         $card = new Card();
         $card->setTitle($faker->sentence(6, true));
         $card->setDescription($faker->paragraphs(3, true));
-        $card->setState(CardState::DRAFT);
+        $card->setState($faker->randomElement($cardStates));
         $card->setCreatedAt(new \DateTimeImmutable());
         $card->setUser($faker->randomElement($users));
-        $card->setCategory($category);
+        $card->setCategory($faker->randomElement($sousCategories));
         $manager->persist($card);
       }
       

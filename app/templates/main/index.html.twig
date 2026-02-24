@@ -33,8 +33,14 @@
                                         <small class="text-muted">{{ user.email }}</small>
                                     </td>
                                     <td>
-                                        <small class="badge border text-dark bg-light">
-                                            {{ user.studyField.name|default('N/A') }}
+                                        <span class="badge bg-primary text-white">
+                                            {{ user.studyField.type }}
+                                        </span>
+                                        <span class="badge bg-secondary">
+                                            {{ user.studyField.theme }}
+                                        </span>
+                                        <small class="text-muted">
+                                            {{ user.studyField.name }}
                                         </small>
                                     </td>
                                     <td>
@@ -65,7 +71,16 @@
                                 <div class="border rounded p-3">
                                     <div class="d-flex justify-content-between">
                                         <h5 class="text-primary">{{ card.title }}</h5>
-                                        <span class="badge bg-warning text-dark">Statut :{{ card.state.value }}</span>
+                                        <span class="badge 
+                                            {% if card.state == constant('App\\Enum\\CardState::DRAFT') %}
+                                                bg-warning
+                                            {% elseif card.state == constant('App\\Enum\\CardState::PUBLISHED') %}
+                                                bg-success
+                                            {% elseif card.state == constant('App\\Enum\\CardState::ARCHIVED') %}
+                                                bg-dark
+                                            {% endif %}">
+                                            Statut : {{ card.state.value }}
+                                        </span>
                                     </div>
                                     <p class="text-secondary small">{{ card.description }}</p>
                                     
@@ -74,7 +89,11 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <span class="badge bg-light text-dark border">
-                                              {{ card.category.name }}
+                                                {% if card.category.parent %}
+                                                    {{ card.category.parent.name }} > {{ card.category.name }}
+                                                {% else %}
+                                                    {{ card.category.name }}
+                                                {% endif %}
                                             </span>
                                         </div>
                                         <small class="text-muted">
