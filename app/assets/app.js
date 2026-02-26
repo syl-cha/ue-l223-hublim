@@ -14,21 +14,33 @@ console.log('This log comes from assets/app.js - welcome to AssetMapper! ');
 
 // Carousel logic
 document.addEventListener('DOMContentLoaded', () => {
-    const swiper = new Swiper(".mySwiper", {
+        const swiper = new Swiper(".mySwiper", {
         effect: "coverflow",
         grabCursor: true,
         centeredSlides: true,
+        slidesPerView: 3,     // ✅ Toujours 3, même sur mobile si tu veux
+        initialSlide: 1,
         loop: true,
-        pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
+        loopedSlides: 3,      // ✅ Exactement 3 copies virtuelles
+        watchSlidesProgress: true,
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
             },
-        slidesPerView: 3,
+            768: {
+                slidesPerView: "auto",
+            }
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
         coverflowEffect: {
             rotate: 0,
             stretch: 0,
-            depth: 150,
-            modifier: 2.5,
+            depth: 100,
+            modifier: 3,
             slideShadows: true,
         },
         autoplay: {

@@ -4,13 +4,12 @@
 
 {% block body %}
 <div class="row align-items-center my-5">
-    <div class="col-lg-5">
+    <div class="col-lg-7">
         <h1 class="display-4 fw-bold">Le carrefour numérique de la communauté universitaire de Limoges</h1>
         <p class="lead my-4">Échangez biens, services et idées dans un espace numérique réservé à l’Université de Limoges, authentifié et de confiance.</p>
         <a href="" class="btn btn-primary btn-lg px-4">S'inscrire</a>
     </div>
-
-    <div class="col-lg-7">
+    <div class="col-lg-5">
         <div class="carousel-container">
             {% include 'partials/_carousel.html.twig' %}
         </div>
@@ -19,7 +18,7 @@
 
 {# Section Qui sommes-nous ? #}
 
-<section class="py-5 bg-light">
+<section id="qui-sommes-nous" class="py-5 bg-light">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-6">
@@ -49,7 +48,7 @@
 
 {# Section A propos #}
 
-<section class="py-5">
+<section id="a-propos" class="py-5">
     <div class="container text-center">
         <h2 class="mb-5">Comment ça fonctionne ?</h2>
         <div class="row g-4">
@@ -80,15 +79,14 @@
 
 {# Section Contact #}
 
-<section class="py-5 bg-dark text-white">
+<section id="contact" class="py-5 bg-dark text-white">
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-5">
                 <h2 class="fw-bold">Contactez-nous</h2>
                 <p class="text-secondary">Une question sur le fonctionnement de la plateforme ou un problème technique ? L'équipe HubLim est là pour vous.</p>
                 <ul class="list-unstyled mt-4">
-                    <li class="mb-3"><i class="bi bi-geo-alt me-2 text-primary"></i> Campus de Ester, Limoges</li>
-                    <li class="mb-3"><i class="bi bi-envelope me-2 text-primary"></i> contact@hublim.unilim.fr</li>
+                    <li class="mb-3"><i class="bi bi-envelope me-2 text-primary"></i> contact@hublim.fr</li>
                 </ul>
             </div>
             <div class="col-lg-7">
@@ -112,10 +110,10 @@
 </section>
 
 
-    <div class="row">
+    <div class="row py-5">
+    <h2>Section de test pour visualiser les cartes et utilisateurs</h2>
         {# Section Utilisateurs #}
         <div class="col-md-5">
-        <h2>Section de test pour visualiser les cartes et utilisateurs</h2>
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h2 class="h5 mb-0"> Utilisateurs ({{ users|length }})</h2>
