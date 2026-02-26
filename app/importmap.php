@@ -29,4 +29,7 @@ return [
         'version' => '5.3.8',
         'type' => 'css',
     ],
+    'swiper' => [
+        'version' => '12.1.2',
+    ],
 ];

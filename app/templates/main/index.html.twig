@@ -1,17 +1,121 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil HubLim{% endblock %}
+{% block title %}HubLim - Accueil{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1>Tableau de bord HubLim</h1>
+<div class="row align-items-center my-5">
+    <div class="col-lg-5">
+        <h1 class="display-4 fw-bold">Le carrefour numérique de la communauté universitaire de Limoges</h1>
+        <p class="lead my-4">Échangez biens, services et idées dans un espace numérique réservé à l’Université de Limoges, authentifié et de confiance.</p>
+        <a href="" class="btn btn-primary btn-lg px-4">S'inscrire</a>
     </div>
-    <hr>
+
+    <div class="col-lg-7">
+        <div class="carousel-container">
+            {% include 'partials/_carousel.html.twig' %}
+        </div>
+    </div>
+</div>
+
+{# Section Qui sommes-nous ? #}
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h2 class="display-5 fw-bold mb-4">L'esprit HubLim</h2>
+                <p class="lead">Plus qu'une simple plateforme, HubLim est le réseau de confiance des étudiants et personnels de l'Université de Limoges.</p>
+                <p>Né d'une volonté de favoriser l'économie circulaire et l'entraide locale, nous permettons à chacun de valoriser ses compétences et ses biens au sein d'un environnement sécurisé par l'authentification académique.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <div class="p-4 bg-white shadow-sm rounded text-center">
+                            <i class="bi bi-shield-check display-6 text-primary"></i>
+                            <h4 class="h6 mt-2">100% Sécurisé</h4>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-4 bg-white shadow-sm rounded text-center">
+                            <i class="bi bi-people display-6 text-primary"></i>
+                            <h4 class="h6 mt-2">Communautaire</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Section A propos #}
+
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="mb-5">Comment ça fonctionne ?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-icon mb-3">
+                    <span class="badge rounded-pill bg-primary px-3 py-2">1</span>
+                </div>
+                <h3>Inscrivez-vous</h3>
+                <p class="text-muted">Utilisez vos identifiants institutionnels pour rejoindre la communauté.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-icon mb-3">
+                    <span class="badge rounded-pill bg-primary px-3 py-2">2</span>
+                </div>
+                <h3>Proposez ou cherchez</h3>
+                <p class="text-muted">Publiez vos annonces de services, de vente ou vos idées de projets.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="step-icon mb-3">
+                    <span class="badge rounded-pill bg-primary px-3 py-2">3</span>
+                </div>
+                <h3>Échangez en confiance</h3>
+                <p class="text-muted">Rencontrez vos pairs sur le campus pour finaliser l'échange.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Section Contact #}
+
+<section class="py-5 bg-dark text-white">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">Contactez-nous</h2>
+                <p class="text-secondary">Une question sur le fonctionnement de la plateforme ou un problème technique ? L'équipe HubLim est là pour vous.</p>
+                <ul class="list-unstyled mt-4">
+                    <li class="mb-3"><i class="bi bi-geo-alt me-2 text-primary"></i> Campus de Ester, Limoges</li>
+                    <li class="mb-3"><i class="bi bi-envelope me-2 text-primary"></i> contact@hublim.unilim.fr</li>
+                </ul>
+            </div>
+            <div class="col-lg-7">
+                <form class="row g-3">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control bg-secondary border-0 text-white" placeholder="Nom">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="email" class="form-control bg-secondary border-0 text-white" placeholder="Email">
+                    </div>
+                    <div class="col-12">
+                        <textarea class="form-control bg-secondary border-0 text-white" rows="4" placeholder="Votre message"></textarea>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary px-5">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
 
     <div class="row">
         {# Section Utilisateurs #}
         <div class="col-md-5">
+        <h2>Section de test pour visualiser les cartes et utilisateurs</h2>
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <h2 class="h5 mb-0"> Utilisateurs ({{ users|length }})</h2>

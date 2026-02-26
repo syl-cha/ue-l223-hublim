@@ -1,3 +1,54 @@
-body {
-    background-color: skyblue;
+@import "swiper-bundle.min.css";
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,500&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "poppins";
 }
+
+body {
+    background-color: #f9f9f9;
+}
+
+.collection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.collection .content{
+    height: 28rem;
+    width: 25rem;
+    background-color: white;
+    border: .1rem solid rgba(245, 245, 245, 0.1);
+    border-radius: .7rem;
+    border-bottom: .4rem solid #0099ff;
+    border-top: .4rem solid #0099ff;
+    overflow: hidden;
+    /* padding: .2rem; */
+}
+
+.content img{
+    width: 100%;
+    border-bottom-left-radius: .6rem;
+    border-bottom-right-radius: .6rem;
+}
+.text-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: .2rem;
+}
+.text-content h3{
+    font-size: 1.7rem;
+    font-weight: 500;
+}
+.text-content p{
+    max-width: 22rem;
+    font-size: .8rem;
+    font-weight: 400;
+    text-align: center;
+}
+
