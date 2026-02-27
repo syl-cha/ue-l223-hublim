@@ -83,24 +83,30 @@ header.scrolled nav .btn-orange {
 /**** Carousel ****/
 
 .carousel-container {
-    overflow: hidden; 
+    overflow: hidden;
     width: 100%;
-}
-
-.collection {
+    padding: 40px 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;
-    width: 100%;
 }
 
 .mySwiper {
     overflow: visible !important;
-    width: 320px !important;
+    width: 240px !important;
     margin: 0 auto;
     padding: 20px 0;
 }
+
+.collection {
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+    width: 100%;
+}
+
 
 .swiper-slide {
     width: 15rem !important;
