@@ -1,23 +1,92 @@
 @import "swiper-bundle.min.css";
+@import "../css/main.css";
+@import "../css/color.css";
+@import "../css/fonts.css";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
+/********* Structure globale **********/
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+p {
     font-family: "Open Sans", sans-serif;
 }
 
-body {
-    background-color: #f9f9f9;
+.btn {
+    border-radius: 50px;
 }
+
+.btn-orange {
+    background-color: var(--color-secondary);
+    color: white;
+    border-width: 2px;
+    font-weight: bold;
+}
+
+.btn-orange:hover {
+    background-color: transparent;
+    color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    border-width: 2px;
+    font-weight: bold;
+}
+
+/********* Sections **********/
+
+/**** Header ****/
+
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+nav {
+    background-color: transparent;
+}
+
+nav a {
+    color: white !important;
+    transition: color 0.4s ease;
+    font-weight: bold;
+}
+
+nav .btn-orange {
+    color: white !important;
+}
+
+header.scrolled nav {
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+header.scrolled nav a {
+    color: var(--color-primary) !important;
+}
+
+header.scrolled nav .btn-orange {
+    color: white !important;
+}
+
+#hero-header {
+    background: linear-gradient(90deg, #ffffff, var(--color-primary));
+}
+
+/**** Carousel ****/
 
 .carousel-container {
-    overflow: hidden;  /* ✅ Masque ce qui dépasse de la colonne */
+    overflow: hidden; 
     width: 100%;
-    padding: 20px 0;
 }
 
-/* ✅ Section parente : masque ce qui dépasse vraiment */
 .collection {
     display: flex;
     justify-content: center;
@@ -26,7 +95,6 @@ body {
     width: 100%;
 }
 
-/* ✅ Le swiper lui-même laisse les slides latérales visibles */
 .mySwiper {
     overflow: visible !important;
     width: 320px !important;
@@ -34,27 +102,23 @@ body {
     padding: 20px 0;
 }
 
-/* ✅ Chaque slide : largeur fixe via Swiper */
 .swiper-slide {
-    width: 20rem !important;
+    width: 15rem !important;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-
-/* ✅ La carte elle-même : plus de width fixe, elle suit le swiper-slide */
 .collection .content {
-    height: 28rem;
-    width: 100%;
+    height: 24rem;
+    width: 18rem;
     background-color: white;
     border: .1rem solid rgba(245, 245, 245, 0.1);
-    border-radius: .7rem;
+    border-radius: 1rem;
     overflow: hidden;
 }
 
 .content img {
     width: 100%;
-    border-bottom-left-radius: .6rem;
-    border-bottom-right-radius: .6rem;
+    height: 50%;
 }
 
 .text-content {
@@ -62,12 +126,13 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: .2rem;
+    padding: .2rem;
 }
 
 .text-content h3 {
     font-size: 1.7rem;
     font-weight: 500;
+    padding: .2rem;
 }
 
 .text-content p {
@@ -75,4 +140,55 @@ body {
     font-size: .8rem;
     font-weight: 400;
     text-align: center;
+    padding: .2rem;
+}
+
+.swiper-pagination-bullet {
+    background-color: var(--color-bg-beige);
+    opacity: 0.4;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: var(--color-secondary);
+    opacity: 1;
+}
+
+/**** A propow ****/
+
+#qui-sommes-nous {
+    background-color: white;
+}
+
+/**** Chiffres clés ****/
+
+#chiffres-cles {
+    background-color: var(--color-bg-beige);
+    color: var(--color-primary);
+}
+
+#a-propos {
+    background-color: white;
+}
+
+/**** Contact ****/
+
+#contact {
+    min-height: 50vh;
+    align-items: center;
+}
+
+#contact input, #contact textarea {
+    background-color: var(--color-bg-beige);
+    color: var(--color-primary);
+}
+
+/**** Footer ****/
+
+
+footer {
+    background-color: var(--color-primary);
+}
+
+footer h6 {
+    color: var(--color-secondary);
 }

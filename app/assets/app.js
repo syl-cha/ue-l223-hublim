@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         effect: "coverflow",
         grabCursor: true,
         centeredSlides: true,
-        slidesPerView: 3,     // ✅ Toujours 3, même sur mobile si tu veux
+        slidesPerView: 3,
         initialSlide: 1,
         loop: true,
         loopedSlides: 3,      // ✅ Exactement 3 copies virtuelles
@@ -48,4 +48,18 @@ document.addEventListener('DOMContentLoaded', () => {
             disableOnInteraction: false,
         }
     });
+
+
+    window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        
+        if (window.scrollY > 0) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    });
+      
+
+
 });

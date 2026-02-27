@@ -1,6 +1,3 @@
-body {
-    background-color: var(--color-bg-beige);
-}
 /* Temporary message styles */
 body .temp {
     position: fixed;
