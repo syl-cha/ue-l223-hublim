@@ -14,7 +14,7 @@
     box-sizing: border-box;
 }
 
-p {
+p, a {
     font-family: "Open Sans", sans-serif;
 }
 
@@ -37,6 +37,9 @@ p {
     font-weight: bold;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', 'sans-serif';
+}
 /********* Sections **********/
 
 /**** Header ****/
@@ -78,6 +81,10 @@ header.scrolled nav .btn-orange {
 
 #hero-header {
     background: linear-gradient(90deg, #ffffff, var(--color-primary));
+}
+
+body:not(.home-page) {
+    padding-top: 80px;
 }
 
 /**** Carousel ****/
@@ -159,7 +166,7 @@ header.scrolled nav .btn-orange {
     opacity: 1;
 }
 
-/**** A propow ****/
+/**** A propos ****/
 
 #qui-sommes-nous {
     background-color: white;
@@ -197,4 +204,254 @@ footer {
 
 footer h6 {
     color: var(--color-secondary);
+}
+
+/********* Affichage des annonces **********/
+
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+}
+
+/* Ligne 1 : 4 - 4 - 4 */
+.bento-item:nth-child(9n+1) { grid-column: span 4; }
+.bento-item:nth-child(9n+2) { grid-column: span 3; }
+.bento-item:nth-child(9n+3) { grid-column: span 5; }
+
+/* Ligne 2 : 3 - 5 - 4 */
+.bento-item:nth-child(9n+4) { grid-column: span 3; }
+.bento-item:nth-child(9n+5) { grid-column: span 5; }
+.bento-item:nth-child(9n+6) { grid-column: span 4; }
+
+/* Ligne 3 : 5 - 4 - 3 */
+.bento-item:nth-child(9n+7) { grid-column: span 5; }
+.bento-item:nth-child(9n+8) { grid-column: span 4; }
+.bento-item:nth-child(9n+9) { grid-column: span 3; }
+
+.bento-item {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 200px;
+    position: relative;
+}
+
+/*
+.bento-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+}*/
+
+.bento-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-secondary);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: 2;
+}
+
+.bento-item:hover .bento-overlay {
+    opacity: 1;
+}
+
+.bento-overlay a,
+.bento-overlay span {
+    color: white !important;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.overlay-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.overlay-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.overlay-action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.overlay-action-item small {
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.btn-action-overlay {
+    width: 60px;
+    height: 60px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    transition: background 0.15s;
+}
+
+.btn-action-overlay:hover {
+    transform: scale(1.4);
+}
+
+.overlay-link {
+    color: white !important;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: opacity 0.15s;
+}
+
+.overlay-link:hover {
+    text-decoration: underline;
+}
+
+.bento-item:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+}
+
+.bento-card {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.bento-card-content {
+    flex: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.bento-card-image {
+    width: 160px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.bento-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bento-card-no-image .bento-card-content {
+    width: 100%;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #6b7280;
+    font-size: 18px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.user-meta {
+    line-height: 1.3;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #111;
+}
+
+.user-sub {
+    font-size: 0.75rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.card-description {
+    font-size: 0.82rem;
+    color: #374151;
+    line-height: 1.5;
+    flex: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
+.card-footer-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.btn-action {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #d1d5db;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #6b7280;
+    transition: background 0.15s;
+}
+
+.btn-action:hover {
+    background: #f3f4f6;
+    color: #111;
+}
+
+@media (max-width: 900px) {
+    .bento-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .bento-item:nth-child(n) { grid-column: span 1; }
+    .bento-card-image { width: 120px; }
+}
+
+@media (max-width: 600px) {
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .bento-item:nth-child(n) { grid-column: span 1; }
+    .bento-card { flex-direction: column; }
+    .bento-card-image { width: 100%; height: 150px; }
 }

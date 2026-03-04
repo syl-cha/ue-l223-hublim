@@ -80,6 +80,8 @@ class Card
         $this->fanUsers = new ArrayCollection();
         $this->targetStatus = new ArrayCollection();
         $this->targetStudyFields = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->state = CardState::PUBLISHED;
     }
 
     public function getId(): ?int

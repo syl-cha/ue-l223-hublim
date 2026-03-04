@@ -51,15 +51,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     window.addEventListener('scroll', () => {
-        const header = document.querySelector('header');
+    const header = document.querySelector('header');
         
         if (window.scrollY > 0) {
             header.classList.add('scrolled');
         } else {
-            header.classList.remove('scrolled');
+            // Sur la home, on enlève ; sur les autres pages, on garde
+            if (!document.body.classList.contains('home-page')) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
     });
-      
 
+    // Au chargement de la page
+    if (!document.body.classList.contains('home-page')) {
+        document.querySelector('header').classList.add('scrolled');
+    }
 
 });

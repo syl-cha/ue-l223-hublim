@@ -20,14 +20,14 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class="d-flex flex-column min-vh-100">
+    <body class="d-flex flex-column min-vh-100h {% block body_class %}{% endblock %}">
     <header>
         {% block header %}
             {% include 'partials/_header.html.twig' %}
         {% endblock %}
     </header>
 
-    <main class="flex-grow-1">
+    <main class="{% if app.request.attributes.get('_route') != 'app_home' %}pt-navbar{% endif %}">
         {% block body %}{% endblock %}
     </main>
 
