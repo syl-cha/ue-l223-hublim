@@ -1,0 +1,74 @@
+<?php
+
+namespace App\DataFixtures;
+
+use App\Entity\User;
+use App\Entity\Status;
+use App\Entity\StudyField;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker\Factory;
+
+class UserFixtures extends Fixture
+{
+    private $hasher;
+    public function __construct(UserPasswordHasherInterface $hasher) { 
+      $this->hasher = $hasher; 
+    }
+
+    public function load(ObjectManager $manager): void
+    {
+        $faker = Factory::create('fr_FR');
+
+        // Récupérer le statut et les filières
+        $status = $this->getReference('status_student');
+
+        $studyFields = [];
+        $index = 0;
+        while (true) {
+            try {
+                $studyFields[] = $this->getReference('studyfield_' . $index, StudyField::class);
+                $index++;
+            } catch (\OutOfBoundsException $e) {
+                break;
+            }
+        }
+
+        //On crée les utilisateurs
+        for ($i = 0; $i < 10; $i++){
+            //On définit le nom d'abord pour pouvoir réutiliser les variables dans l'email
+            $firstName = $faker->firstName();
+            $lastName  = $faker->lastName();
+
+            $user = new User();
+            $user->setFirstName($firstName);
+            $user->setLastName($lastName);
+            $user->setEmail(strtolower($firstName . '.' . $lastName) . '@etu.unilim.fr');
+            $user->setPassword($this->hasher->hashPassword($user, 'password'));
+            $user->setStatus($status);
+            $user->setStudyField($faker->randomElement($studyFields));
+
+            $user->setCreatedAt(new \DateTimeImmutable());
+            $user->setIsVerified(true);
+            $user->setTwoFactorSecret('none');
+
+            $manager->persist($user);
+
+            // Stocker pour CardFixtures
+            $this->addReference('user_' . $i, $user);
+        }
+
+        $manager->flush();
+    }
+
+    //On définit l'ordre d'executiondes fixtures
+    public function getDependencies(): array
+    {
+        return [
+            StatusFixtures::class,
+            StudyFieldFixtures::class,
+        ];
+    }
+}
+
