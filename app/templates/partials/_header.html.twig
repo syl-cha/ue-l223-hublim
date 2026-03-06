@@ -10,6 +10,15 @@
     </ul>
 
     <div>
-        <a href="{{path('app_login')}}" class="btn btn-orange">Connexion / Inscription</a>
+        {# Utilisateur connecté → Bouton Déconnexion #}
+        {% if app.user %}
+            <span>
+                <strong>{{ app.user.firstName }} {{app.user.lastName|upper}}</strong>
+            </span>
+            <a href="{{path('app_logout')}}" class="btn btn-orange">Déconnexion</a>
+        {# Utilisateur non connecté → Bouton Connexion/inscription #}
+        {% else %}
+            <a href="{{path('app_login')}}" class="btn btn-orange">Accéder aux cartes</a>
+        {% endif %}
     </div>
 </nav>

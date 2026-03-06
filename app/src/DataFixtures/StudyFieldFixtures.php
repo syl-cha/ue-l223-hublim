@@ -14,6 +14,7 @@ class StudyFieldFixtures extends Fixture
       $filiereData = json_decode(file_get_contents(__DIR__ . '/data/filieres.json'), true);
 
       $filieres = [];
+      $index = 0;
 
       foreach ($filiereData as $f){
         $studyField = new StudyField();
@@ -25,6 +26,8 @@ class StudyFieldFixtures extends Fixture
 
         // Pour pouvoir les réutiliser
         $this->addReference('studyfield_' . $index, $studyField);
+        $index ++;
+
         }
 
         $manager->flush();

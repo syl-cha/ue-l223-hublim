@@ -12,7 +12,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class CardFixtures extends Fixture
+class CardFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -68,8 +68,8 @@ class CardFixtures extends Fixture
     public function getDependencies(): array
     {
         return [
-            UserFixtures::class,
             CategoryFixtures::class,
+            UserFixtures::class
         ];
     }
 }

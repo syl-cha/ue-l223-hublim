@@ -6,11 +6,12 @@ use App\Entity\User;
 use App\Entity\Status;
 use App\Entity\StudyField;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Faker\Factory;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private $hasher;
     public function __construct(UserPasswordHasherInterface $hasher) { 
@@ -22,7 +23,9 @@ class UserFixtures extends Fixture
         $faker = Factory::create('fr_FR');
 
         // Récupérer le statut et les filières
-        $status = $this->getReference('status_student');
+        $statusStudent = $this->getReference('status_student', Status::class);
+        $statusTeacher = $this->getReference('status_teacher', Status::class);
+        $statusStaff = $this->getReference('status_staff',Status::class);
 
         $studyFields = [];
         $index = 0;
@@ -35,6 +38,21 @@ class UserFixtures extends Fixture
             }
         }
 
+        // création d'un admin
+        $admin = new User();
+        $admin->setEmail('admin@test.com');
+        $admin->setFirstName('Admin');
+        $admin->setLastName('Système');
+        $admin->setPassword($this->hasher->hashPassword($admin, 'admin123'));
+        $admin->setStudyField(null);
+        $admin->setStatus($statusStaff);
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setCreatedAt(new \DateTimeImmutable());
+        $admin->setIsVerified(true);
+        $admin->setTwoFactorSecret('none');
+
+        $manager->persist($admin);
+
         //On crée les utilisateurs
         for ($i = 0; $i < 10; $i++){
             //On définit le nom d'abord pour pouvoir réutiliser les variables dans l'email
@@ -46,7 +64,7 @@ class UserFixtures extends Fixture
             $user->setLastName($lastName);
             $user->setEmail(strtolower($firstName . '.' . $lastName) . '@etu.unilim.fr');
             $user->setPassword($this->hasher->hashPassword($user, 'password'));
-            $user->setStatus($status);
+            $user->setStatus($statusStudent);
             $user->setStudyField($faker->randomElement($studyFields));
 
             $user->setCreatedAt(new \DateTimeImmutable());
@@ -57,6 +75,8 @@ class UserFixtures extends Fixture
 
             // Stocker pour CardFixtures
             $this->addReference('user_' . $i, $user);
+
+            $manager->persist($user);
         }
 
         $manager->flush();
