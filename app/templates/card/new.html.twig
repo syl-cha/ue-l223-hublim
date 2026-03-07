@@ -1,11 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Card{% endblock %}
+{% block title %}Poster une annonce{% endblock %}
 
 {% block body %}
-    <h1>Create new Card</h1>
+<div class="announce-page py-5">
+    <div class="container">
+        <div class="announce-hero shadow-sm mb-4">
+            <div>
+                <span class="announce-badge">Nouvelle annonce</span>
+                <h1 class="mt-3 mb-3">Publie ton annonce en quelques clics</h1>
+                <p class="mb-0 text-muted">
+                    Présente ton besoin ou ton projet en quelques mots. Une annonce bien rédigée reçoit plus de réponses pertinentes.
+                </p>
+            </div>
+        </div>
 
-    {{ include('card/_form.html.twig') }}
+        <div class="announce-shell shadow-sm">
+            <div class="announce-shell-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h2 class="mb-1">Détails de l'annonce</h2>
+                    <p class="text-muted mb-0">Complète les informations ci-dessous pour mettre ton annonce en ligne.</p>
+                </div>
+                <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4">
+                    Retour aux annonces
+                </a>
+            </div>
 
-    <a href="{{ path('app_card_index') }}">back to list</a>
+            {{ include('card/_form.html.twig', {'button_label': "Publier l'annonce"}) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdown = document.querySelector('[data-studyfield-dropdown]');
+
+            if (!dropdown) {
+                return;
+            }
+
+            const toggle = dropdown.querySelector('.studyfield-dropdown-toggle');
+
+            toggle.addEventListener('click', function () {
+                dropdown.classList.toggle('open');
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!dropdown.contains(event.target)) {
+                    dropdown.classList.remove('open');
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -6,10 +6,10 @@ use App\Entity\Card;
 use App\Entity\Category;
 use App\Entity\Status;
 use App\Entity\StudyField;
-use App\Enum\CardState;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,25 +18,55 @@ class CardType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('description')
+            ->add('title', TextType::class, [
+                'label' => "Titre de l'annonce",
+                'attr' => [
+                    'class' => 'form-control form-control-lg',
+                    'placeholder' => 'Ex. Recherche une colocation dans le centre de Limoges',
+                ],
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'attr' => [
+                    'class' => 'form-control',
+                    'rows' => 7,
+                    'placeholder' => 'Décris clairement ton besoin ou ton offre',
+                ],
+            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
+                'label' => 'Catégorie',
+                'placeholder' => 'Choisir une catégorie',
+                'attr' => [
+                    'class' => 'form-select',
+                ],
             ])
             ->add('targetStatus', EntityType::class, [
                 'class' => Status::class,
                 'choice_label' => function (Status $status) {
-                    return $status->getLabel()->value; // Récupère la valeur de l'Enum
+                    return match($status->getLabel()->value) {
+                        'student' => 'Étudiant',
+                        'teacher' => 'Enseignant',
+                        'staff' => 'Personnel'
+                    };
                 },
+                'label' => "À qui s'adresse cette annonce ?",
                 'multiple' => true,
                 'expanded' => true,
+                'row_attr' => [
+                    'class' => 'announce-check-group',
+                ],
             ])
             ->add('targetStudyFields', EntityType::class, [
                 'class' => StudyField::class,
                 'choice_label' => 'name',
+                'label' => 'Filières concernées',
                 'multiple' => true,
                 'expanded' => true,
+                'row_attr' => [
+                    'class' => 'announce-check-group',
+                ],
             ])
         ;
     }
