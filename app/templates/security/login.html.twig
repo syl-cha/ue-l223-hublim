@@ -17,6 +17,13 @@
                     </div>
                 {% endif %}
 
+                {# Affichage des messages flash de succès #}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success text-center mb-4" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+
                 <h1 class="h3 mb-3 font-weight-normal">Entrez vos identifiants de connexion</h1>
                 <label for="inputEmail">Email</label>
                 <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
