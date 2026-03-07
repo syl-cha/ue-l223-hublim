@@ -1,4 +1,93 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'announce-form'}}) }}
+    {% if not form.vars.valid %}
+        <div class="alert alert-danger announce-alert" role="alert">
+            Merci de corriger les champs en erreur avant de publier l'annonce.
+        </div>
+    {% endif %}
+
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="announce-card-section">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title) }}
+                {{ form_errors(form.title) }}
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="announce-card-section">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="announce-card-section h-100">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category) }}
+                {{ form_errors(form.category) }}
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="announce-card-section h-100 announce-side-note">
+                <h3>Avant de publier</h3>
+                <p class="mb-2">Vérifie que ton annonce :</p>
+                <ul class="mb-0">
+                    <li>utilise un titre compréhensible en un coup d'œil ;</li>
+                    <li>contient les infos essentielles ;</li>
+                    <li>cible les bons destinataires.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="announce-card-section">
+                <div class="announce-group-title">{{ form_label(form.targetStatus) }}</div>
+                <div class="announce-choice-grid">
+                    {% for child in form.targetStatus %}
+                        <label class="announce-choice-card">
+                            {{ form_widget(child) }}
+                            <span>{{ child.vars.label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {{ form_errors(form.targetStatus) }}
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="announce-card-section">
+                <div class="announce-group-title">{{ form_label(form.targetStudyFields) }}</div>
+
+                <div class="studyfield-dropdown" data-studyfield-dropdown>
+                    <button type="button" class="studyfield-dropdown-toggle">
+                        <span class="studyfield-dropdown-text">Sélectionner une ou plusieurs filières</span>
+                        <span class="studyfield-dropdown-arrow">▾</span>
+                    </button>
+
+                    <div class="studyfield-dropdown-menu">
+                        <div class="studyfield-dropdown-list">
+                            {% for child in form.targetStudyFields %}
+                                <label class="studyfield-dropdown-item">
+                                    {{ form_widget(child) }}
+                                    <span>{{ child.vars.label }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {{ form_errors(form.targetStudyFields) }}
+            </div>
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+
+    <div class="announce-actions d-flex justify-content-end gap-3 mt-4">
+        <a href="{{ path('app_card_index') }}" class="btn btn-light rounded-pill px-4">Annuler</a>
+        <button class="btn btn-orange rounded-pill px-4">{{ button_label|default('Enregistrer') }}</button>
+    </div>
 {{ form_end(form) }}
