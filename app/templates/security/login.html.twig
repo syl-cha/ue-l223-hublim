@@ -23,7 +23,7 @@
                 {# Affichage des messages flash de succès #}
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success text-center mb-4" role="alert">
-                        {{ message }}
+                        {{ message|raw }}
                     </div>
                 {% endfor %}
 

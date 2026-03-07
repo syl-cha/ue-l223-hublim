@@ -68,7 +68,8 @@ class RegistrationController extends AbstractController
       // return $security->login($user, AppCustomAuthenticator::class, 'main');
 
       // On prévient l'utilisateur qu'il doit aller voir ses mails
-      $this->addFlash('success', 'Votre compte a été créé avec succès ! Veuillez vérifier votre boîte mail (et vos spams) pour activer votre compte avant de vous connecter.');
+      $this->addFlash('success', "Félicitations ! Votre compte a été créé avec succès !<br> Veuillez vérifier votre boîte mail pour l'adresse <strong>" . $user->getEmail() .
+        "</strong> pour activer votre compte avant de vous connecter.");
 
       // On le redirige vers la page de connexion 
       return $this->redirectToRoute('app_login');
