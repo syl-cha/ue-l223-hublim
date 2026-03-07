@@ -8,7 +8,10 @@
         <div class="col-md-6">
             <form method="post">
                 {% if error %}
-                    <div class="alert alert-danger">Email ou mot de passe incorrect. Veuillez réessayer.</div>
+                    <div class="alert alert-danger">
+                    {# gestion fine du message d'erreur (pour le cas où l'utilisateur n'a pas vérifié son email) #}
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
                 {% endif %}
 
                 {% if app.user %}
