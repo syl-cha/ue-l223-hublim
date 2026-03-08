@@ -8,7 +8,10 @@
         <div class="col-md-6">
             <form method="post">
                 {% if error %}
-                    <div class="alert alert-danger">Email ou mot de passe incorrect. Veuillez réessayer.</div>
+                    <div class="alert alert-danger">
+                    {# gestion fine du message d'erreur (pour le cas où l'utilisateur n'a pas vérifié son email) #}
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
                 {% endif %}
 
                 {% if app.user %}
@@ -16,6 +19,13 @@
                         Vous êtes connecté en tant que : {{ app.user.userIdentifier }}, <a href="{{ logout_path() }}">Déconnexion</a>
                     </div>
                 {% endif %}
+
+                {# Affichage des messages flash de succès #}
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success text-center mb-4" role="alert">
+                        {{ message|raw }}
+                    </div>
+                {% endfor %}
 
                 <h1 class="h3 mb-3 font-weight-normal">Entrez vos identifiants de connexion</h1>
                 <label for="inputEmail">Email</label>
@@ -35,7 +45,7 @@
                 </button>
 
                 <p class="text-center mt-2"> Pas encore de compte ? 
-                    <a href="{{path('app_registration')}}" class="text-decoration-none fw-bold" >Inscrivez vous ici</a>
+                    <a href="{{path('app_register')}}" class="text-decoration-none fw-bold" >Inscrivez vous ici</a>
                 </p>
             </form>
         </div>

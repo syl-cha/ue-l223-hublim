@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Installation et activation des extensions PHP (pdo_mysql au lieu de pdo_pgsql)

@@ -2,27 +2,30 @@
 
 namespace App\Form;
 
-use App\Entity\StudyField;
 use App\Entity\User;
+use App\Entity\StudyField;
 use App\Enum\StatusLabel;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
-  public function buildForm(FormBuilderInterface $builder, array $options): void
-  {
-    $builder
-      ->add('firstName', TextType::class, [
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('firstName', TextType::class, [
         'label' => 'Prénom',
         'constraints' => [
           new NotBlank(message: 'Veuillez saisir votre prénom.'),
@@ -85,13 +88,13 @@ class RegistrationFormType extends AbstractType
         'required' => false, // Deviendra obligatoire dynamiquement ou via validation personnalisée, géré en JS
         'placeholder' => 'Sélectionnez votre filière...',
       ])
-    ;
-  }
+        ;
+    }
 
-  public function configureOptions(OptionsResolver $resolver): void
-  {
-    $resolver->setDefaults([
-      'data_class' => User::class,
-    ]);
-  }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+        ]);
+    }
 }
