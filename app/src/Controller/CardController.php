@@ -33,6 +33,23 @@ final class CardController extends AbstractController
         ]);
     }
 
+    #[Route('/search', name: 'card_search', methods: ['GET'])]
+    public function search(Request $request, CardRepository $cardRepository): Response 
+    {
+        $recherche = $request->query->get('query', '');
+        
+        if (!empty(trim($recherche))) {
+            $cards = $cardRepository->searchFunction($recherche);
+        } else {
+            $cards = $cardRepository->findAll();
+        }
+        
+        return $this->render('card/search.html.twig', [
+            'cards' => $cards,
+            'query' => $recherche,
+        ]);
+    }
+
     #[Route('/new', name: 'app_card_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container py-5">
+        <h1 class="fw-bold text-center text-primary raleway-500">Recherche de cartes</h1>
+        <div class="d-flex justify-content-end align-items-center pt-3 px-2 mb-4">
+
+            <form method="get" action="{{ path('card_search') }}">
+                <div class="input-group input-group-sm" style="width: 250px">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        class="form-control" 
+                        placeholder="Rechercher sur HubLim..." 
+                        autofocus
+                        style="border:none; outline:none; box-shadow: none; background-color: #e7e6e6;"
+                    >
+                    <button class="btn btn-primary" type="submit" style="background-color: #223382; border:none">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {# message de résultat #}
+        {% if query %}
+            <div class="alert alert-primary">
+                Résultats pour <strong>"{{ query }}"</strong> : {{ cards|length }} carte(s) trouvée(s)
+            </div>
+        {% endif %}
+
+        <div class="bento-grid">
+            {% for card in cards %}
+                <div class="bento-item shadow-sm">
+
+                    <div class="bento-overlay">
+                        <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
+                        <div class="overlay-actions">
+                            <div class="overlay-action-item">
+                                <span class="btn-action-overlay" title="Favori">⭐</span>
+                                <small>Favori</small>
+                            </div>
+                            <div class="overlay-action-item">
+                                <span class="btn-action-overlay" title="Partager">↪</span>
+                                <small>Partager</small>
+                            </div>
+                            <div class="overlay-action-item">
+                                <span class="btn-action-overlay" title="Contacter">✉</span>
+                                <small>Contacter</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bento-card">
+                        <div class="bento-card-content">
+                            <div>
+                                <div class="user-info">
+                                    <div class="user-avatar">👤</div>
+                                    <div class="user-meta">
+                                        <div class="user-name">
+                                            {{ card.user.email|split('@')[0] }}
+                                            {% if card.category %}
+                                                <span class="text-muted fw-normal"> | <em>{{ card.category.name }}</em></span>
+                                            {% endif %}
+                                        </div>
+                                        <div class="user-sub">
+                                            <span>{{ card.createdAt is defined ? card.createdAt|date('d/m/Y H:i') : 'Date et heure' }}</span>
+                                            <span>👁 {{ card.views is defined ? card.views : 0 }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="card-description">{{ card.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-5">
+            <a href="{{ path('app_card_index') }}" class="btn" style="background-color: #223382; color: white"> <i class="bi bi-arrow-left"></i> Retour à la liste complète</a>
+        </div>
+    </div>
+  
+
+
+{% endblock %}
