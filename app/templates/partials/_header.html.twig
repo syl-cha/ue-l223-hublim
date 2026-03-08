@@ -1,6 +1,13 @@
 <nav class="d-flex justify-content-around align-items-center py-3">
-    <div>
-        <img src="{{ asset('svg/logo_hublim_name.svg') }}" alt="Logo HubLim" style="width: 120px;" />
+    <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 10px;">
+        <div>
+            <img src="{{ asset('svg/logo_hublim_name.svg') }}" alt="Logo HubLim" style="width: 120px;" />
+        </div>
+        {% if app.user %}
+            <div>
+                Bonjour <strong>{{ app.user.firstName }} {{app.user.lastName|upper}}</strong>
+            </div>
+        {% endif %}
     </div>
 
     <ul class="d-flex list-unstyled mb-0">
@@ -12,9 +19,6 @@
     <div>
         {# Utilisateur connecté → Bouton Déconnexion #}
         {% if app.user %}
-            <span>
-                <strong>{{ app.user.firstName }} {{app.user.lastName|upper}}</strong>
-            </span>
             <a href="{{path('app_logout')}}" class="btn btn-orange">Déconnexion</a>
         {# Utilisateur non connecté → Bouton Connexion/inscription #}
         {% else %}

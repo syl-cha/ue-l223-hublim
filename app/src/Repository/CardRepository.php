@@ -16,6 +16,24 @@ class CardRepository extends ServiceEntityRepository
         parent::__construct($registry, Card::class);
     }
 
+    /** 
+     * Fonction de recherche parmis les cartes (titres, contenu, catégorie)
+     * 
+     * @param string $recherche mot/chaine de caractère à rechercher
+     * @return array tableau des cartes contenant la recherche
+     */
+
+    public function searchFunction(string $recherche):array {
+        return 
+            $this->createQueryBuilder('card') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
+            ->leftJoin('card.category', 'c') //Jointure sur category
+            ->where('card.title LIKE :recherche')
+            ->orWhere('card.description LIKE :recherche')
+            ->setParameter('recherche', '%' . $recherche . '%')
+            ->getQuery() // transforme la requête en objet Query, prêt à être éxecuté
+            ->getResult(); //envoie la requête
+    }
+
 //    /**
 //     * @return Card[] Returns an array of Card objects
 //     */
