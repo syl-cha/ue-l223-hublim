@@ -1,42 +1,122 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Card{% endblock %}
+{% block title %}{{ card.title }} - HubLim{% endblock %}
 
 {% block body %}
-    <h1>Card</h1>
+<div class="container px-4 py-5">
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ card.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
-                <td>{{ card.title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ card.description }}</td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td>{{ card.state.value }}</td>
-            </tr>
-            <tr>
-                <th>CreatedAt</th>
-                <td>{{ card.createdAt ? card.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>UpdatedAt</th>
-                <td>{{ card.updatedAt ? card.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4 mb-4">
+        <i class="bi bi-arrow-left"></i> Retour aux annonces
+    </a>
 
-    <a href="{{ path('app_card_index') }}">back to list</a>
+    <div class="row g-4">
+        {# Colonne principale #}
+        <div class="col-lg-8">
+            <div class="shadow-sm rounded-4 p-4 bg-white">
 
-    <a href="{{ path('app_card_edit', {'id': card.id}) }}">edit</a>
+                {# En-tête : auteur + date #}
+                <div class="d-flex align-items-center mb-3">
+                    <div class="user-avatar me-3" style="width:48px; height:48px; font-size:22px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-bold">{{ card.user.firstName }} {{ card.user.lastName }}</div>
+                        <div class="text-muted" style="font-size:0.82rem;">
+                            Publiée le {{ card.createdAt|date('d/m/Y') }} à {{ card.createdAt|date('H:i') }}
+                            {% if card.updatedAt %}
+                                | Modifiée le {{ card.updatedAt|date('d/m/Y') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
 
-    {{ include('card/_delete_form.html.twig') }}
+                {# Titre #}
+                <h1 class="fw-bold text-primary raleway-500 mb-3" style="font-size:1.8rem;">{{ card.title }}</h1>
+
+                {# Description #}
+                <div style="font-size:1rem; line-height:1.8; color:#374151;">
+                    {{ card.description|nl2br }}
+                </div>
+            </div>
+        </div>
+
+        {# Colonne latérale #}
+        <div class="col-lg-4">
+            {# Infos #}
+            <div class="shadow-sm rounded-4 p-4 bg-white mb-4">
+                <h5 class="fw-bold text-primary raleway-500 mb-3">Informations</h5>
+
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-tag-fill me-2 text-secondary"></i>
+                    <div>
+                        <small class="text-muted d-block">Catégorie</small>
+                        <span class="fw-semibold">{{ card.category ? card.category.name : 'Non définie' }}</span>
+                    </div>
+                </div>
+
+                {% if card.targetStatus|length > 0 %}
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="bi bi-mortarboard-fill me-2 text-secondary mt-1"></i>
+                        <div>
+                            <small class="text-muted d-block">Statuts ciblés</small>
+                            {% for status in card.targetStatus %}
+                                <span class="badge rounded-pill" style="background-color: var(--color-primary);">{{ status.label.value }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if card.targetStudyFields|length > 0 %}
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="bi bi-book-fill me-2 text-secondary mt-1"></i>
+                        <div>
+                            <small class="text-muted d-block">Filières ciblées</small>
+                            {% for field in card.targetStudyFields %}
+                                <span class="badge rounded-pill" style="background-color: var(--color-ternary); color: var(--color-primary);">{{ field.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex align-items-center mb-3">
+                    <span class="me-2">⭐</span>
+                    <div>
+                        <small class="text-muted d-block">Favoris</small>
+                        <span class="fw-semibold">{{ card.fanUsers|length }} personne{{ card.fanUsers|length > 1 ? 's' : '' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Actions #}
+            <div class="shadow-sm rounded-4 p-4 bg-white mb-4">
+                <h5 class="fw-bold text-primary raleway-500 mb-3">Actions</h5>
+                <div class="d-grid gap-2">
+                    <a href="mailto:{{ card.user.email }}" class="btn btn-orange rounded-pill">
+                        <i class="bi bi-envelope-fill"></i> Contacter l'auteur
+                    </a>
+                </div>
+            </div>
+
+            {# Auteur #}
+            <div class="shadow-sm rounded-4 p-4 bg-white">
+                <h5 class="fw-bold text-primary raleway-500 mb-3">A propos de l'auteur</h5>
+                <div class="text-center">
+                    <div class="user-avatar mx-auto mb-2" style="width:64px; height:64px; font-size:28px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="fw-bold">{{ card.user.firstName }} {{ card.user.lastName }}</div>
+                    {% if card.user.status %}
+                        <small class="text-muted">{{ card.user.status.label.value }}</small>
+                    {% endif %}
+                    {% if card.user.studyField %}
+                        <br><small class="text-muted">{{ card.user.studyField.name }}</small>
+                    {% endif %}
+                    <div class="text-muted mt-1" style="font-size:0.78rem;">
+                        Membre depuis {{ card.user.createdAt|date('m/Y') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
