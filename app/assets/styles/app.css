@@ -31,7 +31,7 @@ p, a {
 
 .btn-orange:hover {
     background-color: transparent;
-    color: var(--color-secondary);
+    color: var(--color-secondary) !important;
     border-color: var(--color-secondary);
     border-width: 2px;
     font-weight: bold;
