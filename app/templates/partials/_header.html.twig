@@ -1,7 +1,11 @@
 <nav class="d-flex justify-content-around align-items-center py-3">
     <div>
         <div>
-            <a href="{{ path('app_main') }}"><img src="{{ asset('svg/logo_hublim_name.svg') }}" alt="Logo HubLim" style="width: 120px;" /></a>
+            {% if app.user %}
+                <a href="{{ path('app_card_index') }}"><img src="{{ asset('svg/logo_hublim_name.svg') }}" alt="Logo HubLim" style="width: 120px;" /></a>
+            {% else %}
+                <a href="{{ path('app_main') }}"><img src="{{ asset('svg/logo_hublim_name.svg') }}" alt="Logo HubLim" style="width: 120px;" /></a>
+            {% endif %}
         </div>
     </div>
 
