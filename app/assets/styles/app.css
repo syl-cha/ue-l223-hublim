@@ -66,6 +66,17 @@ nav .btn-orange {
     color: white !important;
 }
 
+nav ul a {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+nav ul a:hover {
+    transform: translateY(3px);
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+}
+
 header.scrolled nav {
     background-color: white;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -79,6 +90,10 @@ header.scrolled nav .btn-orange {
     color: white !important;
 }
 
+header.scrolled nav .btn-orange:hover {
+    color: var(--color-secondary) !important;
+}
+
 #hero-header {
     background: linear-gradient(90deg, #ffffff, var(--color-primary));
 }
@@ -86,6 +101,7 @@ header.scrolled nav .btn-orange {
 body:not(.home-page) {
     padding-top: 80px;
 }
+
 
 /**** Carousel ****/
 
