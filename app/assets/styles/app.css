@@ -100,9 +100,14 @@ body:not(.home-page) {
 
 .mySwiper {
     overflow: visible !important;
-    width: 240px !important;
+    width: 100% !important;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 20px 0;
+    padding: 20px 0 40px;
+}
+
+.mySwiper .swiper-pagination {
+    bottom: 10px !important;
 }
 
 .collection {
@@ -116,7 +121,7 @@ body:not(.home-page) {
 
 
 .swiper-slide {
-    width: 15rem !important;
+    width: 18rem !important;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
@@ -154,6 +159,19 @@ body:not(.home-page) {
     font-weight: 400;
     text-align: center;
     padding: .2rem;
+}
+
+.text-content .btn {
+    background-color: var(--color-secondary);
+    color: white;
+    padding: .5rem 1.5rem;
+    border: 2px solid var(--color-secondary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.text-content .btn:hover {
+    background-color: transparent;
+    color: var(--color-secondary);
 }
 
 .swiper-pagination-bullet {

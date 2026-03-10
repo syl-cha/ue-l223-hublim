@@ -12,51 +12,50 @@ import './stimulus_bootstrap.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! ');
 
-// Carousel logic
-document.addEventListener('DOMContentLoaded', () => {
+function initPage() {
+    // Carousel logic
+    const swiperEl = document.querySelector('.mySwiper');
+    if (swiperEl) {
         const swiper = new Swiper(".mySwiper", {
-        effect: "coverflow",
-        grabCursor: true,
-        centeredSlides: true,
-        slidesPerView: 3,
-        initialSlide: 1,
-        loop: true,
-        loopedSlides: 3,      // ✅ Exactement 3 copies virtuelles
-        watchSlidesProgress: true,
-        breakpoints: {
-            0: {
-                slidesPerView: 1,
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            initialSlide: 1,
+            watchSlidesProgress: true,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
             },
-            768: {
-                slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 3,
+                slideShadows: true,
+            },
+            autoplay: {
+                delay: 6000,
+                disableOnInteraction: false,
+            },
+            loop: true,
+        });
+
+        // Clic sur une slide non-active pour y naviguer
+        swiper.on('click', () => {
+            if (swiper.clickedIndex !== undefined && swiper.clickedIndex !== swiper.activeIndex) {
+                swiper.slideTo(swiper.clickedIndex);
             }
-        },
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-            dynamicBullets: true,
-        },
-        coverflowEffect: {
-            rotate: 0,
-            stretch: 0,
-            depth: 100,
-            modifier: 3,
-            slideShadows: true,
-        },
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-        }
-    });
+        });
+    }
 
-
+    // Header scroll
     window.addEventListener('scroll', () => {
-    const header = document.querySelector('header');
-        
+        const header = document.querySelector('header');
+
         if (window.scrollY > 0) {
             header.classList.add('scrolled');
         } else {
-            // Sur la home, on enlève ; sur les autres pages, on garde
             if (!document.body.classList.contains('home-page')) {
                 header.classList.add('scrolled');
             } else {
@@ -69,5 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!document.body.classList.contains('home-page')) {
         document.querySelector('header').classList.add('scrolled');
     }
+}
 
-});
+// Premier chargement
+document.addEventListener('DOMContentLoaded', initPage);
+// Navigations Turbo (après déconnexion, etc.)
+document.addEventListener('turbo:load', initPage);
