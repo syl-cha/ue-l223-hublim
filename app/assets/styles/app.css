@@ -2,9 +2,7 @@
 @import "../css/main.css";
 @import "../css/color.css";
 @import "../css/fonts.css";
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
-
-
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
 
 /********* Structure globale **********/
 
@@ -14,7 +12,8 @@
     box-sizing: border-box;
 }
 
-p, a {
+p,
+a {
     font-family: "Open Sans", sans-serif;
 }
 
@@ -37,8 +36,13 @@ p, a {
     font-weight: bold;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Raleway', 'sans-serif';
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Raleway", "sans-serif";
 }
 /********* Sections **********/
 
@@ -49,7 +53,9 @@ header {
     top: 0;
     width: 100%;
     z-index: 1000;
-    transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    transition:
+        background-color 0.4s ease,
+        box-shadow 0.4s ease;
 }
 
 nav {
@@ -79,7 +85,7 @@ nav ul a:hover {
 
 header.scrolled nav {
     background-color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 header.scrolled nav a {
@@ -102,7 +108,6 @@ body:not(.home-page) {
     padding-top: 80px;
 }
 
-
 /**** Carousel ****/
 
 .carousel-container {
@@ -112,6 +117,20 @@ body:not(.home-page) {
     display: flex;
     justify-content: center;
     align-items: center;
+    -webkit-mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 15%,
+        black 85%,
+        transparent
+    );
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 15%,
+        black 85%,
+        transparent
+    );
 }
 
 .mySwiper {
@@ -135,17 +154,18 @@ body:not(.home-page) {
     width: 100%;
 }
 
-
 .swiper-slide {
     width: 18rem !important;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 
 .collection .content {
     height: 24rem;
     width: 18rem;
     background-color: white;
-    border: .1rem solid rgba(245, 245, 245, 0.1);
+    border: 0.1rem solid rgba(245, 245, 245, 0.1);
     border-radius: 1rem;
     overflow: hidden;
 }
@@ -160,29 +180,31 @@ body:not(.home-page) {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding: .2rem;
+    padding: 0.2rem;
 }
 
 .text-content h3 {
     font-size: 1.7rem;
     font-weight: 500;
-    padding: .2rem;
+    padding: 0.2rem;
 }
 
 .text-content p {
     max-width: 22rem;
-    font-size: .8rem;
+    font-size: 0.8rem;
     font-weight: 400;
     text-align: center;
-    padding: .2rem;
+    padding: 0.2rem;
 }
 
 .text-content .btn {
     background-color: var(--color-secondary);
     color: white;
-    padding: .5rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     border: 2px solid var(--color-secondary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease;
 }
 
 .text-content .btn:hover {
@@ -224,13 +246,13 @@ body:not(.home-page) {
     align-items: center;
 }
 
-#contact input, #contact textarea {
+#contact input,
+#contact textarea {
     background-color: var(--color-bg-beige);
     color: var(--color-primary);
 }
 
 /**** Footer ****/
-
 
 footer {
     background-color: var(--color-primary);
@@ -242,7 +264,6 @@ footer h6 {
 
 /********* Affichage des annonces **********/
 
-
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -250,26 +271,46 @@ footer h6 {
 }
 
 /* Ligne 1 : 4 - 4 - 4 */
-.bento-item:nth-child(9n+1) { grid-column: span 4; }
-.bento-item:nth-child(9n+2) { grid-column: span 3; }
-.bento-item:nth-child(9n+3) { grid-column: span 5; }
+.bento-item:nth-child(9n + 1) {
+    grid-column: span 4;
+}
+.bento-item:nth-child(9n + 2) {
+    grid-column: span 3;
+}
+.bento-item:nth-child(9n + 3) {
+    grid-column: span 5;
+}
 
 /* Ligne 2 : 3 - 5 - 4 */
-.bento-item:nth-child(9n+4) { grid-column: span 3; }
-.bento-item:nth-child(9n+5) { grid-column: span 5; }
-.bento-item:nth-child(9n+6) { grid-column: span 4; }
+.bento-item:nth-child(9n + 4) {
+    grid-column: span 3;
+}
+.bento-item:nth-child(9n + 5) {
+    grid-column: span 5;
+}
+.bento-item:nth-child(9n + 6) {
+    grid-column: span 4;
+}
 
 /* Ligne 3 : 5 - 4 - 3 */
-.bento-item:nth-child(9n+7) { grid-column: span 5; }
-.bento-item:nth-child(9n+8) { grid-column: span 4; }
-.bento-item:nth-child(9n+9) { grid-column: span 3; }
+.bento-item:nth-child(9n + 7) {
+    grid-column: span 5;
+}
+.bento-item:nth-child(9n + 8) {
+    grid-column: span 4;
+}
+.bento-item:nth-child(9n + 9) {
+    grid-column: span 3;
+}
 
 .bento-item {
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid #e5e7eb;
     background: #fff;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
     min-height: 200px;
     position: relative;
 }
@@ -363,7 +404,7 @@ footer h6 {
 }
 
 .bento-item:hover {
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
 }
 
 .bento-card {
@@ -477,17 +518,28 @@ footer h6 {
     .bento-grid {
         grid-template-columns: 1fr 1fr;
     }
-    .bento-item:nth-child(n) { grid-column: span 1; }
-    .bento-card-image { width: 120px; }
+    .bento-item:nth-child(n) {
+        grid-column: span 1;
+    }
+    .bento-card-image {
+        width: 120px;
+    }
 }
 
 @media (max-width: 600px) {
     .bento-grid {
         grid-template-columns: 1fr;
     }
-    .bento-item:nth-child(n) { grid-column: span 1; }
-    .bento-card { flex-direction: column; }
-    .bento-card-image { width: 100%; height: 150px; }
+    .bento-item:nth-child(n) {
+        grid-column: span 1;
+    }
+    .bento-card {
+        flex-direction: column;
+    }
+    .bento-card-image {
+        width: 100%;
+        height: 150px;
+    }
 }
 
 /********* Formulaire poster une annonce **********/
@@ -607,7 +659,10 @@ footer h6 {
     border-radius: 16px;
     background: #fff;
     cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .announce-choice-card:hover {
@@ -677,7 +732,9 @@ footer h6 {
     color: #374151;
     font-weight: 500;
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .studyfield-dropdown-toggle:hover,
@@ -731,7 +788,10 @@ footer h6 {
     border-radius: 12px;
     background: #fffaf5;
     cursor: pointer;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
 }
 
 .studyfield-dropdown-item:hover {
