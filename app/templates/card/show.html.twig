@@ -100,13 +100,12 @@
                     <button class="lb-next" id="lb-next">&#8250;</button>
                 </div>
 
+                {% endif %}
 
                 {% if app.user == card.user %}
                 <a href="{{ path('app_card_images', {id: card.id}) }}" class="btn btn-outline-secondary btn-sm rounded-pill mt-2 mb-3">
                     <i class="bi bi-images"></i> Gérer les photos
                 </a>
-                {% endif %}
-
                 {% endif %}
 
 
