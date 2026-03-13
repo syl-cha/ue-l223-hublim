@@ -44,3 +44,5 @@ tree.txt
 .DS_Store
 Thumbs.db
 ###< IDE & SYSTEME ###
+
+/public/uploads/

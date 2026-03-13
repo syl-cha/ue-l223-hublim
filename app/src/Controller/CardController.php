@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\Card;
 use App\Form\CardType;
 use App\Repository\CardRepository;
+use App\Entity\Image;
+use App\Form\CardImageType;
+use App\Service\ImageUploadService;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,11 +56,12 @@ final class CardController extends AbstractController
 
     #[Route('/new', name: 'app_card_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ImageUploadService $imageUploadService
+    ): Response {
         $card = new Card();
-
-        // On récupère l'utilisateur connecté et on l'associe à la carte
         $card->setUser($this->getUser());
 
         $form = $this->createForm(CardType::class, $card);
@@ -64,8 +69,25 @@ final class CardController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($card);
-            $entityManager->flush();
 
+            // Traitement des images
+            $files = $form->get('imageFiles')->getData();
+            foreach ($files as $position => $file) {
+                try {
+                    $result = $imageUploadService->upload($file);
+
+                    $image = new Image();
+                    $image->setFileName($result['filename']);
+                    $image->setSize($result['size']);
+                    $image->setPosition($card->getImages()->count());
+                    $card->addImage($image);
+                    $entityManager->persist($image);
+                } catch (\InvalidArgumentException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            }
+
+            $entityManager->flush();
             return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -99,6 +121,75 @@ final class CardController extends AbstractController
             'card' => $card,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/{id}/images', name: 'app_card_images', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function editImages(
+        Card $card,
+        Request $request,
+        ImageUploadService $imageUploadService,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Seul l'auteur peut gérer ses images
+        if ($this->getUser() !== $card->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $form = $this->createForm(CardImageType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $files = $form->get('imageFiles')->getData();
+
+            foreach ($files as $position => $file) {
+                try {
+                    $result = $imageUploadService->upload($file);
+
+                    $image = new Image();
+                    $image->setFileName($result['filename']);
+                    $image->setSize($result['size']);
+                    $image->setPosition($card->getImages()->count() + $position);
+                    $card->addImage($image);
+                    $entityManager->persist($image);
+                } catch (\InvalidArgumentException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            }
+
+            $entityManager->flush();
+            $this->addFlash('success', 'Photos ajoutées avec succès !');
+            return $this->redirectToRoute('app_card_images', ['id' => $card->getId()]);
+        }
+
+        return $this->render('card/images.html.twig', [
+            'card' => $card,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/image/{id}/delete', name: 'app_card_image_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function deleteImage(
+        Image $image,
+        Request $request,
+        ImageUploadService $imageUploadService,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $card = $image->getCard();
+
+        if ($this->getUser() !== $card->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($this->isCsrfTokenValid('delete-image-' . $image->getId(), $request->request->get('_token'))) {
+            $imageUploadService->delete($image->getFileName());
+            $entityManager->remove($image);
+            $entityManager->flush();
+            $this->addFlash('success', 'Photo supprimée.');
+        }
+
+        return $this->redirectToRoute('app_card_images', ['id' => $card->getId()]);
     }
 
     #[Route('/{id}', name: 'app_card_delete', methods: ['POST'])]

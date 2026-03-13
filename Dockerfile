@@ -3,6 +3,9 @@ FROM php:8.4-apache
 # 1. Installation des dépendances système (on retire libpq-dev qui était pour PostgreSQL)
 RUN apt-get update && apt-get install -y \
     libicu-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libwebp-dev \
     zip \
     unzip \
     git \
@@ -11,7 +14,8 @@ RUN apt-get update && apt-get install -y \
 
 # 2. Installation et activation des extensions PHP (pdo_mysql au lieu de pdo_pgsql)
 RUN docker-php-ext-configure intl \
-    && docker-php-ext-install pdo pdo_mysql intl opcache
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
+    && docker-php-ext-install pdo pdo_mysql intl opcache gd
 
 # 3. Modification du DocumentRoot d'Apache pour pointer vers le dossier /public de Symfony 8
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public

@@ -56,23 +56,32 @@
 
                 <div class="bento-card">
                     <div class="bento-card-content">
-                        <div>
-                            <div class="user-info">
-                                <div class="user-avatar">👤</div>
-                                <div class="user-meta">
-                                    <div class="user-name">
-                                        {{ card.user.email|split('@')[0] }}
-                                        {% if card.category %}
-                                            <span class="text-muted fw-normal"> | <em>{{ card.category.name }}</em></span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="user-sub">
-                                        <span>{{ card.createdAt is defined ? card.createdAt|date('d/m/Y H:i') : 'Date et heure' }}</span>
-                                        <span>👁 {{ card.views is defined ? card.views : 0 }}</span>
-                                    </div>
+                        {# Header : avatar + nom + date #}
+                        <div class="user-info">
+                            <div class="user-avatar">👤</div>
+                            <div class="user-meta">
+                                <div class="user-name">
+                                    {{ card.user.email|split('@')[0] }}
+                                    {% if card.category %}
+                                        <span class="text-muted fw-normal"> | <em>{{ card.category.name }}</em></span>
+                                    {% endif %}
+                                </div>
+                                <div class="user-sub">
+                                    <span>{{ card.createdAt is defined ? card.createdAt|date('d/m/Y H:i') : 'Date et heure' }}</span>
+                                    <span>👁 {{ card.views is defined ? card.views : 0 }}</span>
                                 </div>
                             </div>
+                        </div>
+
+                        {# Corps : description + image côte à côte #}
+                        <div class="bento-card-body">
                             <p class="card-description">{{ card.description }}</p>
+                            {% if card.coverImage %}
+                            <div class="bento-card-image">
+                                <img src="/uploads/cards/{{ card.coverImage.fileName }}"
+                                    alt="{{ card.coverImage.alt ?? card.title }}">
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

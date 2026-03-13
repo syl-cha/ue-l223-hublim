@@ -7,6 +7,9 @@ use App\Entity\Category;
 use App\Entity\Status;
 use App\Entity\StudyField;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -66,6 +69,25 @@ class CardType extends AbstractType
                 'expanded' => true,
                 'row_attr' => [
                     'class' => 'announce-check-group',
+                ],
+            ])
+            ->add('imageFiles', FileType::class, [
+                'label'    => 'Photos (JPG, PNG, WebP — max 5MB chacune)',
+                'multiple' => true,
+                'mapped'   => false,
+                'required' => false,
+                'attr'     => [
+                    'class'  => 'form-control',
+                    'accept' => 'image/jpeg,image/png,image/webp'
+                ],
+                'constraints' => [
+                    new All([
+                        new File(
+                            maxSize: '5M',
+                            mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+                            mimeTypesMessage: 'Formats acceptés : JPG, PNG, WebP.',
+                        )
+                    ])
                 ],
             ])
         ;

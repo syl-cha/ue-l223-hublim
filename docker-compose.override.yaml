@@ -11,4 +11,4 @@ services:
   db:
     ports:
       # Accès BDD sur localhost:3308
-      - "3308:3306"  
+      - "3308:3306"

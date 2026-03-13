@@ -37,6 +37,79 @@
                 <div style="font-size:1rem; line-height:1.8; color:#374151;">
                     {{ card.description|nl2br }}
                 </div>
+
+                {% if card.images is not empty %}
+                {% set images = card.images %}
+                {% set count = images|length %}
+
+                <div class="fb-gallery mb-4" id="fb-gallery">
+
+                {% if count == 1 %}
+                    <div class="fb-gallery-single">
+                        <img src="/uploads/cards/{{ images[0].fileName }}"
+                            alt="{{ images[0].alt ?? card.title }}"
+                            class="fb-img" data-index="0">
+                    </div>
+
+                    {% elseif count == 2 %}
+                        <div class="fb-gallery-two">
+                            {% for i in 0..1 %}
+                                <img src="/uploads/cards/{{ images[i].fileName }}"
+                                    alt="{{ images[i].alt ?? card.title }}"
+                                    class="fb-img" data-index="{{ i }}">
+                            {% endfor %}
+                        </div>
+
+                    {% else %}
+                        <div class="fb-gallery-three">
+                            <div class="fb-main">
+                                <img src="/uploads/cards/{{ images[0].fileName }}"
+                                    alt="{{ images[0].alt ?? card.title }}"
+                                    class="fb-img" data-index="0">
+                            </div>
+                            <div class="fb-side">
+                                <div class="fb-side-top">
+                                    <img src="/uploads/cards/{{ images[1].fileName }}"
+                                        alt="{{ images[1].alt ?? card.title }}"
+                                        class="fb-img" data-index="1">
+                                </div>
+                                <div class="fb-side-bottom">
+                                    <img src="/uploads/cards/{{ images[2].fileName }}"
+                                        alt="{{ images[2].alt ?? card.title }}"
+                                        class="fb-img" data-index="2">
+                                    {% if count > 3 %}
+                                        <div class="fb-overlay" data-index="3">
+                                            +{{ count - 3 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+                {# Lightbox — sans onclick inline #}
+                <div id="lightbox" class="lb-backdrop">
+                    <button class="lb-close" id="lb-close">✕</button>
+                    <button class="lb-prev" id="lb-prev">&#8249;</button>
+                    <div class="lb-content">
+                        <img id="lb-img" src="" alt="">
+                        <div id="lb-counter" class="lb-counter"></div>
+                    </div>
+                    <button class="lb-next" id="lb-next">&#8250;</button>
+                </div>
+
+
+                {% if app.user == card.user %}
+                <a href="{{ path('app_card_images', {id: card.id}) }}" class="btn btn-outline-secondary btn-sm rounded-pill mt-2 mb-3">
+                    <i class="bi bi-images"></i> Gérer les photos
+                </a>
+                {% endif %}
+
+                {% endif %}
+
+
             </div>
         </div>
 
@@ -119,4 +192,16 @@
         </div>
     </div>
 </div>
+
+{% if card.images is not empty %}
+<script>
+    window.galleryImages = [
+        {% for image in card.images %}
+        { src: "/uploads/cards/{{ image.fileName }}", alt: "{{ image.alt ?? card.title|e('js') }}" }{{ not loop.last ? ',' : '' }}
+        {% endfor %}
+    ];
+    console.log('Images chargées :', window.galleryImages);
+</script>
+{% endif %}
+
 {% endblock %}
