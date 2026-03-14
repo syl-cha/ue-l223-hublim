@@ -97,11 +97,43 @@ final class CardController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_card_show', methods: ['GET'])]
-    public function show(Card $card): Response
-    {
+    #[Route('/{id}', name: 'app_card_show', methods: ['GET', 'POST'])]
+    public function show(
+        Card $card,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        ImageUploadService $imageUploadService
+    ): Response {
+        $form = null;
+
+        if ($this->getUser() === $card->getUser()) {
+            $form = $this->createForm(CardImageType::class);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $files = $form->get('imageFiles')->getData();
+                foreach ($files as $file) {
+                    try {
+                        $result = $imageUploadService->upload($file);
+                        $image = new Image();
+                        $image->setFileName($result['filename']);
+                        $image->setSize($result['size']);
+                        $image->setPosition($card->getImages()->count());
+                        $card->addImage($image);
+                        $entityManager->persist($image);
+                    } catch (\InvalidArgumentException $e) {
+                        $this->addFlash('error', $e->getMessage());
+                    }
+                }
+                $entityManager->flush();
+                $this->addFlash('success', 'Photos ajoutées !');
+                return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
+            }
+        }
+
         return $this->render('card/show.html.twig', [
             'card' => $card,
+            'form' => $form?->createView(),
         ]);
     }
 
@@ -123,50 +155,7 @@ final class CardController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/images', name: 'app_card_images', methods: ['GET', 'POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function editImages(
-        Card $card,
-        Request $request,
-        ImageUploadService $imageUploadService,
-        EntityManagerInterface $entityManager
-    ): Response {
-        // Seul l'auteur peut gérer ses images
-        if ($this->getUser() !== $card->getUser()) {
-            throw $this->createAccessDeniedException();
-        }
 
-        $form = $this->createForm(CardImageType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $files = $form->get('imageFiles')->getData();
-
-            foreach ($files as $position => $file) {
-                try {
-                    $result = $imageUploadService->upload($file);
-
-                    $image = new Image();
-                    $image->setFileName($result['filename']);
-                    $image->setSize($result['size']);
-                    $image->setPosition($card->getImages()->count() + $position);
-                    $card->addImage($image);
-                    $entityManager->persist($image);
-                } catch (\InvalidArgumentException $e) {
-                    $this->addFlash('error', $e->getMessage());
-                }
-            }
-
-            $entityManager->flush();
-            $this->addFlash('success', 'Photos ajoutées avec succès !');
-            return $this->redirectToRoute('app_card_images', ['id' => $card->getId()]);
-        }
-
-        return $this->render('card/images.html.twig', [
-            'card' => $card,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/image/{id}/delete', name: 'app_card_image_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -189,7 +178,7 @@ final class CardController extends AbstractController
             $this->addFlash('success', 'Photo supprimée.');
         }
 
-        return $this->redirectToRoute('app_card_images', ['id' => $card->getId()]);
+        return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
     }
 
     #[Route('/{id}', name: 'app_card_delete', methods: ['POST'])]

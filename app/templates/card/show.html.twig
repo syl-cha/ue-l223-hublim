@@ -78,7 +78,7 @@
                                         alt="{{ images[2].alt ?? card.title }}"
                                         class="fb-img" data-index="2">
                                     {% if count > 3 %}
-                                        <div class="fb-overlay" data-index="3">
+                                        <div class="fb-overlay" data-index="2">
                                             +{{ count - 3 }}
                                         </div>
                                     {% endif %}
@@ -102,10 +102,56 @@
 
                 {% endif %}
 
-                {% if app.user == card.user %}
-                <a href="{{ path('app_card_images', {id: card.id}) }}" class="btn btn-outline-secondary btn-sm rounded-pill mt-2 mb-3">
-                    <i class="bi bi-images"></i> Gérer les photos
-                </a>
+                {% if app.user == card.user and form is not null %}
+                <div class="mt-3">
+                    <button class="btn btn-outline-secondary btn-sm rounded-pill"
+                            type="button"
+                            onclick="document.getElementById('panel-images').classList.toggle('d-none')">
+                        <i class="bi bi-images"></i> Gérer les photos
+                    </button>
+
+                    <div id="panel-images" class="d-none mt-3 p-3 rounded-3 border bg-light">
+
+                        {# Photos existantes #}
+                        {% if card.images is not empty %}
+                        <div class="row g-2 mb-3">
+                            {% for image in card.images %}
+                            <div class="col-4">
+                                <div class="position-relative">
+                                    <img src="/uploads/cards/{{ image.fileName }}"
+                                        alt="{{ image.alt ?? card.title }}"
+                                        class="w-100 rounded-2"
+                                        style="height: 100px; object-fit: cover;">
+                                    <form method="post"
+                                        action="{{ path('app_card_image_delete', {id: image.id}) }}">
+                                        <input type="hidden" name="_token"
+                                            value="{{ csrf_token('delete-image-' ~ image.id) }}">
+                                        <button type="submit"
+                                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                                                style="width:24px; height:24px; padding:0; line-height:1; font-size:0.7rem;"
+                                                onclick="return confirm('Supprimer cette photo ?')">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {# Formulaire upload #}
+                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                            {{ form_label(form.imageFiles) }}
+                            <div class="mt-2">
+                                {{ form_widget(form.imageFiles) }}
+                            </div>
+                            {{ form_errors(form.imageFiles) }}
+                            <button type="submit" class="btn btn-orange btn-sm rounded-pill mt-2">
+                                <i class="bi bi-upload"></i> Uploader
+                            </button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
                 {% endif %}
 
 

@@ -112,12 +112,21 @@ function updateLightbox() {
 function initLightbox() {
     // Clic sur les images et overlay
     document.querySelectorAll('.fb-img, .fb-overlay').forEach(el => {
-        el.addEventListener('click', function() {
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+        newEl.addEventListener('click', function() {
             openLightbox(parseInt(this.dataset.index));
         });
     });
 
-    // Boutons lightbox
+    // Boutons lightbox — clone pour supprimer les anciens listeners
+    ['lb-close', 'lb-prev', 'lb-next', 'lightbox'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const newEl = el.cloneNode(true);
+        el.parentNode.replaceChild(newEl, el);
+    });
+
     const lbClose = document.getElementById('lb-close');
     const lbPrev  = document.getElementById('lb-prev');
     const lbNext  = document.getElementById('lb-next');
@@ -128,11 +137,9 @@ function initLightbox() {
     if (lbNext)  lbNext.addEventListener('click', (e) => { e.stopPropagation(); changePhoto(1); });
     if (lb)      lb.addEventListener('click', closeLightbox);
 
-    // Empêcher la fermeture au clic sur le contenu
     const lbContent = document.querySelector('.lb-content');
     if (lbContent) lbContent.addEventListener('click', (e) => e.stopPropagation());
 
-    // Clavier
     document.addEventListener('keydown', function(e) {
         const lb = document.getElementById('lightbox');
         if (!lb || !lb.classList.contains('active')) return;
@@ -142,7 +149,5 @@ function initLightbox() {
     });
 }
 
-// Premier chargement
 document.addEventListener('DOMContentLoaded', initPage);
-// Navigations Turbo (après déconnexion, etc.)
 document.addEventListener('turbo:load', initPage);

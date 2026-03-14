@@ -694,6 +694,10 @@ footer h6 {
     color: #374151;
 }
 
+.announce-form label[for$="imageFiles"] {
+    margin-bottom: 0.75rem;
+}
+
 .announce-alert {
     border-radius: 16px;
 }
@@ -860,16 +864,35 @@ Galerie d'images
     height: 320px;
 }
 
-/* 3+ images */
 .fb-gallery-three {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3px;
     height: 320px;
+    overflow: hidden;
+    border-radius: 12px;
 }
-.fb-main { grid-row: span 2; }
-.fb-side { display: flex; flex-direction: column; gap: 3px; }
-.fb-side-top, .fb-side-bottom { flex: 1; position: relative; overflow: hidden; }
+
+.fb-main {
+    grid-row: span 2;
+    overflow: hidden;
+}
+
+.fb-side {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    height: 320px;
+    overflow: hidden;
+}
+
+.fb-side-top, .fb-side-bottom {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    max-height: 158px;
+}
 
 /* Overlay +N */
 .fb-overlay {
