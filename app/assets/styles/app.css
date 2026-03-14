@@ -471,7 +471,18 @@ footer h6 {
     gap: 0.75rem;
 }
 
-/* Corps : description à gauche, image à droite */
+/* Corps : titre et description à gauche, image à droite */
+
+.card-title {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--color-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0.25rem;
+}
+
 .bento-card-body {
     display: flex;
     flex: 1;

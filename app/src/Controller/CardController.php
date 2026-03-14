@@ -72,6 +72,7 @@ final class CardController extends AbstractController
 
             // Traitement des images
             $files = $form->get('imageFiles')->getData();
+            $files = array_slice($files, 0, 10);
             foreach ($files as $position => $file) {
                 try {
                     $result = $imageUploadService->upload($file);
@@ -110,25 +111,48 @@ final class CardController extends AbstractController
             $form = $this->createForm(CardImageType::class);
             $form->handleRequest($request);
 
+            if ($request->isMethod('POST')) {
+            // Suppressions
+            $formData = $request->request->all('image_carte') ?? [];
+            $deleteIds = $formData['delete_images'] ?? [];
+            foreach ($deleteIds as $imageId) {
+                $image = $entityManager->getRepository(Image::class)->find($imageId);
+                if ($image && $image->getCard() === $card) {
+                    $imageUploadService->delete($image->getFileName());
+                    $entityManager->remove($image);
+                }
+            }
+            $entityManager->flush();
+
+            // Uploads
             if ($form->isSubmitted() && $form->isValid()) {
                 $files = $form->get('imageFiles')->getData();
-                foreach ($files as $file) {
-                    try {
-                        $result = $imageUploadService->upload($file);
-                        $image = new Image();
-                        $image->setFileName($result['filename']);
-                        $image->setSize($result['size']);
-                        $image->setPosition($card->getImages()->count());
-                        $card->addImage($image);
-                        $entityManager->persist($image);
-                    } catch (\InvalidArgumentException $e) {
-                        $this->addFlash('error', $e->getMessage());
+                $currentCount = $card->getImages()->count();
+                $remaining = 10 - $currentCount;
+                if ($remaining <= 0) {
+                    $this->addFlash('error', 'Vous avez atteint la limite de 10 photos.');
+                } else {
+                    $files = array_slice($files, 0, $remaining);
+                    foreach ($files as $file) {
+                        try {
+                            $result = $imageUploadService->upload($file);
+                            $image = new Image();
+                            $image->setFileName($result['filename']);
+                            $image->setSize($result['size']);
+                            $image->setPosition($card->getImages()->count());
+                            $card->addImage($image);
+                            $entityManager->persist($image);
+                        } catch (\InvalidArgumentException $e) {
+                            $this->addFlash('error', $e->getMessage());
+                        }
                     }
+                    $entityManager->flush();
                 }
-                $entityManager->flush();
-                $this->addFlash('success', 'Photos ajoutées !');
-                return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
             }
+
+            $this->addFlash('success', 'Photos mises à jour !');
+            return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
+        }
         }
 
         return $this->render('card/show.html.twig', [

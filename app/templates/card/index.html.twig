@@ -75,7 +75,10 @@
 
                         {# Corps : description + image côte à côte #}
                         <div class="bento-card-body">
-                            <p class="card-description">{{ card.description }}</p>
+                            <div class="flex-1 min-width-0" style="flex:1; min-width:0; overflow:hidden;">
+                                <div class="card-title">{{ card.title }}</div>
+                                <p class="card-description">{{ card.description }}</p>
+                            </div>
                             {% if card.coverImage %}
                             <div class="bento-card-image">
                                 <img src="/uploads/cards/{{ card.coverImage.fileName }}"

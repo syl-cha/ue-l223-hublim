@@ -112,43 +112,56 @@
 
                     <div id="panel-images" class="d-none mt-3 p-3 rounded-3 border bg-light">
 
-                        {# Photos existantes #}
-                        {% if card.images is not empty %}
-                        <div class="row g-2 mb-3">
-                            {% for image in card.images %}
-                            <div class="col-4">
-                                <div class="position-relative">
-                                    <img src="/uploads/cards/{{ image.fileName }}"
-                                        alt="{{ image.alt ?? card.title }}"
-                                        class="w-100 rounded-2"
-                                        style="height: 100px; object-fit: cover;">
-                                    <form method="post"
-                                        action="{{ path('app_card_image_delete', {id: image.id}) }}">
-                                        <input type="hidden" name="_token"
-                                            value="{{ csrf_token('delete-image-' ~ image.id) }}">
-                                        <button type="submit"
-                                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
-                                                style="width:24px; height:24px; padding:0; line-height:1; font-size:0.7rem;"
-                                                onclick="return confirm('Supprimer cette photo ?')">
+                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'id': 'form-images', 'data-turbo': 'false', 'autocomplete': 'off'}}) }}
+
+                            {# Photos existantes #}
+                            {% if card.images is not empty %}
+                            <div class="row g-2 mb-3" id="photos-grid">
+                                {% for image in card.images %}
+                                <div class="col-4 photo-item" id="photo-{{ image.id }}">
+                                    <div class="position-relative">
+                                        <img src="/uploads/cards/{{ image.fileName }}"
+                                            alt="{{ image.alt ?? card.title }}"
+                                            class="w-100 rounded-2"
+                                            style="height: 100px; object-fit: cover;">
+                                        {# Overlay suppression #}
+                                        <div class="photo-delete-overlay d-none position-absolute inset-0 rounded-2"
+                                            style="inset:0; background:rgba(220,53,69,0.6); display:none !important;">
+                                            <i class="bi bi-trash text-white" style="font-size:1.5rem;"></i>
+                                        </div>
+                                        {# Bouton croix #}
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle btn-mark-delete"
+                                                data-image-id="{{ image.id }}"
+                                                style="width:24px; height:24px; padding:0; line-height:1; font-size:0.7rem;">
                                             <i class="bi bi-x"></i>
                                         </button>
-                                    </form>
+                                        {# Input caché pour la suppression #}
+                                       <input type="checkbox" name="image_carte[delete_images][]" value="{{ image.id }}"
+                                            id="delete-{{ image.id }}" class="d-none delete-checkbox">
+                                    </div>
                                 </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+                            {% endif %}
 
-                        {# Formulaire upload #}
-                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+                            {# Upload #}
                             {{ form_label(form.imageFiles) }}
+                            {% set remaining = 10 - card.images|length %}
+                            {% if remaining <= 0 %}
+                                <p class="text-danger small mb-2"><i class="bi bi-exclamation-circle"></i> Limite de 10 photos atteinte.</p>
+                            {% else %}
+                                <p class="text-muted small mb-2">{{ remaining }} photo{{ remaining > 1 ? 's' : '' }} restante{{ remaining > 1 ? 's' : '' }}</p>
+                            {% endif %}
                             <div class="mt-2">
                                 {{ form_widget(form.imageFiles) }}
                             </div>
                             {{ form_errors(form.imageFiles) }}
-                            <button type="submit" class="btn btn-orange btn-sm rounded-pill mt-2">
-                                <i class="bi bi-upload"></i> Uploader
+
+                            <button type="submit" class="btn btn-orange btn-sm rounded-pill mt-3">
+                                <i class="bi bi-check-lg"></i> Enregistrer
                             </button>
+
                         {{ form_end(form) }}
                     </div>
                 </div>
