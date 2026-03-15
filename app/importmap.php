@@ -32,4 +32,7 @@ return [
     'swiper' => [
         'version' => '12.1.2',
     ],
+    'highlight.js' => [
+        'version' => '11.11.1',
+    ],
 ];

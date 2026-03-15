@@ -55,7 +55,7 @@
             {% if app.user and message_form is defined %}
                 <div class="shadow-sm rounded-4 p-4 bg-white mt-4 d-none" data-reagir-target="form">
                     <h5 class="fw-bold text-primary mb-3">Laisser un message</h5>
-                    <div style="width: 75%;">
+                    <div >
                         {{ form_start(message_form) }}
                             <div class="mb-3">
                                 {{ form_label(message_form.content, null, {'label_attr': {'class': 'form-label fw-bold text-dark'}}) }}

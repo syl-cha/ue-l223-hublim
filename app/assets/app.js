@@ -5,10 +5,14 @@ import './stimulus_bootstrap.js';
  * This file will be included onto the page via the importmap() Twig function,
  * which should already be in your base.html.twig.
  */
-import './vendor/bootstrap/dist/css/bootstrap.min.css'
+import './vendor/bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
 // Carousel
 import './stimulus_bootstrap.js';
+// KaTeX
+import './katex-init.js';
+// coloration syntaxique du code
+import './hightlight-init.js';
 
 console.log('This log comes from assets/app.js - welcome to AssetMapper! ');
 
@@ -16,15 +20,15 @@ function initPage() {
     // Carousel logic
     const swiperEl = document.querySelector('.mySwiper');
     if (swiperEl) {
-        const swiper = new Swiper(".mySwiper", {
-            effect: "coverflow",
+        const swiper = new Swiper('.mySwiper', {
+            effect: 'coverflow',
             grabCursor: true,
             centeredSlides: true,
-            slidesPerView: "auto",
+            slidesPerView: 'auto',
             initialSlide: 1,
             watchSlidesProgress: true,
             pagination: {
-                el: ".swiper-pagination",
+                el: '.swiper-pagination',
                 clickable: true,
             },
             coverflowEffect: {
@@ -43,7 +47,10 @@ function initPage() {
 
         // Clic sur une slide non-active pour y naviguer
         swiper.on('click', () => {
-            if (swiper.clickedIndex !== undefined && swiper.clickedIndex !== swiper.activeIndex) {
+            if (
+                swiper.clickedIndex !== undefined &&
+                swiper.clickedIndex !== swiper.activeIndex
+            ) {
                 swiper.slideTo(swiper.clickedIndex);
             }
         });

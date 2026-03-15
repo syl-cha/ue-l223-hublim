@@ -4,7 +4,12 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>{% block title %} Welcome!{% endblock %}</title>
-        <link rel="icon" href="...">
+        <link rel="icon" href="{{ asset('../assets/svg/logo_hublim_BLEU2.svg') }}" type="image/svg+xml">
+
+        {# --- Fichiers CSS et JS de base pour KaTeX (Moteur mathématique) --- #}
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+                <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+                <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
         {% block stylesheets %}
             <!-- Link Swiper's CSS -->

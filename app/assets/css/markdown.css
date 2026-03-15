@@ -97,3 +97,55 @@
 .markdown-preview iframe {
     display: none !important;
 }
+
+/* Styles pour les blocs de code colorés */
+.markdown-content pre code.hljs,
+.markdown-preview pre code.hljs {
+    background-color: #f6f6f6;
+    display: block; /* Transforme l'élément en bloc pour remplir la largeur */
+    padding: 0.2rem; /* Ajoute de l'espace à l'intérieur du bloc */
+    overflow-x: auto; /* Ajoute une barre de défilement si le code est trop long */
+    border-radius: 6px; /* Optionnel : arrondit les angles pour un look plus moderne */
+}
+
+/* Styles pour les tableaux Markdown */
+.markdown-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse; /* Fusionne les doubles bordures */
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border: 1px solid #dee2e6; /* Gris clair similaire à vos blockquotes */
+}
+
+.markdown-content th {
+    background-color: var(
+        --color-ternary
+    ); /* Fond légèrement grisé pour l'en-tête */
+    font-weight: 600;
+    text-align: left; /* Aligne les titres à gauche par défaut */
+}
+
+/* Optionnel : Lignes zébrées pour faciliter la lecture */
+.markdown-content tbody tr:nth-of-type(even) {
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.02
+    ); /* Grise une ligne sur deux très légèrement */
+}
+
+/* Désactive les images, iframe et tableaux dans l'aperçu pour préserver le design de la carte */
+.markdown-preview img,
+.markdown-preview iframe,
+.markdown-preview table {
+    display: none !important;
+}
