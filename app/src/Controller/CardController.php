@@ -19,8 +19,8 @@ final class CardController extends AbstractController
     public function index(CardRepository $cardRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $cardRepository->createQueryBuilder('c')
-        ->orderBy('c.createdAt', 'DESC')
-        ->getQuery();
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery();
 
         $pagination = $paginator->paginate(
             $query, /* requête SQL */
@@ -34,16 +34,16 @@ final class CardController extends AbstractController
     }
 
     #[Route('/search', name: 'card_search', methods: ['GET'])]
-    public function search(Request $request, CardRepository $cardRepository): Response 
+    public function search(Request $request, CardRepository $cardRepository): Response
     {
         $recherche = $request->query->get('query', '');
-        
+
         if (!empty(trim($recherche))) {
             $cards = $cardRepository->searchFunction($recherche);
         } else {
             $cards = $cardRepository->findAll();
         }
-        
+
         return $this->render('card/search.html.twig', [
             'cards' => $cards,
             'query' => $recherche,
@@ -76,10 +76,31 @@ final class CardController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_card_show', methods: ['GET'])]
-    public function show(Card $card): Response
+    public function show(Card $card, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+        $isModified = false;
+
+        foreach ($card->getMessages() as $message) {
+            if ($message->getUser() !== $user && !$message->isRead()) {
+                $message->setIsRead(true);
+                $isModified = true;
+            }
+        }
+
+        if ($isModified) {
+            $entityManager->flush();
+        }
+
+        $message = new \App\Entity\Message();
+        $form = $this->createForm(\App\Form\MessageType::class, $message, [
+            'action' => $this->generateUrl('app_message_new', ['id' => $card->getId()]),
+            'method' => 'POST',
+        ]);
+
         return $this->render('card/show.html.twig', [
             'card' => $card,
+            'message_form' => $form->createView(),
         ]);
     }
 
@@ -104,7 +125,7 @@ final class CardController extends AbstractController
     #[Route('/{id}', name: 'app_card_delete', methods: ['POST'])]
     public function delete(Request $request, Card $card, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$card->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $card->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($card);
             $entityManager->flush();
         }
