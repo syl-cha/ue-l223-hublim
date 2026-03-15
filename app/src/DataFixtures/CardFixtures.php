@@ -11,15 +11,19 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\Filesystem\Filesystem;
 
 class CardFixtures extends Fixture implements DependentFixtureInterface
 {
+    public function __construct(private string $uploadDir) {}
+
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
         $cardStates = [CardState::DRAFT, CardState::PUBLISHED, CardState::ARCHIVED];
+        $fs = new Filesystem();
+        $fs->mkdir($this->uploadDir);
 
-        // Récupérer toutes les sous-catégories
         $subcategories = [];
         $index = 0;
         while (true) {
@@ -30,6 +34,7 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
                 break;
             }
         }
+
 
         //On crée nos cartes
         for ($i = 0; $i < 20; $i++) {
@@ -46,19 +51,21 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
                 $users[] = $this->getReference('user_' . $j, User::class);
             }
             $card->setUser($faker->randomElement($users));
-
-            // Sous-catégorie aléatoire
             $card->setCategory($faker->randomElement($subcategories));
 
-            $image = new Image();
-            $seed = $faker->unique()->numberBetween(1, 10000);
-            $imageUrl = "https://picsum.photos/seed/{$seed}/800/600";
+            // Entre 1 et 4 images par annonce
+            $nbImages = $faker->numberBetween(1, 4);
+            for ($k = 0; $k < $nbImages; $k++) {
+                $filename = $this->downloadImage($faker->numberBetween(1, 500), $i . '-' . $k);
 
-            $image->setFileName($imageUrl);
-            $image->setSize(0);
-
-            $card->addImage($image);
-            $manager->persist($image);
+                $image = new Image();
+                $image->setFileName($filename);
+                $image->setSize(filesize($this->uploadDir . '/' . $filename));
+                $image->setPosition($k);
+                $image->setAlt($card->getTitle());
+                $card->addImage($image);
+                $manager->persist($image);
+            }
 
             $manager->persist($card);
         }
@@ -66,11 +73,30 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    private function downloadImage(int $seed, string $suffix): string
+    {
+        $filename = 'fixture-' . $seed . '-' . $suffix . '.webp';
+        $dest = $this->uploadDir . '/' . $filename;
+
+        if (!file_exists($dest)) {
+            $content = @file_get_contents("https://picsum.photos/seed/{$seed}/800/600");
+            if ($content !== false) {
+                file_put_contents($dest, $content);
+            } else {
+                // Image placeholder colorée si pas de connexion
+                $img = imagecreatetruecolor(800, 600);
+                $color = imagecolorallocate($img, rand(100, 200), rand(100, 200), rand(100, 200));
+                imagefill($img, 0, 0, $color);
+                imagewebp($img, $dest, 80);
+                imagedestroy($img);
+            }
+        }
+
+        return $filename;
+    }
+
     public function getDependencies(): array
     {
-        return [
-            CategoryFixtures::class,
-            UserFixtures::class
-        ];
+        return [CategoryFixtures::class, UserFixtures::class];
     }
 }

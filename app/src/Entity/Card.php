@@ -52,7 +52,8 @@ class Card
     /**
      * @var Collection<int, Image>
      */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'card', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'card', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['position' => 'ASC'])]
     private Collection $images;
 
     /**
@@ -237,6 +238,11 @@ class Card
         }
 
         return $this;
+    }
+
+    public function getCoverImage(): ?Image
+    {
+        return $this->images->first() ?: null;
     }
 
     /**

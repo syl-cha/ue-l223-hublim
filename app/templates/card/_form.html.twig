@@ -1,4 +1,4 @@
-{{ form_start(form, {'attr': {'class': 'announce-form'}}) }}
+{{ form_start(form, {'attr': {'class': 'announce-form', 'enctype': 'multipart/form-data'}}) }}
     {% if not form.vars.valid %}
         <div class="alert alert-danger announce-alert" role="alert">
             Merci de corriger les champs en erreur avant de publier l'annonce.
@@ -19,6 +19,18 @@
                 {{ form_label(form.description) }}
                 {{ form_widget(form.description) }}
                 {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="announce-card-section">
+                {{ form_label(form.imageFiles) }}
+                <div class="mt-2">
+                    {{ form_widget(form.imageFiles) }}
+                </div>
+                {{ form_errors(form.imageFiles) }}
+                <small class="text-muted">Tu peux sélectionner plusieurs photos à la fois (max 10). Formats acceptés : JPG, PNG, WebP — max 5MB par photo.</small>
+                <div id="preview-grid" class="row g-2 mt-2" style="display:none;"></div>
             </div>
         </div>
 
