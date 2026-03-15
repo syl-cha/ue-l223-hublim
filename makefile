@@ -72,7 +72,8 @@ install:
 
 	@echo "--- 3. Installation des dépendances (Composer) ---"
 	$(DOCKER_COMP) exec -u 0 web composer install
-	$(DOCKER_COMP) exec -u 0 web chown -R www-data:www-data /var/www/html/var /var/www/html/vendor
+	$(DOCKER_COMP) exec -u 0 web mkdir -p /var/www/html/public/uploads
+	$(DOCKER_COMP) exec -u 0 web chown -R www-data:www-data /var/www/html/var /var/www/html/vendor /var/www/html/public/uploads
 
 	@echo "--- 4. Initialisation de la Base de Données MariaDB ---"
 	$(MAKE) db-reset
