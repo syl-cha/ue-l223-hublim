@@ -23,13 +23,13 @@ final class CardController extends AbstractController
     public function index(CardRepository $cardRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $cardRepository->createQueryBuilder('c')
-        ->orderBy('c.createdAt', 'DESC')
-        ->getQuery();
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery();
 
         $pagination = $paginator->paginate(
-            $query, /* requête SQL */
-            $request->query->getInt('page', 1), /* numéro de page */
-            9 /* nombre d'éléments par page */
+            $query,
+            $request->query->getInt('page', 1),
+            9
         );
 
         return $this->render('card/index.html.twig', [
@@ -38,16 +38,16 @@ final class CardController extends AbstractController
     }
 
     #[Route('/search', name: 'card_search', methods: ['GET'])]
-    public function search(Request $request, CardRepository $cardRepository): Response 
+    public function search(Request $request, CardRepository $cardRepository): Response
     {
         $recherche = $request->query->get('query', '');
-        
+
         if (!empty(trim($recherche))) {
             $cards = $cardRepository->searchFunction($recherche);
         } else {
             $cards = $cardRepository->findAll();
         }
-        
+
         return $this->render('card/search.html.twig', [
             'cards' => $cards,
             'query' => $recherche,
@@ -70,13 +70,11 @@ final class CardController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($card);
 
-            // Traitement des images
             $files = $form->get('imageFiles')->getData();
             $files = array_slice($files, 0, 10);
             foreach ($files as $position => $file) {
                 try {
                     $result = $imageUploadService->upload($file);
-
                     $image = new Image();
                     $image->setFileName($result['filename']);
                     $image->setSize($result['size']);
@@ -105,59 +103,94 @@ final class CardController extends AbstractController
         EntityManagerInterface $entityManager,
         ImageUploadService $imageUploadService
     ): Response {
-        $form = null;
+        $user = $this->getUser();
 
-        if ($this->getUser() === $card->getUser()) {
-            $form = $this->createForm(CardImageType::class);
-            $form->handleRequest($request);
+        // Gestion des messages lus
+        $isModified = false;
+        foreach ($card->getMessages() as $message) {
+            if ($message->getUser() !== $user && !$message->isRead()) {
+                $message->setIsRead(true);
+                $isModified = true;
+            }
+        }
+        if ($isModified) {
+            $entityManager->flush();
+        }
+
+        // Formulaire message
+        $message = new \App\Entity\Message();
+        $messageForm = $this->createForm(\App\Form\MessageType::class, $message, [
+            'action' => $this->generateUrl('app_message_new', ['id' => $card->getId()]),
+            'method' => 'POST',
+        ]);
+
+        // Compteur de vues
+        $isAuthor = $user && $user === $card->getUser();
+        if (!$isAuthor) {
+            $session = $request->getSession();
+            $viewedCards = $session->get('viewed_cards', []);
+            if (!in_array($card->getId(), $viewedCards)) {
+                $card->setViews(($card->getViews() ?? 0) + 1);
+                $entityManager->flush();
+                $viewedCards[] = $card->getId();
+                $session->set('viewed_cards', $viewedCards);
+            }
+        }
+
+        // Gestion des photos (upload + suppression)
+        $imageForm = null;
+        if ($user === $card->getUser()) {
+            $imageForm = $this->createForm(CardImageType::class);
+            $imageForm->handleRequest($request);
 
             if ($request->isMethod('POST')) {
-            // Suppressions
-            $formData = $request->request->all('image_carte') ?? [];
-            $deleteIds = $formData['delete_images'] ?? [];
-            foreach ($deleteIds as $imageId) {
-                $image = $entityManager->getRepository(Image::class)->find($imageId);
-                if ($image && $image->getCard() === $card) {
-                    $imageUploadService->delete($image->getFileName());
-                    $entityManager->remove($image);
-                }
-            }
-            $entityManager->flush();
-
-            // Uploads
-            if ($form->isSubmitted() && $form->isValid()) {
-                $files = $form->get('imageFiles')->getData();
-                $currentCount = $card->getImages()->count();
-                $remaining = 10 - $currentCount;
-                if ($remaining <= 0) {
-                    $this->addFlash('error', 'Vous avez atteint la limite de 10 photos.');
-                } else {
-                    $files = array_slice($files, 0, $remaining);
-                    foreach ($files as $file) {
-                        try {
-                            $result = $imageUploadService->upload($file);
-                            $image = new Image();
-                            $image->setFileName($result['filename']);
-                            $image->setSize($result['size']);
-                            $image->setPosition($card->getImages()->count());
-                            $card->addImage($image);
-                            $entityManager->persist($image);
-                        } catch (\InvalidArgumentException $e) {
-                            $this->addFlash('error', $e->getMessage());
-                        }
+                // Suppressions
+                $formData = $request->request->all('image_carte') ?? [];
+                $deleteIds = $formData['delete_images'] ?? [];
+                foreach ($deleteIds as $imageId) {
+                    $image = $entityManager->getRepository(Image::class)->find($imageId);
+                    if ($image && $image->getCard() === $card) {
+                        $imageUploadService->delete($image->getFileName());
+                        $entityManager->remove($image);
                     }
-                    $entityManager->flush();
                 }
-            }
+                $entityManager->flush();
 
-            $this->addFlash('success', 'Photos mises à jour !');
-            return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
-        }
+                // Uploads
+                if ($imageForm->isSubmitted() && $imageForm->isValid()) {
+                    $files = $imageForm->get('imageFiles')->getData();
+                    $currentCount = $card->getImages()->count();
+                    $remaining = 10 - $currentCount;
+                    if ($remaining <= 0) {
+                        $this->addFlash('error', 'Vous avez atteint la limite de 10 photos.');
+                    } else {
+                        $files = array_slice($files, 0, $remaining);
+                        foreach ($files as $file) {
+                            try {
+                                $result = $imageUploadService->upload($file);
+                                $image = new Image();
+                                $image->setFileName($result['filename']);
+                                $image->setSize($result['size']);
+                                $image->setPosition($card->getImages()->count());
+                                $card->addImage($image);
+                                $entityManager->persist($image);
+                            } catch (\InvalidArgumentException $e) {
+                                $this->addFlash('error', $e->getMessage());
+                            }
+                        }
+                        $entityManager->flush();
+                    }
+                }
+
+                $this->addFlash('success', 'Photos mises à jour !');
+                return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
+            }
         }
 
         return $this->render('card/show.html.twig', [
             'card' => $card,
-            'form' => $form?->createView(),
+            'message_form' => $messageForm->createView(),
+            'form' => $imageForm?->createView(),
         ]);
     }
 
@@ -169,7 +202,6 @@ final class CardController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
             return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -178,8 +210,6 @@ final class CardController extends AbstractController
             'form' => $form,
         ]);
     }
-
-
 
     #[Route('/image/{id}/delete', name: 'app_card_image_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
@@ -208,11 +238,31 @@ final class CardController extends AbstractController
     #[Route('/{id}', name: 'app_card_delete', methods: ['POST'])]
     public function delete(Request $request, Card $card, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$card->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $card->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($card);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/favorite', name: 'app_card_favorite', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function favorite(Card $card, EntityManagerInterface $entityManager): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($card->getFanUsers()->contains($user)) {
+            $card->removeFanUser($user);
+            $this->addFlash('success', 'Carte retirée de vos favoris.');
+        } else {
+            $card->addFanUser($user);
+            $this->addFlash('success', 'Carte ajoutée à vos favoris.');
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
     }
 }

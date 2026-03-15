@@ -8,11 +8,11 @@
 
             <form method="get" action="{{ path('card_search') }}">
                 <div class="input-group input-group-sm" style="width: 250px">
-                    <input 
-                        type="text" 
-                        name="query" 
-                        class="form-control" 
-                        placeholder="Rechercher sur HubLim..." 
+                    <input
+                        type="text"
+                        name="query"
+                        class="form-control"
+                        placeholder="Rechercher sur HubLim..."
                         autofocus
                         style="border:none; outline:none; box-shadow: none; background-color: #e7e6e6;"
                     >
@@ -38,10 +38,21 @@
                         <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                         <div class="overlay-actions">
                             <div class="overlay-action-item">
-                                <span class="btn-action-overlay" title="Favori">⭐</span>
+                                {% if app.user %}
+                                    <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                        {% if app.user in card.fanUsers %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('app_login') }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                        <i class="bi bi-star"></i>
+                                    </a>
+                                {% endif %}
                                 <small>Favori</small>
-                            </div>
-                            <div class="overlay-action-item">
+                            </div>                            <div class="overlay-action-item">
                                 <span class="btn-action-overlay" title="Partager">↪</span>
                                 <small>Partager</small>
                             </div>
@@ -70,7 +81,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="card-description">{{ card.description }}</p>
+
+                                <!--<p class="card-description">{{ card.description }}</p>-->
+                                <div class="card-description markdown-preview">
+                                    {{ card.description|markdown_to_html|sanitize_html }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,7 +97,7 @@
             <a href="{{ path('app_card_index') }}" class="btn" style="background-color: #223382; color: white"> <i class="bi bi-arrow-left"></i> Retour à la liste complète</a>
         </div>
     </div>
-  
+
 
 
 {% endblock %}

@@ -74,6 +74,9 @@ class Card
     #[ORM\ManyToMany(targetEntity: StudyField::class, inversedBy: 'relatedCards')]
     private Collection $targetStudyFields;
 
+    #[ORM\Column]
+    private ?int $views = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -83,6 +86,7 @@ class Card
         $this->targetStudyFields = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
         $this->state = CardState::PUBLISHED;
+        $this->views = 0;
     }
 
     public function getId(): ?int
@@ -312,6 +316,18 @@ class Card
     public function removeTargetStudyField(StudyField $targetStudyField): static
     {
         $this->targetStudyFields->removeElement($targetStudyField);
+
+        return $this;
+    }
+
+    public function getViews(): ?int
+    {
+        return $this->views;
+    }
+
+    public function setViews(int $views): static
+    {
+        $this->views = $views;
 
         return $this;
     }

@@ -1,0 +1,151 @@
+/* ==========================================================================
+   Contenu généré par Markdown (Cartes et Messages)
+   ========================================================================== */
+
+.markdown-content {
+    /* Empêche les liens très longs de casser la mise en page sur mobile */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Réduction de la taille des titres pour ne pas concurrencer le site */
+.markdown-content h1 {
+    font-size: 1.5rem; /* Taille d'un H3 environ */
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: var(
+        --color-secondary
+    ); /* Optionnel : utiliser votre couleur orange */
+}
+
+.markdown-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Espacement propre pour les paragraphes */
+.markdown-content p {
+    margin-bottom: 0.75rem;
+}
+
+/* Retrait propre pour les listes à puces et numérotées */
+.markdown-content ul,
+.markdown-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Style léger pour les citations (si quelqu'un utilise >) */
+.markdown-content blockquote {
+    border-left: 4px solid #dee2e6; /* Gris clair Bootstrap */
+    padding-left: 1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* ==========================================================================
+   Markdown - Mode "Aperçu" (Mosaïque / Petites cartes)
+   ========================================================================== */
+.markdown-preview {
+    /* Limite le texte à 4 lignes maximum avec des "..." à la fin */
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* On force les titres générés par le markdown à devenir de la taille d'un texte normal */
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0.25rem 0;
+    line-height: 1.2;
+}
+
+/* On resserre les paragraphes et les listes pour gagner de la place */
+.markdown-preview p {
+    margin-bottom: 0.25rem;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+    margin-bottom: 0.25rem;
+    padding-left: 1.2rem;
+}
+
+/* Désactive les images ou iframe si quelqu'un essaie d'en mettre dans l'aperçu */
+.markdown-preview img,
+.markdown-preview iframe {
+    display: none !important;
+}
+
+/* Styles pour les blocs de code colorés */
+.markdown-content pre code.hljs,
+.markdown-preview pre code.hljs {
+    background-color: #f6f6f6;
+    display: block; /* Transforme l'élément en bloc pour remplir la largeur */
+    padding: 0.2rem; /* Ajoute de l'espace à l'intérieur du bloc */
+    overflow-x: auto; /* Ajoute une barre de défilement si le code est trop long */
+    border-radius: 6px; /* Optionnel : arrondit les angles pour un look plus moderne */
+}
+
+/* Styles pour les tableaux Markdown */
+.markdown-content table {
+    width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse; /* Fusionne les doubles bordures */
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border: 1px solid #dee2e6; /* Gris clair similaire à vos blockquotes */
+}
+
+.markdown-content th {
+    background-color: var(
+        --color-ternary
+    ); /* Fond légèrement grisé pour l'en-tête */
+    font-weight: 600;
+    text-align: left; /* Aligne les titres à gauche par défaut */
+}
+
+/* Optionnel : Lignes zébrées pour faciliter la lecture */
+.markdown-content tbody tr:nth-of-type(even) {
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.02
+    ); /* Grise une ligne sur deux très légèrement */
+}
+
+/* Désactive les images, iframe et tableaux dans l'aperçu pour préserver le design de la carte */
+.markdown-preview img,
+.markdown-preview iframe,
+.markdown-preview table {
+    display: none !important;
+}

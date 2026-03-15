@@ -40,7 +40,19 @@
                     <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                     <div class="overlay-actions">
                         <div class="overlay-action-item">
-                            <span class="btn-action-overlay" title="Favori">⭐</span>
+                            {% if app.user %}
+                                <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                    {% if app.user in card.fanUsers %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                    <i class="bi bi-star"></i>
+                                </a>
+                            {% endif %}
                             <small>Favori</small>
                         </div>
                         <div class="overlay-action-item">
@@ -56,6 +68,7 @@
 
                 <div class="bento-card">
                     <div class="bento-card-content">
+
                         {# Header : avatar + nom + date #}
                         <div class="user-info">
                             <div class="user-avatar">👤</div>
@@ -68,7 +81,16 @@
                                 </div>
                                 <div class="user-sub">
                                     <span>{{ card.createdAt is defined ? card.createdAt|date('d/m/Y H:i') : 'Date et heure' }}</span>
-                                    <span>👁 {{ card.views is defined ? card.views : 0 }}</span>
+                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:eye') }} <span>{{ card.views is defined ? card.views : 0 }}</span></span>
+                                    <span class="ms-2 d-inline-flex align-items-center gap-1">
+                                        {% if card.fanUsers|length > 0 %}
+                                            {{ ux_icon('bi:star-fill', {class: 'text-warning'}) }}
+                                        {% else %}
+                                            {{ ux_icon('bi:star') }}
+                                        {% endif %}
+                                        <span>{{ card.fanUsers|length }}</span>
+                                    </span>
+                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ card.messages|length }}</span></span>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +99,9 @@
                         <div class="bento-card-body">
                             <div class="flex-1 min-width-0" style="flex:1; min-width:0; overflow:hidden;">
                                 <div class="card-title">{{ card.title }}</div>
-                                <p class="card-description">{{ card.description }}</p>
+                                <div class="card-description markdown-preview">
+                                    {{ card.description|markdown_to_html|sanitize_html }}
+                                </div>
                             </div>
                             {% if card.coverImage %}
                             <div class="bento-card-image">

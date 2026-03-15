@@ -1,0 +1,12 @@
+framework:
+    html_sanitizer:
+        sanitizers:
+            default:
+                # Autorise toutes les balises "sûres" du web (p, b, i, ul, li, etc.)
+                allow_safe_elements: true
+                # (Optionnel) Forcer les liens à s'ouvrir dans un nouvel onglet
+                force_attributes:
+                    a: { target: "_blank", rel: "noopener noreferrer" }
+                # pour KaTeX
+                allow_attributes:
+                    class: ["code", "pre"]
