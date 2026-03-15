@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/card')]
@@ -76,9 +77,11 @@ final class CardController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_card_show', methods: ['GET'])]
-    public function show(Card $card, EntityManagerInterface $entityManager): Response
+    public function show(Card $card, Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+
+        // Gestion des messages
         $isModified = false;
 
         foreach ($card->getMessages() as $message) {
@@ -97,6 +100,25 @@ final class CardController extends AbstractController
             'action' => $this->generateUrl('app_message_new', ['id' => $card->getId()]),
             'method' => 'POST',
         ]);
+
+        // Gestion du compteur de vues
+        $isAuthor = $user && $user === $card->getUser();
+
+        if (!$isAuthor) {
+            // on ne compte les vues que si ce n'est pas l'auteur de la carte qui regarde
+            // on commence par récupérer les cartes vues dans la sessions
+            $session = $request->getSession();
+            $viewedCards = $session->get('viewed_cards', []);
+            if (!in_array($card->getId(), $viewedCards)) {
+                // on ne compte la vue qu'une fois par session
+                // MAJ de la BDD
+                $card->setViews(($card->getViews() ?? 0) + 1);
+                $entityManager->flush();
+                // MAJ de la Session
+                $viewedCards[] = $card->getId();
+                $session->set('viewed_cards', $viewedCards);
+            }
+        }
 
         return $this->render('card/show.html.twig', [
             'card' => $card,

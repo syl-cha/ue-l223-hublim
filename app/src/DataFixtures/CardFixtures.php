@@ -32,16 +32,17 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
         }
 
         //On crée nos cartes
-        for ($i=0; $i < 20; $i++){
+        for ($i = 0; $i < 20; $i++) {
             $card = new Card();
             $card->setTitle($faker->sentence(6, true));
             $card->setDescription($faker->paragraphs(3, true));
             $card->setState($faker->randomElement($cardStates));
             $card->setCreatedAt(new \DateTimeImmutable());
+            $card->setViews($faker->numberBetween(0, 50));
 
-            //On choisit un user aléatoire 
+            //On choisit un user aléatoire
             $users = [];
-            for ($j = 0; $j<10; $j++) {
+            for ($j = 0; $j < 10; $j++) {
                 $users[] = $this->getReference('user_' . $j, User::class);
             }
             $card->setUser($faker->randomElement($users));
@@ -54,8 +55,8 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
             $imageUrl = "https://picsum.photos/seed/{$seed}/800/600";
 
             $image->setFileName($imageUrl);
-            $image->setSize(0); 
-                
+            $image->setSize(0);
+
             $card->addImage($image);
             $manager->persist($image);
 
