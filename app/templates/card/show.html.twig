@@ -72,6 +72,11 @@
                         <div class="d-flex justify-content-between mb-2">
                             <div>
                                 <strong class="text-primary"><i class="bi bi-person-fill me-1"></i>{{ message.user.firstName }} {{ message.user.lastName }}</strong>
+                                {% if message.user == card.user %}
+                                    <span class="badge rounded-pill ms-1" style="background-color: var(--color-ternary);" title="Auteur de l'annonce">
+                                        <i class="bi bi-megaphone-fill"></i>
+                                    </span>
+                                {% endif %}
                                 <small class="text-muted ms-2">{{ message.createdAt|date('d/m/Y à H:i') }}</small>
                             </div>
 
