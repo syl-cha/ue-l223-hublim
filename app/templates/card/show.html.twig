@@ -39,6 +39,21 @@
                     {{ card.description|markdown_to_html|sanitize_html }}
                 </div>
 
+                {# Bouton Favori #}
+                {% if app.user %}
+                    <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
+                        {% if app.user in card.fanUsers %}
+                            <i class="bi bi-star-fill"></i>
+                        {% else %}
+                            <i class="bi bi-star"></i>
+                        {% endif %}
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
+                        <i class="bi bi-star"></i>
+                    </a>
+                {% endif %}
+
                 {# Bouton Réagir #}
                 {% if app.user %}
                     <button class="btn btn-primary rounded-pill position-absolute shadow-sm" style="bottom: -20px; right: 30px; z-index: 10;" data-action="click->reagir#toggle">

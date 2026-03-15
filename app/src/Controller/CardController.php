@@ -154,4 +154,24 @@ final class CardController extends AbstractController
 
         return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/favorite', name: 'app_card_favorite', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function favorite(Card $card, EntityManagerInterface $entityManager): Response
+    {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($card->getFanUsers()->contains($user)) {
+            $card->removeFanUser($user);
+            $this->addFlash('success', 'Carte retirée de vos favoris.');
+        } else {
+            $card->addFanUser($user);
+            $this->addFlash('success', 'Carte ajoutée à vos favoris.');
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
+    }
 }

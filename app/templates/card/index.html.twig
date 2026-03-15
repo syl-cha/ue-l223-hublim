@@ -40,7 +40,19 @@
                     <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                     <div class="overlay-actions">
                         <div class="overlay-action-item">
-                            <span class="btn-action-overlay" title="Favori">⭐</span>
+                            {% if app.user %}
+                                <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                    {% if app.user in card.fanUsers %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}" class="btn-action-overlay text-decoration-none" title="Favori" style="color: var(--color-jaune, #ffc107);">
+                                    <i class="bi bi-star"></i>
+                                </a>
+                            {% endif %}
                             <small>Favori</small>
                         </div>
                         <div class="overlay-action-item">
