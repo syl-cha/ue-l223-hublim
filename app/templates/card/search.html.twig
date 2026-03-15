@@ -8,11 +8,11 @@
 
             <form method="get" action="{{ path('card_search') }}">
                 <div class="input-group input-group-sm" style="width: 250px">
-                    <input 
-                        type="text" 
-                        name="query" 
-                        class="form-control" 
-                        placeholder="Rechercher sur HubLim..." 
+                    <input
+                        type="text"
+                        name="query"
+                        class="form-control"
+                        placeholder="Rechercher sur HubLim..."
                         autofocus
                         style="border:none; outline:none; box-shadow: none; background-color: #e7e6e6;"
                     >
@@ -70,7 +70,11 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="card-description">{{ card.description }}</p>
+
+                                <!--<p class="card-description">{{ card.description }}</p>-->
+                                <div class="card-description markdown-preview">
+                                    {{ card.description|markdown_to_html|sanitize_html }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,7 +86,7 @@
             <a href="{{ path('app_card_index') }}" class="btn" style="background-color: #223382; color: white"> <i class="bi bi-arrow-left"></i> Retour à la liste complète</a>
         </div>
     </div>
-  
+
 
 
 {% endblock %}

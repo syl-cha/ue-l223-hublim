@@ -81,7 +81,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <p class="card-description">{{ card.description }}</p>
+                            <!--<p class="card-description">{{ card.description }}</p>-->
+                            <div class="card-description markdown-preview">
+                                {{ card.description|markdown_to_html|sanitize_html }}
+                            </div>
                         </div>
                     </div>
                 </div>

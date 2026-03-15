@@ -34,8 +34,9 @@
                 <h1 class="fw-bold text-primary raleway-500 mb-3" style="font-size:1.8rem;">{{ card.title }}</h1>
 
                 {# Description #}
-                <div style="font-size:1rem; line-height:1.8; color:#374151;">
-                    {{ card.description|nl2br }}
+                <!--<div style="font-size:1rem; line-height:1.8; color:#374151;">-->
+                <div class="markdown-content">
+                    {{ card.description|markdown_to_html|sanitize_html }}
                 </div>
 
                 {# Bouton Réagir #}
@@ -54,10 +55,18 @@
             {% if app.user and message_form is defined %}
                 <div class="shadow-sm rounded-4 p-4 bg-white mt-4 d-none" data-reagir-target="form">
                     <h5 class="fw-bold text-primary mb-3">Laisser un message</h5>
-                    {{ form_start(message_form) }}
-                        {{ form_row(message_form.content) }}
-                        <button type="submit" class="btn btn-primary mt-2">Envoyer</button>
-                    {{ form_end(message_form) }}
+                    <div style="width: 75%;">
+                        {{ form_start(message_form) }}
+                            <div class="mb-3">
+                                {{ form_label(message_form.content, null, {'label_attr': {'class': 'form-label fw-bold text-dark'}}) }}
+                                {{ form_widget(message_form.content, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+                                {{ form_errors(message_form.content) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-send-fill me-1"></i> Envoyer
+                            </button>
+                        {{ form_end(message_form) }}
+                    </div>
                 </div>
             {% endif %}
 
@@ -86,7 +95,9 @@
                                 </a>
                             {% endif %}
                         </div>
-                        <p class="mb-0 text-dark" style="font-size: 0.95rem; line-height: 1.6;">{{ message.content|nl2br }}</p>
+                        <div class="mb-0 markdown-content">
+                            {{ message.content|markdown_to_html|sanitize_html }}
+                        </div>
                     </div>
                 {% else %}
                     <p class="text-muted fst-italic">Aucun message pour l'instant. Soyez le premier à réagir !</p>

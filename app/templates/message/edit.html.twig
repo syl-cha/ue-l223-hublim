@@ -3,14 +3,26 @@
 {% block title %}Modifier le message{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <h1>Modifier le message</h1>
+<div class="container px-4 py-5">
+    <div class="shadow-sm rounded-4 p-4 bg-white" style="max-width: 75%; margin: 0 auto;">
+        <h1 class="fw-bold text-primary raleway-500 mb-4" style="font-size:1.8rem;">Modifier le message</h1>
 
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <button class="btn btn-primary mt-3">Enregistrer</button>
-    {{ form_end(form) }}
+        {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_label(form.content, null, {'label_attr': {'class': 'form-label fw-bold text-dark'}}) }}
+                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '6'}}) }}
+                {{ form_errors(form.content) }}
+            </div>
 
-    <a href="{{ path('app_card_show', {'id': message.card.id}) }}" class="btn btn-secondary mt-3">Retour à la carte</a>
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-check-lg me-1"></i> Enregistrer
+                </button>
+                <a href="{{ path('app_card_show', {'id': message.card.id}) }}" class="btn btn-outline-secondary rounded-pill px-4">
+                    Annuler
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
 </div>
 {% endblock %}
