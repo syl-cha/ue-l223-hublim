@@ -68,7 +68,16 @@
                                     </div>
                                     <div class="user-sub">
                                         <span>{{ card.createdAt is defined ? card.createdAt|date('d/m/Y H:i') : 'Date et heure' }}</span>
-                                        <span>👁 {{ card.views is defined ? card.views : 0 }}</span>
+                                        <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:eye') }} <span>{{ card.views is defined ? card.views : 0 }}</span></span>
+                                        <span class="ms-2 d-inline-flex align-items-center gap-1">
+                                            {% if card.fanUsers|length > 0 %}
+                                                {{ ux_icon('bi:star-fill', {class: 'text-warning'}) }}
+                                            {% else %}
+                                                {{ ux_icon('bi:star') }}
+                                            {% endif %}
+                                            <span>{{ card.fanUsers|length }}</span>
+                                        </span>
+                                        <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ card.messages|length }}</span></span>
                                     </div>
                                 </div>
                             </div>
