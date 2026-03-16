@@ -31,29 +31,3 @@
     </div>
 </div>
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const dropdown = document.querySelector('[data-studyfield-dropdown]');
-
-            if (!dropdown) {
-                return;
-            }
-
-            const toggle = dropdown.querySelector('.studyfield-dropdown-toggle');
-
-            toggle.addEventListener('click', function () {
-                dropdown.classList.toggle('open');
-            });
-
-            document.addEventListener('click', function (event) {
-                if (!dropdown.contains(event.target)) {
-                    dropdown.classList.remove('open');
-                }
-            });
-        });
-    </script>
-{% endblock %}

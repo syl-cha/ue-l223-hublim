@@ -132,8 +132,62 @@ function initPage() {
         };
     });
 
+    // Menu déroulant pour les filières
+    function initStudyfieldDropdown() {
+        const dropdown = document.querySelector('[data-studyfield-dropdown]');
+        if (!dropdown) return;
+
+        const toggle = dropdown.querySelector('.studyfield-dropdown-toggle');
+        const textSpan = dropdown.querySelector('.studyfield-dropdown-text');
+
+        // Accordion
+        dropdown.querySelectorAll('.studyfield-type-toggle').forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.closest('.studyfield-type-group').classList.toggle('open');
+            });
+        });
+
+        // Tout sélectionner / désélectionner
+        document.getElementById('btn-select-all')?.addEventListener('click', function () {
+            dropdown.querySelectorAll('.studyfield-checkbox').forEach(cb => cb.checked = true);
+            updateText();
+        });
+
+        document.getElementById('btn-deselect-all')?.addEventListener('click', function () {
+            dropdown.querySelectorAll('.studyfield-checkbox').forEach(cb => cb.checked = false);
+            updateText();
+        });
+
+        // Texte du bouton
+        function updateText() {
+            const checked = dropdown.querySelectorAll('.studyfield-checkbox:checked');
+            textSpan.textContent = checked.length === 0
+                ? 'Sélectionner les filières'
+                : checked.length + ' filière(s) sélectionnée(s)';
+        }
+
+        updateText();
+
+        dropdown.querySelectorAll('.studyfield-checkbox').forEach(cb => {
+            cb.addEventListener('change', updateText);
+        });
+
+        // Ouverture/fermeture du dropdown principal
+        toggle.addEventListener('click', function () {
+            dropdown.classList.toggle('open');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+    }
+
     // 5. Initialisation Lightbox
     initLightbox();
+    // 6. Studyfield dropdown
+    initStudyfieldDropdown();
 }
 
 /**

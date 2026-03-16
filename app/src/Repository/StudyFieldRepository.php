@@ -16,28 +16,20 @@ class StudyFieldRepository extends ServiceEntityRepository
         parent::__construct($registry, StudyField::class);
     }
 
-    //    /**
-    //     * @return StudyField[] Returns an array of StudyField objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllGrouped(): array
+    {
+        $fields = $this->createQueryBuilder('s')
+            ->orderBy('s.type', 'ASC')
+            ->addOrderBy('s.theme', 'ASC')
+            ->addOrderBy('s.name', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?StudyField
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $grouped = [];
+        foreach ($fields as $field) {
+            $grouped[$field->getType()][$field->getTheme()][] = $field;
+        }
+
+        return $grouped;
+    }
 }

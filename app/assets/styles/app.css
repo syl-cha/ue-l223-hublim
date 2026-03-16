@@ -849,6 +849,78 @@ footer h6 {
 }
 
 
+/** CSS des filières **/
+
+.studyfield-type-group {
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 8px;
+}
+
+.studyfield-type-label {
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    padding: 8px 12px 4px;
+    background-color: #f0f4ff;
+    border-radius: 6px;
+    margin: 6px 0 4px;
+}
+
+.studyfield-theme-group {
+    padding-left: 8px;
+    margin-bottom: 4px;
+}
+
+.studyfield-theme-label {
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: #6b7280;
+    padding: 4px 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+
+.studyfield-type-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px 12px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary);
+    background-color: #f0f4ff;
+}
+
+.studyfield-type-toggle:hover {
+    background-color: #e0e7ff;
+}
+
+.studyfield-type-arrow {
+    transition: transform 0.2s;
+}
+
+.studyfield-type-group.open .studyfield-type-arrow {
+    transform: rotate(180deg);
+}
+
+.studyfield-type-content {
+    display: none;
+    padding: 4px 0;
+}
+
+.studyfield-type-group.open .studyfield-type-content {
+    display: block;
+}
 /********* 
 
 Page d'affichage d'une annonce

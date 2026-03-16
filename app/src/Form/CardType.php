@@ -44,6 +44,15 @@ class CardType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                 ],
+                'group_by' => function (Category $category) {
+                    return $category->getParent() ? $category->getParent()->getName() : null;
+                },
+                'query_builder' => function ($repo) {
+                    return $repo->createQueryBuilder('c')
+                        ->where('c.parent IS NOT NULL')
+                        ->orderBy('c.parent', 'ASC')
+                        ->addOrderBy('c.name', 'ASC');
+                },
             ])
             ->add('targetStatus', EntityType::class, [
                 'class' => Status::class,
@@ -67,9 +76,13 @@ class CardType extends AbstractType
                 'label' => 'Filières concernées',
                 'multiple' => true,
                 'expanded' => true,
-                'row_attr' => [
-                    'class' => 'announce-check-group',
-                ],
+                'query_builder' => function ($repo) {
+                    return $repo->createQueryBuilder('s')
+                        ->orderBy('s.type', 'ASC')
+                        ->addOrderBy('s.theme', 'ASC')
+                        ->addOrderBy('s.name', 'ASC');
+                },
+                'row_attr' => ['class' => 'announce-check-group'],
             ])
             ->add('imageFiles', FileType::class, [
                 'label'    => 'Photos (JPG, PNG, WebP — max 5MB chacune)',
