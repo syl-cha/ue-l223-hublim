@@ -576,7 +576,6 @@ footer h6 {
 /********* Formulaire poster une annonce **********/
 
 .announce-page {
-    background: linear-gradient(180deg, #fff 0%, #fffaf5 100%);
     min-height: calc(100vh - 120px);
 }
 

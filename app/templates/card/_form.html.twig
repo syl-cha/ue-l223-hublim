@@ -76,11 +76,24 @@
             </div>
         </div>
 
-        {# Section Notes / Status / StudyFields #}
+        {# Section catégorie + conseils côte à côte #}
+        <div class="col-lg-6">
+            <div class="announce-card-section h-100">
+                {{ form_label(form.category) }}
+                {{ form_widget(form.category) }}
+                {{ form_errors(form.category) }}
+            </div>
+        </div>
+
         <div class="col-lg-6">
             <div class="announce-card-section h-100 announce-side-note">
                 <h3>Avant de publier</h3>
                 <p class="mb-2">Vérifie que ton annonce est complète et claire.</p>
+                <ul>
+                    <li>Utilise un titre compréhensible en un coup d'œil</li>
+                    <li>Contient les infos essentielles</li>
+                    <li>Cible les bons destinataires</li>
+                </ul>
             </div>
         </div>
 
