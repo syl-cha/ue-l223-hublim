@@ -46,6 +46,11 @@ h5,
 h6 {
     font-family: "Raleway", "sans-serif";
 }
+
+.bg-gris {
+    background-color: var(--color-bg-gris) !important;
+}
+
 /********* Sections **********/
 
 /**** Header ****/
@@ -1036,4 +1041,69 @@ Galerie d'images
 }
 .dropdown-menu {
     min-width: 200px;
+}
+
+
+
+
+
+
+
+/************** Pagination **************/
+
+.pagination {
+    gap: 3rem;
+}
+
+.pagination .page-item {
+    margin: 0 4px;
+}
+
+.pagination .page-link {
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    padding: 0;
+    transition: all 0.2s;
+}
+
+.pagination .pagination-number {
+    background-color: white;
+    color: #374151 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.pagination .pagination-number:hover {
+    background-color: var(--color-secondary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.pagination .pagination-active {
+    background-color: var(--color-secondary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+    transform: scale(1.15);
+}
+
+.pagination .pagination-arrow {
+    background-color: white;
+    color: #374151 !important;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    font-size: 0.85rem;
+}
+
+.pagination .pagination-arrow:hover:not(.disabled) {
+    background-color: #f3f4f6;
+}
+
+.pagination .pagination-arrow.disabled {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
 }

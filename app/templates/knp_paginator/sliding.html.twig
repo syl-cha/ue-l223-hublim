@@ -1,0 +1,36 @@
+{% if pageCount > 1 %}
+<nav aria-label="Pagination">
+    <ul class="pagination justify-content-center align-items-center gap-1">
+
+        {# Précédent #}
+        <li class="page-item">
+            {% if current > 1 %}
+                <a class="page-link pagination-arrow" href="{{ path(route, query|merge({(pageParameterName): current - 1})) }}">«</a>
+            {% else %}
+                <span class="page-link pagination-arrow disabled">«</span>
+            {% endif %}
+        </li>
+
+        {# Pages #}
+        {% for page in pagesInRange %}
+            <li class="page-item">
+                {% if page == current %}
+                    <span class="page-link pagination-active">{{ page }}</span>
+                {% else %}
+                    <a class="page-link pagination-number" href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {# Suivant #}
+        <li class="page-item">
+            {% if current < pageCount %}
+                <a class="page-link pagination-arrow" href="{{ path(route, query|merge({(pageParameterName): current + 1})) }}">»</a>
+            {% else %}
+                <span class="page-link pagination-arrow disabled">»</span>
+            {% endif %}
+        </li>
+
+    </ul>
+</nav>
+{% endif %}
