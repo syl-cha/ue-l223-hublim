@@ -958,3 +958,10 @@ Galerie d'images
 .lb-prev { left: 16px; }
 .lb-next { right: 16px; }
 .lb-prev:hover, .lb-next:hover { background: rgba(255,255,255,0.3); }
+
+.dropdown-item:active {
+    background-color: var(--color-primary); /* Pour garder votre charte graphique */
+}
+.dropdown-menu {
+    min-width: 200px;
+}

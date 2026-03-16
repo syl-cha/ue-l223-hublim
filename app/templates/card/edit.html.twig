@@ -3,11 +3,13 @@
 {% block title %}Edit Card{% endblock %}
 
 {% block body %}
-    <h1>Edit Card</h1>
+    <div class="container py-5">
+        <h1 class="color-primary raleway-600 text-center pb-5">Modifier l'annonce</h1>
 
-    {{ include('card/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('card/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_card_index') }}">back to list</a>
+        <a href="{{ path('app_card_index') }}">Revenir aux annonces</a>
 
-    {{ include('card/_delete_form.html.twig') }}
+        {{ include('card/_delete_form.html.twig') }}
+    </div>
 {% endblock %}

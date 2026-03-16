@@ -195,52 +195,84 @@ final class CardController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_card_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Card $card, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(
+        Request $request, 
+        Card $card, 
+        EntityManagerInterface $entityManager,
+        ImageUploadService $imageUploadService
+    ): Response {
         $form = $this->createForm(CardType::class, $card);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            // 1. SUPPRESSION (Logique identique à ton show)
+            $formData = $request->request->all('image_carte') ?? [];
+            $deleteIds = $formData['delete_images'] ?? [];
+            foreach ($deleteIds as $imageId) {
+                $image = $entityManager->getRepository(Image::class)->find($imageId);
+                if ($image && $image->getCard() === $card) {
+                    // Utilise ta méthode delete() du service comme dans show
+                    $imageUploadService->delete($image->getFileName());
+                    $entityManager->remove($image);
+                }
+            }
+
+            // 2. AJOUTS (Logique copiée de ton show/new)
+            $imageFiles = $form->get('imageFiles')->getData();
+            if ($imageFiles) {
+                foreach ($imageFiles as $file) {
+                    try {
+                        // On récupère le tableau ['filename' => ..., 'size' => ...]
+                        $result = $imageUploadService->upload($file);
+                        
+                        $image = new Image();
+                        // C'est ici qu'on pioche dans le tableau result
+                        $image->setFileName($result['filename']); 
+                        $image->setSize($result['size']);
+                        $image->setPosition($card->getImages()->count());
+                        $image->setCard($card);
+                        
+                        $entityManager->persist($image);
+                    } catch (\InvalidArgumentException $e) {
+                        $this->addFlash('error', $e->getMessage());
+                    }
+                }
+            }
+
             $entityManager->flush();
-            return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);
+            
+            $this->addFlash('success', 'Annonce mise à jour avec succès !');
+            return $this->redirectToRoute('app_card_show', ['id' => $card->getId()], Response::HTTP_SEE_OTHER);
         }
+
+        $response = new Response(null, $form->isSubmitted() && !$form->isValid() 
+            ? Response::HTTP_UNPROCESSABLE_ENTITY // On renvoie 422 si le formulaire est invalide
+            : Response::HTTP_OK
+        );
 
         return $this->render('card/edit.html.twig', [
             'card' => $card,
             'form' => $form,
-        ]);
+        ], $response);
     }
 
-    #[Route('/image/{id}/delete', name: 'app_card_image_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_card_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function deleteImage(
-        Image $image,
+    public function delete(
         Request $request,
-        ImageUploadService $imageUploadService,
+        Card $card,
         EntityManagerInterface $entityManager
     ): Response {
-        $card = $image->getCard();
-
+        // Sécurité : doit être le propriétaire
         if ($this->getUser() !== $card->getUser()) {
-            throw $this->createAccessDeniedException();
+            throw $this->createAccessDeniedException('Vous n\'êtes pas le propriétaire de cette annonce.');
         }
 
-        if ($this->isCsrfTokenValid('delete-image-' . $image->getId(), $request->request->get('_token'))) {
-            $imageUploadService->delete($image->getFileName());
-            $entityManager->remove($image);
-            $entityManager->flush();
-            $this->addFlash('success', 'Photo supprimée.');
-        }
-
-        return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
-    }
-
-    #[Route('/{id}', name: 'app_card_delete', methods: ['POST'])]
-    public function delete(Request $request, Card $card, EntityManagerInterface $entityManager): Response
-    {
         if ($this->isCsrfTokenValid('delete' . $card->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($card);
             $entityManager->flush();
+            $this->addFlash('success', 'Annonce supprimée.');
         }
 
         return $this->redirectToRoute('app_card_index', [], Response::HTTP_SEE_OTHER);

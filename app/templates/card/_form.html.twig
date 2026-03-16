@@ -1,7 +1,16 @@
-{{ form_start(form, {'attr': {'class': 'announce-form', 'enctype': 'multipart/form-data'}}) }}
+{# 1. Début du formulaire avec Turbo désactivé pour éviter les conflits de validation #}
+{{ form_start(form, {
+    'attr': {
+        'class': 'announce-form', 
+        'enctype': 'multipart/form-data', 
+        'data-turbo': 'false'
+    }
+}) }}
     {% if not form.vars.valid %}
         <div class="alert alert-danger announce-alert" role="alert">
             Merci de corriger les champs en erreur avant de publier l'annonce.
+            {# Affichage des erreurs globales si PHP post_max_size est dépassé #}
+            {{ form_errors(form) }}
         </div>
     {% endif %}
 
@@ -24,33 +33,54 @@
 
         <div class="col-12">
             <div class="announce-card-section">
-                {{ form_label(form.imageFiles) }}
+                <h5 class="fw-bold mb-3">Gestion des photos</h5>
+
+                {# --- PHOTOS EXISTANTES --- #}
+                {% if card.images is not empty %}
+                    <div class="row g-2 mb-3">
+                        {% for image in card.images %}
+                            <div class="col-4" id="photo-{{ image.id }}">
+                                <div class="position-relative">
+                                    <img src="/uploads/cards/{{ image.fileName }}" 
+                                         class="w-100 rounded-2 shadow-sm" 
+                                         style="height:100px; object-fit:cover;">
+                                    
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle btn-mark-delete" 
+                                            data-image-id="{{ image.id }}">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+
+                                    {# CORRECTION : Le nom doit être image_carte pour correspondre à ton Controller #}
+                                    <input type="checkbox" 
+                                           name="image_carte[delete_images][]" 
+                                           value="{{ image.id }}" 
+                                           id="delete-{{ image.id }}" 
+                                           class="d-none">
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {# --- AJOUT DE NOUVELLES PHOTOS --- #}
                 <div class="mt-2">
-                    {{ form_widget(form.imageFiles) }}
+                    {{ form_label(form.imageFiles, "Ajouter des photos", {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.imageFiles, {'attr': {'class': 'form-control', 'id': 'card_imageFiles'}}) }}
+                    {{ form_errors(form.imageFiles) }}
+                    <small class="text-muted">Max 10 photos au total.</small>
                 </div>
-                {{ form_errors(form.imageFiles) }}
-                <small class="text-muted">Tu peux sélectionner plusieurs photos à la fois (max 10). Formats acceptés : JPG, PNG, WebP — max 5MB par photo.</small>
-                <div id="preview-grid" class="row g-2 mt-2" style="display:none;"></div>
+
+                {# Zone de prévisualisation gérée par le JS #}
+                <div id="preview-grid" class="row g-2 mt-2"></div>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="announce-card-section h-100">
-                {{ form_label(form.category) }}
-                {{ form_widget(form.category) }}
-                {{ form_errors(form.category) }}
-            </div>
-        </div>
-
+        {# Section Notes / Status / StudyFields #}
         <div class="col-lg-6">
             <div class="announce-card-section h-100 announce-side-note">
                 <h3>Avant de publier</h3>
-                <p class="mb-2">Vérifie que ton annonce :</p>
-                <ul class="mb-0">
-                    <li>utilise un titre compréhensible en un coup d'œil ;</li>
-                    <li>contient les infos essentielles ;</li>
-                    <li>cible les bons destinataires.</li>
-                </ul>
+                <p class="mb-2">Vérifie que ton annonce est complète et claire.</p>
             </div>
         </div>
 
@@ -72,13 +102,11 @@
         <div class="col-12">
             <div class="announce-card-section">
                 <div class="announce-group-title">{{ form_label(form.targetStudyFields) }}</div>
-
                 <div class="studyfield-dropdown" data-studyfield-dropdown>
                     <button type="button" class="studyfield-dropdown-toggle">
-                        <span class="studyfield-dropdown-text">Sélectionner une ou plusieurs filières</span>
+                        <span class="studyfield-dropdown-text">Sélectionner les filières</span>
                         <span class="studyfield-dropdown-arrow">▾</span>
                     </button>
-
                     <div class="studyfield-dropdown-menu">
                         <div class="studyfield-dropdown-list">
                             {% for child in form.targetStudyFields %}
@@ -90,7 +118,6 @@
                         </div>
                     </div>
                 </div>
-
                 {{ form_errors(form.targetStudyFields) }}
             </div>
         </div>
@@ -100,6 +127,8 @@
 
     <div class="announce-actions d-flex justify-content-end gap-3 mt-4">
         <a href="{{ path('app_card_index') }}" class="btn btn-light rounded-pill px-4">Annuler</a>
-        <button class="btn btn-orange rounded-pill px-4">{{ button_label|default('Enregistrer') }}</button>
+        <button type="submit" class="btn btn-orange rounded-pill px-4">
+            {{ button_label|default('Enregistrer') }}
+        </button>
     </div>
 {{ form_end(form) }}
