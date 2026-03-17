@@ -14,8 +14,9 @@ use Faker\Factory;
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
     private $hasher;
-    public function __construct(UserPasswordHasherInterface $hasher) { 
-      $this->hasher = $hasher; 
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
     }
 
     public function load(ObjectManager $manager): void
@@ -25,7 +26,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         // Récupérer le statut et les filières
         $statusStudent = $this->getReference('status_student', Status::class);
         $statusTeacher = $this->getReference('status_teacher', Status::class);
-        $statusStaff = $this->getReference('status_staff',Status::class);
+        $statusStaff = $this->getReference('status_staff', Status::class);
 
         $studyFields = [];
         $index = 0;
@@ -54,7 +55,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($admin);
 
         //On crée les utilisateurs
-        for ($i = 0; $i < 10; $i++){
+        for ($i = 0; $i < 10; $i++) {
             //On définit le nom d'abord pour pouvoir réutiliser les variables dans l'email
             $firstName = $faker->firstName();
             $lastName  = $faker->lastName();
@@ -70,6 +71,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setIsVerified(true);
             $user->setTwoFactorSecret('none');
+            $user->setRoles(['ROLE_USER']);
 
             $manager->persist($user);
 
@@ -91,4 +93,3 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         ];
     }
 }
-
