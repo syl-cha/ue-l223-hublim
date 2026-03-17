@@ -39,6 +39,20 @@ class Category
     #[ORM\OneToMany(targetEntity: Card::class, mappedBy: 'category', orphanRemoval: true)]
     private Collection $cards;
 
+    #[ORM\Column(length: 7, nullable: true)]
+    private ?string $color = null;
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): static
+    {
+        $this->color = $color;
+        return $this;
+    }
+
     public function __construct()
     {
         $this->subCategories = new ArrayCollection();

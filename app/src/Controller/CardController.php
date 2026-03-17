@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Card;
 use App\Form\CardType;
 use App\Repository\CardRepository;
+use App\Repository\CategoryRepository;
 use App\Repository\StudyFieldRepository;
 use App\Entity\Image;
 use App\Form\CardImageType;
@@ -61,7 +62,8 @@ final class CardController extends AbstractController
         Request $request,
         EntityManagerInterface $entityManager,
         ImageUploadService $imageUploadService,
-        StudyFieldRepository $studyFieldRepository
+        StudyFieldRepository $studyFieldRepository,
+        CategoryRepository $categoryRepository
     ): Response {
         $card = new Card();
         $card->setUser($this->getUser());
@@ -96,6 +98,7 @@ final class CardController extends AbstractController
             'card' => $card,
             'form' => $form,
             'studyFieldsGrouped' => $studyFieldRepository->findAllGrouped(),
+            'categories' => $categoryRepository->findParentsWithChildren(),
         ]);
     }
 
@@ -161,7 +164,8 @@ final class CardController extends AbstractController
         Card $card, 
         EntityManagerInterface $entityManager,
         ImageUploadService $imageUploadService,
-        StudyFieldRepository $studyFieldRepository
+        StudyFieldRepository $studyFieldRepository,
+        CategoryRepository $categoryRepository
     ): Response {
         if ($this->getUser() !== $card->getUser()) {
             $this->addFlash('error', 'Vous n\'êtes pas le propriétaire de cette annonce.');
@@ -222,6 +226,7 @@ final class CardController extends AbstractController
             'card' => $card,
             'form' => $form,
             'studyFieldsGrouped' => $studyFieldRepository->findAllGrouped(),
+            'categories' => $categoryRepository->findParentsWithChildren(),
         ], $response);
     }
 

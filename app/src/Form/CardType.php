@@ -42,13 +42,19 @@ class CardType extends AbstractType
                 'label' => 'Catégorie',
                 'placeholder' => 'Choisir une catégorie',
                 'attr' => [
-                    'class' => 'form-select',
+                    'class' => 'form-select category-select',
                 ],
+                'choice_attr' => function (Category $category) {
+                    $color = $category->getParent() ? $category->getParent()->getColor() : null;
+                    return $color ? ['data-color' => $color] : [];
+                },
                 'group_by' => function (Category $category) {
                     return $category->getParent() ? $category->getParent()->getName() : null;
                 },
                 'query_builder' => function ($repo) {
                     return $repo->createQueryBuilder('c')
+                        ->leftJoin('c.parent', 'p')
+                        ->addSelect('p')
                         ->where('c.parent IS NOT NULL')
                         ->orderBy('c.parent', 'ASC')
                         ->addOrderBy('c.name', 'ASC');

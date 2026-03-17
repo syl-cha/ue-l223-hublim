@@ -80,7 +80,39 @@
         <div class="col-lg-6">
             <div class="announce-card-section h-100">
                 {{ form_label(form.category) }}
-                {{ form_widget(form.category) }}
+                {% do form.category.setRendered() %}
+
+                <div class="category-dropdown">
+                    <button type="button" class="category-dropdown-toggle">
+                        <span class="category-dropdown-text">
+                            {% if card.category %}
+                                {{ card.category.name }}
+                            {% else %}
+                                Choisir une catégorie
+                            {% endif %}
+                        </span>
+                        <span>▾</span>
+                    </button>
+                    <div class="category-dropdown-menu">
+                        {% for parent in categories %}
+                            <div class="category-group">
+                                <div class="category-group-title" style="color: {{ parent.color }}">
+                                    ● {{ parent.name }}
+                                </div>
+                                {% for sub in parent.subCategories %}
+                                    <label class="category-item" style="--cat-color: {{ parent.color }}">
+                                        <input type="radio"
+                                            name="card[category]"
+                                            value="{{ sub.id }}"
+                                            class="category-radio d-none"
+                                            {% if card.category and card.category.id == sub.id %}checked{% endif %}>
+                                        <span>{{ sub.name }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
                 {{ form_errors(form.category) }}
             </div>
         </div>

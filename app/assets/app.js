@@ -188,6 +188,26 @@ function initPage() {
     initLightbox();
     // 6. Studyfield dropdown
     initStudyfieldDropdown();
+
+    // 8. Category dropdown custom
+    const catDropdown = document.querySelector('.category-dropdown');
+    if (catDropdown) {
+        const toggle = catDropdown.querySelector('.category-dropdown-toggle');
+        const text = catDropdown.querySelector('.category-dropdown-text');
+
+        toggle.addEventListener('click', () => catDropdown.classList.toggle('open'));
+
+        document.addEventListener('click', (e) => {
+            if (!catDropdown.contains(e.target)) catDropdown.classList.remove('open');
+        });
+
+        catDropdown.querySelectorAll('.category-radio').forEach(radio => {
+            radio.addEventListener('change', function () {
+                text.textContent = this.closest('.category-item').querySelector('span').textContent;
+                catDropdown.classList.remove('open');
+            });
+        });
+    }
 }
 
 /**

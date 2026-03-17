@@ -21,6 +21,7 @@ class CategoryFixtures extends Fixture
         $category = new Category();
         $category -> setName($c['nom']);
         $category -> setSlug($c['slug']);
+        $category->setColor($c['color'] ?? null);
         $manager  -> persist($category);
         $categories[] = $category;
 

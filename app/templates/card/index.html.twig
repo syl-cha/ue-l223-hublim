@@ -77,7 +77,11 @@
                                 <div class="user-name">
                                     {{ card.user.email|split('@')[0] }}
                                     {% if card.category %}
-                                        <span class="text-muted fw-normal"> | <em>{{ card.category.name }}</em></span>
+                                        {% set color = card.category.parent ? card.category.parent.color : card.category.color %}
+                                        <span class="fw-normal"> | 
+                                            <span style="color: {{ color }}">●</span>
+                                            <em style="color: {{ color }}">{{ card.category.name }}</em>
+                                        </span>
                                     {% endif %}
                                 </div>
                                 <div class="user-sub">
