@@ -20,14 +20,14 @@ class StudyFieldRepository extends ServiceEntityRepository
     {
         $fields = $this->createQueryBuilder('s')
             ->orderBy('s.type', 'ASC')
-            ->addOrderBy('s.theme', 'ASC')
+            ->addOrderBy('s.department', 'ASC')
             ->addOrderBy('s.name', 'ASC')
             ->getQuery()
             ->getResult();
 
         $grouped = [];
         foreach ($fields as $field) {
-            $grouped[$field->getType()][$field->getTheme()][] = $field;
+            $grouped[$field->getType()][$field->getDepartment()][] = $field;
         }
 
         return $grouped;

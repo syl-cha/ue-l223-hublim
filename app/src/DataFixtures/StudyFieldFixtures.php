@@ -11,23 +11,22 @@ class StudyFieldFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         //On charge les filières depuis le json
-      $filiereData = json_decode(file_get_contents(__DIR__ . '/data/filieres.json'), true);
+        $filiereData = json_decode(file_get_contents(__DIR__ . '/data/filieres.json'), true);
 
-      $filieres = [];
-      $index = 0;
+        $filieres = [];
+        $index = 0;
 
-      foreach ($filiereData as $f){
-        $studyField = new StudyField();
-        $studyField -> setName($f['nom']);
-        $studyField -> setType($f['type']);
-        $studyField -> setTheme($f['theme']);     
-        $manager->persist($studyField);
-        $filieres[] = $studyField;
+        foreach ($filiereData as $f) {
+            $studyField = new StudyField();
+            $studyField->setName($f['nom']);
+            $studyField->setType($f['type']);
+            $studyField->setDepartment($f['department']);
+            $manager->persist($studyField);
+            $filieres[] = $studyField;
 
-        // Pour pouvoir les réutiliser
-        $this->addReference('studyfield_' . $index, $studyField);
-        $index ++;
-
+            // Pour pouvoir les réutiliser
+            $this->addReference('studyfield_' . $index, $studyField);
+            $index++;
         }
 
         $manager->flush();

@@ -1,0 +1,17 @@
+[
+    {
+        "code": "SCI",
+        "label": "Sciences, Technologies, Santé",
+        "color": "#e85412"
+    },
+    {
+        "code": "DEG",
+        "label": "Droit, Économie, Gestion",
+        "color": "#7e64a4"
+    },
+    {
+        "code": "HUM",
+        "label": "Arts, Lettres, Langues, Sciences Humaines",
+        "color": "#a2a93f"
+    }
+]

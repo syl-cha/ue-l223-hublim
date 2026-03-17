@@ -63,7 +63,7 @@ class CardType extends AbstractType
             ->add('targetStatus', EntityType::class, [
                 'class' => Status::class,
                 'choice_label' => function (Status $status) {
-                    return match($status->getLabel()->value) {
+                    return match ($status->getLabel()->value) {
                         'student' => 'Étudiant',
                         'teacher' => 'Enseignant',
                         'staff' => 'Personnel'
@@ -85,7 +85,7 @@ class CardType extends AbstractType
                 'query_builder' => function ($repo) {
                     return $repo->createQueryBuilder('s')
                         ->orderBy('s.type', 'ASC')
-                        ->addOrderBy('s.theme', 'ASC')
+                        ->addOrderBy('s.department', 'ASC')
                         ->addOrderBy('s.name', 'ASC');
                 },
                 'row_attr' => ['class' => 'announce-check-group'],

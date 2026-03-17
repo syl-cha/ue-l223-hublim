@@ -1,8 +1,8 @@
 {# 1. Début du formulaire avec Turbo désactivé pour éviter les conflits de validation #}
 {{ form_start(form, {
     'attr': {
-        'class': 'announce-form', 
-        'enctype': 'multipart/form-data', 
+        'class': 'announce-form',
+        'enctype': 'multipart/form-data',
         'data-turbo': 'false'
     }
 }) }}
@@ -41,21 +41,21 @@
                         {% for image in card.images %}
                             <div class="col-4" id="photo-{{ image.id }}">
                                 <div class="position-relative">
-                                    <img src="/uploads/cards/{{ image.fileName }}" 
-                                         class="w-100 rounded-2 shadow-sm" 
+                                    <img src="/uploads/cards/{{ image.fileName }}"
+                                         class="w-100 rounded-2 shadow-sm"
                                          style="height:100px; object-fit:cover;">
-                                    
-                                    <button type="button" 
-                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle btn-mark-delete" 
+
+                                    <button type="button"
+                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle btn-mark-delete"
                                             data-image-id="{{ image.id }}">
                                         <i class="bi bi-x"></i>
                                     </button>
 
                                     {# CORRECTION : Le nom doit être image_carte pour correspondre à ton Controller #}
-                                    <input type="checkbox" 
-                                           name="image_carte[delete_images][]" 
-                                           value="{{ image.id }}" 
-                                           id="delete-{{ image.id }}" 
+                                    <input type="checkbox"
+                                           name="image_carte[delete_images][]"
+                                           value="{{ image.id }}"
+                                           id="delete-{{ image.id }}"
                                            class="d-none">
                                 </div>
                             </div>
@@ -169,16 +169,16 @@
                             {% set selectedIds = selectedIds|merge([field.id]) %}
                         {% endfor %}
 
-                        {% for type, themes in studyFieldsGrouped %}
+                        {% for type, departments in studyFieldsGrouped %}
                             <div class="studyfield-type-group">
                                 <button type="button" class="studyfield-type-toggle">
                                     {{ type }}
                                     <span class="studyfield-type-arrow">▾</span>
                                 </button>
                                 <div class="studyfield-type-content">
-                                    {% for theme, fields in themes %}
-                                        <div class="studyfield-theme-group">
-                                            <div class="studyfield-theme-label">{{ theme }}</div>
+                                    {% for department, fields in departments %}
+                                        <div class="studyfield-department-group">
+                                            <div class="studyfield-department-label">{{ department }}</div>
                                             {% for field in fields %}
                                                 <label class="studyfield-dropdown-item">
                                                     <input type="checkbox"

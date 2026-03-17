@@ -19,7 +19,7 @@ class StudyField
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $theme = null;
+    private ?string $department = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -59,14 +59,14 @@ class StudyField
         return $this;
     }
 
-    public function getTheme(): ?string
+    public function getDepartment(): ?string
     {
-        return $this->theme;
+        return $this->department;
     }
 
-    public function setTheme(string $theme): static
+    public function setDepartment(string $department): static
     {
-        $this->theme = $theme;
+        $this->department = $department;
 
         return $this;
     }
@@ -85,7 +85,7 @@ class StudyField
 
     public function __toString(): string
     {
-        return $this->name; 
+        return $this->name;
     }
 
     /**
