@@ -3,10 +3,12 @@
 namespace App\DataFixtures;
 
 use App\Entity\StudyField;
+use App\Entity\Department;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class StudyFieldFixtures extends Fixture
+class StudyFieldFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
@@ -20,7 +22,11 @@ class StudyFieldFixtures extends Fixture
             $studyField = new StudyField();
             $studyField->setName($f['nom']);
             $studyField->setType($f['type']);
-            $studyField->setDepartment($f['department']);
+
+            // On récupère l'entité Department via la référence créée dans DepartmentFixtures
+            $department = $this->getReference('department_' . $f['department'], Department::class);
+            $studyField->setDepartment($department);
+
             $manager->persist($studyField);
             $filieres[] = $studyField;
 
@@ -30,5 +36,12 @@ class StudyFieldFixtures extends Fixture
         }
 
         $manager->flush();
+    }
+    // pour indiquer que la table Departement doit être construire AVANT StudyField
+    public function getDependencies(): array
+    {
+        return [
+            DepartmentFixtures::class,
+        ];
     }
 }

@@ -27,7 +27,18 @@ class StudyFieldRepository extends ServiceEntityRepository
 
         $grouped = [];
         foreach ($fields as $field) {
-            $grouped[$field->getType()][$field->getDepartment()][] = $field;
+            $department = $field->getDepartment();
+            $deptKey = $department ? $department->getCode() : 'none';
+
+            // On initialise la structure pour le type et le département
+            if (!isset($grouped[$field->getType()][$deptKey])) {
+                $grouped[$field->getType()][$deptKey] = [
+                    'department' => $department, // l'objet complet
+                    'fields' => []
+                ];
+            }
+
+            $grouped[$field->getType()][$deptKey]['fields'][] = $field;
         }
 
         return $grouped;

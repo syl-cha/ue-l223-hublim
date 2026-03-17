@@ -176,11 +176,15 @@
                                     <span class="studyfield-type-arrow">▾</span>
                                 </button>
                                 <div class="studyfield-type-content">
-                                    {% for department, fields in departments %}
+                                    {% for deptKey, deptData in departments %}
+                                        {% set dept = deptData.department %}
+                                        {% set fields = deptData.fields %}
+                                        {% set deptColor = dept ? dept.color : '#6b7280' %}
+
                                         <div class="studyfield-department-group">
-                                            <div class="studyfield-department-label">{{ department }}</div>
+                                            <div class="studyfield-department-label" style="color: {{ deptColor }}">{{ dept ? dept.label : 'Non catégorisé' }}</div>
                                             {% for field in fields %}
-                                                <label class="studyfield-dropdown-item">
+                                                <label class="studyfield-dropdown-item" style="--dept-color: {{ deptColor }};">
                                                     <input type="checkbox"
                                                         name="card[targetStudyFields][]"
                                                         value="{{ field.id }}"

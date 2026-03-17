@@ -19,9 +19,6 @@ class StudyField
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $department = null;
-
-    #[ORM\Column(length: 255)]
     private ?string $name = null;
 
     /**
@@ -35,6 +32,10 @@ class StudyField
      */
     #[ORM\ManyToMany(targetEntity: Card::class, mappedBy: 'targetStudyFields')]
     private Collection $relatedCards;
+
+    #[ORM\ManyToOne(inversedBy: 'studyFields')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Department $department = null;
 
     public function __construct()
     {
@@ -55,18 +56,6 @@ class StudyField
     public function setType(string $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function getDepartment(): ?string
-    {
-        return $this->department;
-    }
-
-    public function setDepartment(string $department): static
-    {
-        $this->department = $department;
 
         return $this;
     }
@@ -141,6 +130,18 @@ class StudyField
         if ($this->relatedCards->removeElement($relatedCard)) {
             $relatedCard->removeTargetStudyField($this);
         }
+
+        return $this;
+    }
+
+    public function getDepartment(): ?Department
+    {
+        return $this->department;
+    }
+
+    public function setDepartment(?Department $department): static
+    {
+        $this->department = $department;
 
         return $this;
     }

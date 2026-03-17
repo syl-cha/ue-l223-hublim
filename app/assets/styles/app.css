@@ -818,25 +818,37 @@ footer h6 {
     align-items: center;
     gap: 0.65rem;
     padding: 0.75rem 0.85rem;
-    border: 1px solid #f0e4d7;
+    border: 1px solid
+        color-mix(in srgb, var(--dept-color, #f0e4d7) 30%, transparent);
     border-radius: 12px;
     background: #fffaf5;
     cursor: pointer;
     transition:
         border-color 0.15s ease,
         box-shadow 0.15s ease,
+        background-color 0.15s ease,
         transform 0.15s ease;
 }
 
 .studyfield-dropdown-item:hover {
-    border-color: var(--color-secondary);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    border-color: var(--dept-color, var(--color-secondary));
+    box-shadow: 0 6px 18px
+        color-mix(in srgb, var(--dept-color, #000) 15%, transparent);
     transform: translateY(-1px);
+}
+
+.studyfield-dropdown-item:has(input:checked) {
+    background-color: color-mix(
+        in srgb,
+        var(--dept-color, var(--color-secondary)) 10%,
+        white
+    );
+    border-color: var(--dept-color, var(--color-secondary));
 }
 
 .studyfield-dropdown-item input {
     margin: 0;
-    accent-color: var(--color-secondary);
+    accent-color: var(--dept-color, var(--color-secondary));
     flex-shrink: 0;
 }
 

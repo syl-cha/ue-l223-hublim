@@ -92,6 +92,23 @@ class InitDataCommand extends Command
         }
 
         // ---------------------------------------------------------
+        // 2bis. DEPARTEMENTS
+        // ---------------------------------------------------------
+        $io->section('📥 Importation des départements...');
+        $jsonDepartments = file_get_contents($projectDir . '/src/DataFixtures/data/departements.json');
+        $departmentData = json_decode($jsonDepartments, true);
+        $departementsAssoc = [];
+
+        foreach ($departmentData as $d) {
+            $dept = new \App\Entity\Department();
+            $dept->setCode($d['code']);
+            $dept->setLabel($d['label']);
+            $dept->setColor($d['color']);
+            $this->entityManager->persist($dept);
+            $departementsAssoc[$d['code']] = $dept;
+        }
+
+        // ---------------------------------------------------------
         // 3. FILIÈRES / STUDY FIELDS
         // ---------------------------------------------------------
         $io->section('📥 Importation des filières...');
@@ -102,7 +119,11 @@ class InitDataCommand extends Command
             $studyField = new StudyField();
             $studyField->setName($f['nom']);
             $studyField->setType($f['type']);
-            $studyField->setDepartment($f['department']);
+
+            if (isset($departementsAssoc[$f['department']])) {
+                $studyField->setDepartment($departementsAssoc[$f['department']]);
+            }
+
             $this->entityManager->persist($studyField);
             $toutesLesFilieres[] = $studyField;
         }
@@ -137,7 +158,7 @@ class InitDataCommand extends Command
         $io->text('👍 L\'utilisateur John Lambda créé avec succès.');
 
         // création d'u utilisateur lambda
-        $io->section('2/ Création d\'un compte utilisateur classique (Étudiant)');
+        $io->text('2/ Création d\'un compte utilisateur classique (Étudiant)');
         $userEmail = $io->ask('Quelle adresse email pour l\'utilisateur lambda ?', 'test@hublim.bradype.fr');
         $userPassword = $io->askHidden('Veuillez taper le mot de passe pour cet utilisateur :');
         if (empty($userPassword)) {
