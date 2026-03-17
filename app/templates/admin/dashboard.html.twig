@@ -1,0 +1,185 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - HubLim{% endblock %}
+{% block body_class %}bg-gris{% endblock %}
+
+{% block body %}
+<div class="container px-4 py-5">
+    <h1 class="fw-bold text-primary raleway-500 mb-4">
+        <i class="bi bi-shield-lock-fill"></i> Administration
+    </h1>
+
+    {# Stats #}
+    <div class="row g-3 mb-5">
+        <div class="col-md-3">
+            <div class="shadow-sm rounded-4 p-4 bg-white text-center">
+                <div class="fs-2 fw-bold text-primary">{{ totalCards }}</div>
+                <div class="text-muted">Annonces</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="shadow-sm rounded-4 p-4 bg-white text-center">
+                <div class="fs-2 fw-bold text-primary">{{ totalUsers }}</div>
+                <div class="text-muted">Utilisateurs</div>
+            </div>
+        </div>
+    </div>
+
+    {# Gestion des annonces #}
+    <div id="annonces" class="shadow-sm rounded-4 p-4 bg-white mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-primary raleway-500 mb-0">
+                <i class="bi bi-megaphone-fill"></i> Gestion des annonces
+            </h3>
+            <form method="get" action="{{ path('app_admin_dashboard') }}#annonces" class="d-flex" style="max-width: 450px;">
+                {# Recherche des annonces #}
+                {% if searchUsers %}<input type="hidden" name="search_users" value="{{ searchUsers }}">{% endif %}
+                <input type="text" name="search_cards" class="form-control form-control-sm rounded-pill me-2"
+                       placeholder="Rechercher une annonce" value="{{ searchCards }}">
+                <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if searchCards %}
+                    <a href="{{ path('app_admin_dashboard', {search_users: searchUsers}) }}#annonces" class="btn btn-sm btn-outline-secondary rounded-pill ms-1 px-3">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Titre</th>
+                        <th>Auteur</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Vues</th>
+                        <th>Favoris</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for card in cards %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_card_show', {id: card.id}) }}" class="text-decoration-none fw-semibold">
+                                {{ card.title|length > 50 ? card.title[:50] ~ '...' : card.title }}
+                            </a>
+                        </td>
+                        <td>{{ card.user.firstName }} {{ card.user.lastName }}</td>
+                        <td>{{ card.createdAt|date('d/m/Y') }}</td>
+                        <td>
+                            <span class="badge rounded-pill bg-{{ card.state.value == 'published' ? 'success' : (card.state.value == 'draft' ? 'secondary' : (card.state.value == 'archived' ? 'warning' : 'info')) }}">
+                                {{ card.state.value }}
+                            </span>
+                        </td>
+                        <td>{{ card.views }}</td>
+                        <td>{{ card.fanUsers|length }}</td>
+                        <td class="text-end">
+                            <a href="{{ path('app_card_edit', {id: card.id}) }}" class="btn btn-sm btn-outline-primary rounded-pill me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="post" action="{{ path('app_admin_card_delete', {id: card.id}) }}" class="d-inline"
+                                  onsubmit="return confirm('Supprimer cette annonce ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('admin_delete' ~ card.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">Aucune annonce trouvée.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ knp_pagination_render(cards) }}
+        </div>
+    </div>
+
+    {# Gestion des utilisateurs #}
+    <div id="utilisateurs" class="shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-primary raleway-500 mb-0">
+                <i class="bi bi-people-fill"></i> Gestion des utilisateurs
+            </h3>
+            <form method="get" action="{{ path('app_admin_dashboard') }}#utilisateurs" class="d-flex" style="max-width: 450px;">
+                {# Conserver le filtre cards si actif #}
+                {% if searchCards %}<input type="hidden" name="search_cards" value="{{ searchCards }}">{% endif %}
+                <input type="text" name="search_users" class="form-control form-control-sm rounded-pill me-2"
+                       placeholder="Rechercher un utilisateur" value="{{ searchUsers }}">
+                <button type="submit" class="btn btn-sm btn-primary rounded-pill px-3">
+                    <i class="bi bi-search"></i>
+                </button>
+                {% if searchUsers %}
+                    <a href="{{ path('app_admin_dashboard', {search_cards: searchCards}) }}#utilisateurs" class="btn btn-sm btn-outline-secondary rounded-pill ms-1 px-3">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Statut</th>
+                        <th>Role</th>
+                        <th>Inscrit le</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td class="fw-semibold">{{ user.firstName }} {{ user.lastName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.status %}
+                                <span class="badge rounded-pill" style="background-color: var(--color-primary);">{{ user.status.label.value }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge rounded-pill bg-danger">Admin</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-secondary">Utilisateur</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                        <td class="text-end">
+                            {% if user != app.user %}
+                                <form method="post" action="{{ path('app_admin_toggle_role', {id: user.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle_admin' ~ user.id) }}">
+                                    <button type="submit" class="btn btn-sm rounded-pill {{ 'ROLE_ADMIN' in user.roles ? 'btn-outline-danger' : 'btn-outline-success' }}"
+                                            onclick="return confirm('{{ 'ROLE_ADMIN' in user.roles ? 'Retirer les droits admin ?' : 'Donner les droits admin ?' }}');">
+                                        {{ 'ROLE_ADMIN' in user.roles ? 'Retirer admin' : 'Rendre admin' }}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted fst-italic">Vous</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Aucun utilisateur trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            {{ knp_pagination_render(users) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

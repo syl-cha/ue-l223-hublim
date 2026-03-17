@@ -167,7 +167,7 @@ final class CardController extends AbstractController
         StudyFieldRepository $studyFieldRepository,
         CategoryRepository $categoryRepository
     ): Response {
-        if ($this->getUser() !== $card->getUser()) {
+        if ($this->getUser() !== $card->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'Vous n\'êtes pas le propriétaire de cette annonce.');
             return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
         }
@@ -237,7 +237,7 @@ final class CardController extends AbstractController
         Card $card,
         EntityManagerInterface $entityManager
     ): Response {
-        if ($this->getUser() !== $card->getUser()) {
+        if ($this->getUser() !== $card->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'Vous n\'êtes pas le propriétaire de cette annonce.');
             return $this->redirectToRoute('app_card_show', ['id' => $card->getId()]);
         }
