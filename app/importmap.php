@@ -41,25 +41,4 @@ return [
     '@popperjs/core' => [
         'version' => '2.11.8',
     ],
-    'masonry-layout' => [
-        'version' => '4.2.2',
-    ],
-    'outlayer' => [
-        'version' => '2.1.1',
-    ],
-    'get-size' => [
-        'version' => '2.0.3',
-    ],
-    'ev-emitter' => [
-        'version' => '2.1.2',
-    ],
-    'fizzy-ui-utils' => [
-        'version' => '2.0.5',
-    ],
-    'desandro-matches-selector' => [
-        'version' => '2.0.2',
-    ],
-    'imagesloaded' => [
-        'version' => '5.0.0',
-    ],
 ];

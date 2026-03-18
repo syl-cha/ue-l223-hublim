@@ -7,13 +7,9 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ImageUploadService
 {
-    private const SIZES = [
-        'thumb'  => [400, 300],    // mosaïque
-        'medium' => [800, 600],    // page carte
-        'full'   => [1920, 1080],  // galerie / lightbox
-    ];
-
-    private const WEBP_QUALITY = 88;
+    private const MAX_WIDTH = 1200;
+    private const MAX_HEIGHT = 900;
+    private const WEBP_QUALITY = 82;
     private const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -34,29 +30,20 @@ class ImageUploadService
             throw new \InvalidArgumentException('Fichier trop volumineux (maximum 5MB).');
         }
 
-        // Nom de base sécurisé et unique
+        // Nom sécurisé unique
         $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeName = $this->slugger->slug($originalName);
-        $baseName = $safeName . '-' . uniqid();
+        $newFilename = $safeName . '-' . uniqid() . '.webp';
 
-        // Génère les 3 variantes
-        foreach (self::SIZES as $suffix => [$maxW, $maxH]) {
-            $filename = $baseName . '-' . $suffix . '.webp';
-            $this->processAndSave(
-                $file->getPathname(),
-                $this->uploadDir . '/' . $filename,
-                $maxW,
-                $maxH
-            );
-        }
+        $this->processAndSave($file->getPathname(), $this->uploadDir . '/' . $newFilename);
 
         return [
-            'filename' => $baseName, // stocké en base SANS suffix ni extension
-            'size'     => filesize($this->uploadDir . '/' . $baseName . '-full.webp'),
+            'filename' => $newFilename,
+            'size'     => filesize($this->uploadDir . '/' . $newFilename),
         ];
     }
 
-    private function processAndSave(string $sourcePath, string $destPath, int $maxW, int $maxH): void
+    private function processAndSave(string $sourcePath, string $destPath): void
     {
         $mime = mime_content_type($sourcePath);
 
@@ -68,7 +55,7 @@ class ImageUploadService
         };
 
         [$width, $height] = getimagesize($sourcePath);
-        [$newWidth, $newHeight] = $this->calculateDimensions($width, $height, $maxW, $maxH);
+        [$newWidth, $newHeight] = $this->calculateDimensions($width, $height);
 
         $resized = imagecreatetruecolor($newWidth, $newHeight);
         imagealphablending($resized, false);
@@ -81,22 +68,20 @@ class ImageUploadService
         imagedestroy($resized);
     }
 
-    private function calculateDimensions(int $width, int $height, int $maxW, int $maxH): array
+    private function calculateDimensions(int $width, int $height): array
     {
-        if ($width <= $maxW && $height <= $maxH) {
+        if ($width <= self::MAX_WIDTH && $height <= self::MAX_HEIGHT) {
             return [$width, $height];
         }
-        $ratio = min($maxW / $width, $maxH / $height);
+        $ratio = min(self::MAX_WIDTH / $width, self::MAX_HEIGHT / $height);
         return [(int)($width * $ratio), (int)($height * $ratio)];
     }
 
-    public function delete(string $baseName): void
+    public function delete(string $filename): void
     {
-        foreach (array_keys(self::SIZES) as $suffix) {
-            $path = $this->uploadDir . '/' . $baseName . '-' . $suffix . '.webp';
-            if (file_exists($path)) {
-                unlink($path);
-            }
+        $path = $this->uploadDir . '/' . $filename;
+        if (file_exists($path)) {
+            unlink($path);
         }
     }
 }
