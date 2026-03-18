@@ -15,6 +15,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class CardFixtures extends Fixture implements DependentFixtureInterface
 {
+    private const SIZES = [
+        'thumb'  => [400, 300],
+        'medium' => [800, 600],
+        'full'   => [1920, 1080],
+    ];
+
     public function __construct(private string $uploadDir) {}
 
     public function load(ObjectManager $manager): void
@@ -35,17 +41,14 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
             }
         }
 
-
-        //On crée nos cartes
         for ($i = 0; $i < 20; $i++) {
             $card = new Card();
-            $card->setTitle($faker->sentence(6, true));
-            $card->setDescription($faker->paragraphs(3, true));
+            $card->setTitle($faker->sentence($faker->numberBetween(3, 12), true));
+            $card->setDescription($faker->paragraphs($faker->numberBetween(1, 5), true));
             $card->setState($faker->randomElement($cardStates));
             $card->setCreatedAt(new \DateTimeImmutable());
             $card->setViews($faker->numberBetween(0, 50));
 
-            //On choisit un user aléatoire
             $users = [];
             for ($j = 0; $j < 10; $j++) {
                 $users[] = $this->getReference('user_' . $j, User::class);
@@ -53,18 +56,22 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
             $card->setUser($faker->randomElement($users));
             $card->setCategory($faker->randomElement($subcategories));
 
-            // Entre 1 et 4 images par annonce
-            $nbImages = $faker->numberBetween(1, 4);
-            for ($k = 0; $k < $nbImages; $k++) {
-                $filename = $this->downloadImage($faker->numberBetween(1, 500), $i . '-' . $k);
+            // ~60% des cartes ont des images, ~40% n'en ont pas
+            $hasImages = $faker->boolean(60);
 
-                $image = new Image();
-                $image->setFileName($filename);
-                $image->setSize(filesize($this->uploadDir . '/' . $filename));
-                $image->setPosition($k);
-                $image->setAlt($card->getTitle());
-                $card->addImage($image);
-                $manager->persist($image);
+            if ($hasImages) {
+                $nbImages = $faker->numberBetween(1, 4);
+                for ($k = 0; $k < $nbImages; $k++) {
+                    $baseName = $this->downloadImage($faker->numberBetween(1, 500), $i . '-' . $k);
+
+                    $image = new Image();
+                    $image->setFileName($baseName);
+                    $image->setSize(filesize($this->uploadDir . '/' . $baseName . '-full.webp'));
+                    $image->setPosition($k);
+                    $image->setAlt($card->getTitle());
+                    $card->addImage($image);
+                    $manager->persist($image);
+                }
             }
 
             $manager->persist($card);
@@ -75,24 +82,28 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
 
     private function downloadImage(int $seed, string $suffix): string
     {
-        $filename = 'fixture-' . $seed . '-' . $suffix . '.webp';
-        $dest = $this->uploadDir . '/' . $filename;
+        $baseName = 'fixture-' . $seed . '-' . $suffix;
 
-        if (!file_exists($dest)) {
-            $content = @file_get_contents("https://picsum.photos/seed/{$seed}/800/600");
-            if ($content !== false) {
-                file_put_contents($dest, $content);
-            } else {
-                // Image placeholder colorée si pas de connexion
-                $img = imagecreatetruecolor(800, 600);
-                $color = imagecolorallocate($img, rand(100, 200), rand(100, 200), rand(100, 200));
-                imagefill($img, 0, 0, $color);
-                imagewebp($img, $dest, 80);
-                imagedestroy($img);
+        foreach (self::SIZES as $sizeSuffix => [$width, $height]) {
+            $filename = $baseName . '-' . $sizeSuffix . '.webp';
+            $dest = $this->uploadDir . '/' . $filename;
+
+            if (!file_exists($dest)) {
+                $content = @file_get_contents("https://picsum.photos/seed/{$seed}/{$width}/{$height}");
+                if ($content !== false) {
+                    file_put_contents($dest, $content);
+                } else {
+                    // Placeholder coloré si pas de connexion
+                    $img = imagecreatetruecolor($width, $height);
+                    $color = imagecolorallocate($img, rand(100, 200), rand(100, 200), rand(100, 200));
+                    imagefill($img, 0, 0, $color);
+                    imagewebp($img, $dest, 80);
+                    imagedestroy($img);
+                }
             }
         }
 
-        return $filename;
+        return $baseName;
     }
 
     public function getDependencies(): array
