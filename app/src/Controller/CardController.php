@@ -31,7 +31,7 @@ final class CardController extends AbstractController
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            9
+            15
         );
 
         return $this->render('card/index.html.twig', [
