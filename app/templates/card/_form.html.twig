@@ -207,10 +207,17 @@
 
     {{ form_rest(form) }}
 
-    <div class="announce-actions d-flex justify-content-end gap-3 mt-4">
-        <a href="{{ path('app_card_index') }}" class="btn btn-light rounded-pill px-4">Annuler</a>
-        <button type="submit" class="btn btn-orange rounded-pill px-4">
-            {{ button_label|default('Enregistrer') }}
-        </button>
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        {% if is_edit|default(false) %}
+            {{ include('card/_delete_form.html.twig') }}
+        {% else %}
+            <div></div>
+        {% endif %}
+        <div class="d-flex gap-3">
+            <a href="{{ is_edit|default(false) ? path('app_card_show', {'id': card.id}) : path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4">Annuler</a>
+            <button type="submit" class="btn btn-orange rounded-pill px-4">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+        </div>
     </div>
 {{ form_end(form) }}

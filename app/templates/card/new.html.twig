@@ -5,6 +5,9 @@
 {% block body %}
 <div class="announce-page py-5">
     <div class="container">
+    <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4 mb-4">
+        <i class="bi bi-arrow-left me-1"></i> Revenir aux annonces
+    </a>
         <div class="announce-hero shadow-sm mb-4">
             <div>
                 <span class="announce-badge">Nouvelle annonce</span>
@@ -21,9 +24,6 @@
                     <h2 class="mb-1">Détails de l'annonce</h2>
                     <p class="text-muted mb-0">Complète les informations ci-dessous pour mettre ton annonce en ligne.</p>
                 </div>
-                <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4">
-                    Retour aux annonces
-                </a>
             </div>
 
             {{ include('card/_form.html.twig', {'button_label': "Publier l'annonce"}) }}
