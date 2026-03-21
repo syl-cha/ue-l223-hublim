@@ -9,7 +9,6 @@
     {% if not form.vars.valid %}
         <div class="alert alert-danger announce-alert" role="alert">
             Merci de corriger les champs en erreur avant de publier l'annonce.
-            {# Affichage des erreurs globales si PHP post_max_size est dépassé #}
             {{ form_errors(form) }}
         </div>
     {% endif %}
@@ -35,13 +34,12 @@
             <div class="announce-card-section">
                 <h5 class="fw-bold mb-3">Gestion des photos</h5>
 
-                {# --- PHOTOS EXISTANTES --- #}
                 {% if card.images is not empty %}
                     <div class="row g-2 mb-3">
                         {% for image in card.images %}
                             <div class="col-4" id="photo-{{ image.id }}">
                                 <div class="position-relative">
-                                    <img src="/uploads/cards/{{ image.fileName }}"
+                                    <img src="/uploads/cards/{{ image.fileName }}-thumb.webp"
                                          class="w-100 rounded-2 shadow-sm"
                                          style="height:100px; object-fit:cover;">
 
@@ -51,7 +49,6 @@
                                         <i class="bi bi-x"></i>
                                     </button>
 
-                                    {# CORRECTION : Le nom doit être image_carte pour correspondre à ton Controller #}
                                     <input type="checkbox"
                                            name="image_carte[delete_images][]"
                                            value="{{ image.id }}"
@@ -63,7 +60,6 @@
                     </div>
                 {% endif %}
 
-                {# --- AJOUT DE NOUVELLES PHOTOS --- #}
                 <div class="mt-2">
                     {{ form_label(form.imageFiles, "Ajouter des photos", {'label_attr': {'class': 'form-label'}}) }}
                     {{ form_widget(form.imageFiles, {'attr': {'class': 'form-control', 'id': 'card_imageFiles'}}) }}
@@ -71,12 +67,10 @@
                     <small class="text-muted">Max 10 photos au total.</small>
                 </div>
 
-                {# Zone de prévisualisation gérée par le JS #}
                 <div id="preview-grid" class="row g-2 mt-2"></div>
             </div>
         </div>
 
-        {# Section catégorie + conseils côte à côte #}
         <div class="col-lg-6">
             <div class="announce-card-section h-100">
                 {{ form_label(form.category) }}
@@ -144,7 +138,6 @@
             </div>
         </div>
 
-
         <div class="col-12">
             <div class="announce-card-section">
                 <div class="announce-group-title">{{ form_label(form.targetStudyFields) }}</div>
@@ -154,7 +147,6 @@
                         <span class="studyfield-dropdown-arrow">▾</span>
                     </button>
                     <div class="studyfield-dropdown-menu">
-                        {# Boutons tout sélectionner / tout désélectionner #}
                         <div class="d-flex gap-2 p-2 border-bottom">
                             <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" id="btn-select-all">
                                 Tout sélectionner
@@ -207,10 +199,44 @@
 
     {{ form_rest(form) }}
 
-    <div class="announce-actions d-flex justify-content-end gap-3 mt-4">
-        <a href="{{ path('app_card_index') }}" class="btn btn-light rounded-pill px-4">Annuler</a>
-        <button type="submit" class="btn btn-orange rounded-pill px-4">
-            {{ button_label|default('Enregistrer') }}
-        </button>
+    {# ── Barre d'actions ── #}
+    <div class="d-flex justify-content-between align-items-center mt-4 announce-actions">
+        {% if is_edit|default(false) %}
+            {{ include('card/_delete_form.html.twig') }}
+        {% else %}
+            <div></div>
+        {% endif %}
+
+        <div class="d-flex gap-3 flex-wrap justify-content-end">
+            <a href="{{ is_edit|default(false) ? path('app_card_show', {'id': card.id}) : path('app_card_index') }}"
+               class="btn btn-outline-secondary rounded-pill px-4">
+                Annuler
+            </a>
+
+            {# Bouton brouillon : uniquement à la création (pas en édition d'un brouillon déjà existant) #}
+            {% if not is_edit|default(false) %}
+                <button type="submit"
+                        name="save_as_draft"
+                        value="1"
+                        class="btn btn-draft rounded-pill px-4">
+                    <i class="bi bi-floppy me-1"></i> Enregistrer en brouillon
+                </button>
+            {% endif %}
+
+            {# En édition d'un brouillon, proposer de publier directement #}
+            {% if is_edit|default(false) and card.state.value == 'draft' %}
+                <button type="submit"
+                        name="publish_on_save"
+                        value="1"
+                        class="btn btn-orange rounded-pill px-4">
+                    <i class="bi bi-send me-1"></i> Enregistrer et publier
+                </button>
+            {% endif %}
+
+            <button type="submit" class="btn btn-orange rounded-pill px-4">
+                {{ button_label|default('Enregistrer') }}
+            </button>
+        </div>
     </div>
+
 {{ form_end(form) }}

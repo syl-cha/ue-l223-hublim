@@ -22,8 +22,10 @@
             <!-- Contact -->
             <div class="col-lg-2">
                 <h6 class="fw-bold mb-3 raleway-500">Contact</h6>
-                <p class="mb-0 text-white">
-                    <a href="mailto:contact@hublim.bradype.fr"><i class="bi bi-envelope me-2"></i>contact@hublim.bradype.fr</a>
+                <p class="mb-0 text-white d-flex align-items-center">
+                    <a href="mailto:contact@hublim.bradype.fr" class="text-white d-flex align-items-center">
+                        <i class="bi bi-envelope me-2"></i>contact@hublim.bradype.fr
+                    </a>
                 </p>
             </div>
 
@@ -32,9 +34,9 @@
         <hr class="my-3 text-white">
 
         <div class="text-center small">
-            <a href="#" class="text-decoration-none me-3 text-white">Politique de Confidentialité</a>
+            <a href="{{ path('app_privacy') }}" class="text-decoration-none me-3 text-white">Politique de Confidentialité</a>
             <span class="text-white">|</span>
-            <a href="#" class="text-decoration-none ms-3 text-white">Mentions légales</a>
+            <a href="{{ path('app_legal') }}" class="text-decoration-none ms-3 text-white">Mentions légales</a>
         </div>
 
     </div>

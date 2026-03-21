@@ -3,12 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Card;
+use App\Enum\CardState;
 use App\Form\CardType;
 use App\Repository\CardRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\StudyFieldRepository;
 use App\Entity\Image;
-use App\Form\CardImageType;
 use App\Service\ImageUploadService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,18 +24,48 @@ final class CardController extends AbstractController
     #[Route(name: 'app_card_index', methods: ['GET'])]
     public function index(CardRepository $cardRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $query = $cardRepository->createQueryBuilder('c')
-            ->orderBy('c.createdAt', 'DESC')
-            ->getQuery();
+        // Onglet actif : 'all' ou 'drafts'
+        $tab = $request->query->get('tab', 'all');
+
+        // Brouillons de l'utilisateur connecté
+        $draftCount = 0;
+        if ($this->getUser()) {
+            $draftCount = $cardRepository->createQueryBuilder('c')
+                ->select('COUNT(c.id)')
+                ->where('c.state = :state')
+                ->andWhere('c.user = :user')
+                ->setParameter('state', CardState::DRAFT)
+                ->setParameter('user', $this->getUser())
+                ->getQuery()
+                ->getSingleScalarResult();
+        }
+
+        if ($tab === 'drafts' && $this->getUser()) {
+            $query = $cardRepository->createQueryBuilder('c')
+                ->where('c.state = :state')
+                ->andWhere('c.user = :user')
+                ->setParameter('state', CardState::DRAFT)
+                ->setParameter('user', $this->getUser())
+                ->orderBy('c.createdAt', 'DESC')
+                ->getQuery();
+        } else {
+            $query = $cardRepository->createQueryBuilder('c')
+                ->where('c.state != :draft')
+                ->setParameter('draft', CardState::DRAFT->value, \Doctrine\DBAL\Types\Types::STRING)
+                ->orderBy('c.createdAt', 'DESC')
+                ->getQuery();
+        }
 
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            9
+            12
         );
 
         return $this->render('card/index.html.twig', [
-            'cards' => $pagination,
+            'cards'      => $pagination,
+            'activeTab'  => $tab,
+            'draftCount' => $draftCount,
         ]);
     }
 
@@ -71,12 +101,58 @@ final class CardController extends AbstractController
         $form = $this->createForm(CardType::class, $card);
         $form->handleRequest($request);
 
+        $isDraft = $request->request->has('save_as_draft');
+
+        // ── Brouillon : bypass la validation, seul le titre est obligatoire ──
+        if ($form->isSubmitted() && $isDraft) {
+            $title = trim($request->request->all('card')['title'] ?? '');
+
+            if (empty($title)) {
+                $this->addFlash('error', 'Le titre est obligatoire même pour un brouillon.');
+                return $this->render('card/new.html.twig', [
+                    'card'               => $card,
+                    'form'               => $form,
+                    'studyFieldsGrouped' => $studyFieldRepository->findAllGrouped(),
+                    'categories'         => $categoryRepository->findParentsWithChildren(),
+                ]);
+            }
+
+            $card->setTitle($title);
+            $card->setDescription($request->request->all('card')['description'] ?? '');
+            $card->setState(CardState::DRAFT);
+
+            $entityManager->persist($card);
+
+            $files = $form->get('imageFiles')->getData() ?? [];
+            $files = array_slice($files, 0, 10);
+            foreach ($files as $file) {
+                try {
+                    $result = $imageUploadService->upload($file);
+                    $image = new Image();
+                    $image->setFileName($result['filename']);
+                    $image->setSize($result['size']);
+                    $image->setPosition($card->getImages()->count());
+                    $card->addImage($image);
+                    $entityManager->persist($image);
+                } catch (\InvalidArgumentException $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
+            }
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Brouillon enregistré. Tu pourras le publier depuis "Mes brouillons".');
+            return $this->redirectToRoute('app_card_index', ['tab' => 'drafts'], Response::HTTP_SEE_OTHER);
+        }
+
+        // ── Publication normale : validation complète ──
         if ($form->isSubmitted() && $form->isValid()) {
+            $card->setState(CardState::PUBLISHED);
             $entityManager->persist($card);
 
             $files = $form->get('imageFiles')->getData();
             $files = array_slice($files, 0, 10);
-            foreach ($files as $position => $file) {
+            foreach ($files as $file) {
                 try {
                     $result = $imageUploadService->upload($file);
                     $image = new Image();
@@ -95,12 +171,13 @@ final class CardController extends AbstractController
         }
 
         return $this->render('card/new.html.twig', [
-            'card' => $card,
-            'form' => $form,
+            'card'               => $card,
+            'form'               => $form,
             'studyFieldsGrouped' => $studyFieldRepository->findAllGrouped(),
-            'categories' => $categoryRepository->findParentsWithChildren(),
+            'categories'         => $categoryRepository->findParentsWithChildren(),
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_card_show', methods: ['GET', 'POST'])]
     public function show(
@@ -116,9 +193,14 @@ final class CardController extends AbstractController
             return $this->redirectToRoute('app_card_index');
         }
 
+        // Bloquer l'accès aux brouillons pour les non-propriétaires
+        if ($card->getState() === CardState::DRAFT && $card->getUser() !== $this->getUser()) {
+            $this->addFlash('error', 'Cette annonce n\'est pas encore publiée.');
+            return $this->redirectToRoute('app_card_index');
+        }
+
         $user = $this->getUser();
 
-        // Gestion des messages lus
         $isModified = false;
         foreach ($card->getMessages() as $message) {
             if ($message->getUser() !== $user && !$message->isRead()) {
@@ -130,14 +212,12 @@ final class CardController extends AbstractController
             $entityManager->flush();
         }
 
-        // Formulaire message
         $message = new \App\Entity\Message();
         $messageForm = $this->createForm(\App\Form\MessageType::class, $message, [
             'action' => $this->generateUrl('app_message_new', ['id' => $card->getId()]),
             'method' => 'POST',
         ]);
 
-        // Compteur de vues
         $isAuthor = $user && $user === $card->getUser();
         if (!$isAuthor) {
             $session = $request->getSession();
@@ -151,17 +231,16 @@ final class CardController extends AbstractController
         }
 
         return $this->render('card/show.html.twig', [
-            'card' => $card,
+            'card'         => $card,
             'message_form' => $messageForm->createView(),
         ]);
     }
 
-
     #[Route('/{id}/edit', name: 'app_card_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(
-        Request $request, 
-        Card $card, 
+        Request $request,
+        Card $card,
         EntityManagerInterface $entityManager,
         ImageUploadService $imageUploadService,
         StudyFieldRepository $studyFieldRepository,
@@ -176,34 +255,27 @@ final class CardController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            // 1. SUPPRESSION (Logique identique à ton show)
+
             $formData = $request->request->all('image_carte') ?? [];
             $deleteIds = $formData['delete_images'] ?? [];
             foreach ($deleteIds as $imageId) {
                 $image = $entityManager->getRepository(Image::class)->find($imageId);
                 if ($image && $image->getCard() === $card) {
-                    // Utilise ta méthode delete() du service comme dans show
                     $imageUploadService->delete($image->getFileName());
                     $entityManager->remove($image);
                 }
             }
 
-            // 2. AJOUTS (Logique copiée de ton show/new)
             $imageFiles = $form->get('imageFiles')->getData();
             if ($imageFiles) {
                 foreach ($imageFiles as $file) {
                     try {
-                        // On récupère le tableau ['filename' => ..., 'size' => ...]
                         $result = $imageUploadService->upload($file);
-                        
                         $image = new Image();
-                        // C'est ici qu'on pioche dans le tableau result
-                        $image->setFileName($result['filename']); 
+                        $image->setFileName($result['filename']);
                         $image->setSize($result['size']);
                         $image->setPosition($card->getImages()->count());
                         $image->setCard($card);
-                        
                         $entityManager->persist($image);
                     } catch (\InvalidArgumentException $e) {
                         $this->addFlash('error', $e->getMessage());
@@ -211,23 +283,63 @@ final class CardController extends AbstractController
                 }
             }
 
+            // Si c'était un brouillon, on peut aussi le publier depuis l'édition
+            $publishOnSave = $request->request->has('publish_on_save');
+            if ($publishOnSave) {
+                $card->setState(CardState::PUBLISHED);
+                $card->setCreatedAt(new \DateTimeImmutable()); 
+            } elseif ($card->getState() === CardState::DRAFT) {
+                // On garde le brouillon en brouillon
+                $card->setState(CardState::DRAFT);
+            }
+
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'Annonce mise à jour avec succès !');
             return $this->redirectToRoute('app_card_show', ['id' => $card->getId()], Response::HTTP_SEE_OTHER);
         }
 
-        $response = new Response(null, $form->isSubmitted() && !$form->isValid() 
-            ? Response::HTTP_UNPROCESSABLE_ENTITY // On renvoie 422 si le formulaire est invalide
-            : Response::HTTP_OK
+        $response = new Response(
+            null,
+            $form->isSubmitted() && !$form->isValid()
+                ? Response::HTTP_UNPROCESSABLE_ENTITY
+                : Response::HTTP_OK
         );
 
         return $this->render('card/edit.html.twig', [
-            'card' => $card,
-            'form' => $form,
+            'card'               => $card,
+            'form'               => $form,
             'studyFieldsGrouped' => $studyFieldRepository->findAllGrouped(),
-            'categories' => $categoryRepository->findParentsWithChildren(),
+            'categories'         => $categoryRepository->findParentsWithChildren(),
         ], $response);
+    }
+
+    /**
+     * Publier un brouillon en un clic (sans passer par le formulaire d'édition)
+     */
+    #[Route('/{id}/publish', name: 'app_card_publish', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function publish(
+        Card $card,
+        Request $request,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if ($this->getUser() !== $card->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Vous n\'êtes pas le propriétaire de cette annonce.');
+            return $this->redirectToRoute('app_card_index', ['tab' => 'drafts']);
+        }
+
+        if (!$this->isCsrfTokenValid('publish' . $card->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Token invalide.');
+            return $this->redirectToRoute('app_card_index', ['tab' => 'drafts']);
+        }
+
+        $card->setState(CardState::PUBLISHED);
+        $card->setCreatedAt(new \DateTimeImmutable());
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Annonce publiée avec succès !');
+        return $this->redirectToRoute('app_card_show', ['id' => $card->getId()], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/{id}/delete', name: 'app_card_delete', methods: ['POST'])]

@@ -9,6 +9,32 @@
         <i class="bi bi-arrow-left"></i> Retour aux annonces
     </a>
 
+    {# ── Bannière brouillon ── #}
+    {% if card.state.value == 'draft' and app.user == card.user %}
+        <div class="alert d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 rounded-4 px-4 py-3" style="background-color: #f3f4f6; border: 2px dashed #9ca3af;">
+            <div class="d-flex align-items-center gap-2 text-muted fw-semibold">
+                <i class="bi bi-floppy-fill"></i>
+                Cette annonce est un brouillon — elle n'est pas visible par les autres utilisateurs.
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ path('app_card_index', {'tab': 'drafts'}) }}"
+                class="btn btn-outline-secondary rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Mes brouillons
+                </a>
+                <a href="{{ path('app_card_edit', {'id': card.id}) }}"
+                class="btn btn-outline-primary rounded-pill px-3">
+                    <i class="bi bi-pencil me-1"></i> Éditer
+                </a>
+                <form method="post" action="{{ path('app_card_publish', {'id': card.id}) }}" style="display:contents">
+                    <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ card.id) }}">
+                    <button type="submit" class="btn btn-orange rounded-pill px-3">
+                        <i class="bi bi-send me-1"></i> Publier
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="row g-4">
         {# Colonne principale #}
         <div class="col-lg-8" data-controller="reagir">
@@ -23,7 +49,11 @@
                         <div>
                             <div class="fw-bold">{{ card.user.firstName }} {{ card.user.lastName }}</div>
                             <div class="text-muted" style="font-size:0.82rem;">
-                                Publiée le {{ card.createdAt|date('d/m/Y') }} à {{ card.createdAt|date('H:i') }}
+                                {% if card.state.value == 'draft' %}
+                                    Brouillon créé le {{ card.createdAt|date('d/m/Y') }} à {{ card.createdAt|date('H:i') }}
+                                {% else %}
+                                    Publiée le {{ card.createdAt|date('d/m/Y') }} à {{ card.createdAt|date('H:i') }}
+                                {% endif %}
                                 {% if card.updatedAt %}
                                     | Modifiée le {{ card.updatedAt|date('d/m/Y') }}
                                 {% endif %}
@@ -34,12 +64,11 @@
                     {# Menu 3 petits points (visible uniquement par l'auteur ou l'admin) #}
                     {% if app.user == card.user or is_granted('ROLE_ADMIN') %}
                         <div class="dropdown">
-                            {# Ajout de la classe dropdown-toggle (parfois requise pour le placement) #}
-                            <button class="btn btn-link text-dark shadow-none p-0 dropdown-toggle-split" 
-                                    type="button" 
-                                    id="dropdownMenuCard" 
-                                    data-bs-toggle="dropdown" 
-                                    aria-expanded="false" 
+                            <button class="btn btn-link text-dark shadow-none p-0 dropdown-toggle-split"
+                                    type="button"
+                                    id="dropdownMenuCard"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
                                     style="font-size: 1.5rem; line-height: 1;">
                                 <i class="bi bi-three-dots-vertical"></i>
                             </button>
@@ -68,7 +97,6 @@
                 <h1 class="fw-bold text-primary raleway-500 mb-3" style="font-size:1.8rem;">{{ card.title }}</h1>
 
                 {# Description #}
-                <!--<div style="font-size:1rem; line-height:1.8; color:#374151;">-->
                 <div class="markdown-content">
                     {{ card.description|markdown_to_html|sanitize_html }}
                 </div>
@@ -81,46 +109,46 @@
 
                 {% if count == 1 %}
                     <div class="fb-gallery-single">
-                        <img src="/uploads/cards/{{ images[0].fileName }}"
+                        <img src="{{ '/uploads/cards/' ~ images[0].fileName ~ '-medium.webp' }}"
                             alt="{{ images[0].alt ?? card.title }}"
                             class="fb-img" data-index="0">
                     </div>
 
-                    {% elseif count == 2 %}
-                        <div class="fb-gallery-two">
-                            {% for i in 0..1 %}
-                                <img src="/uploads/cards/{{ images[i].fileName }}"
-                                    alt="{{ images[i].alt ?? card.title }}"
-                                    class="fb-img" data-index="{{ i }}">
-                            {% endfor %}
-                        </div>
+                {% elseif count == 2 %}
+                    <div class="fb-gallery-two">
+                        {% for i in 0..1 %}
+                            <img src="{{ '/uploads/cards/' ~ images[i].fileName ~ '-medium.webp' }}"
+                                alt="{{ images[i].alt ?? card.title }}"
+                                class="fb-img" data-index="{{ i }}">
+                        {% endfor %}
+                    </div>
 
-                    {% else %}
-                        <div class="fb-gallery-three">
-                            <div class="fb-main">
-                                <img src="/uploads/cards/{{ images[0].fileName }}"
-                                    alt="{{ images[0].alt ?? card.title }}"
-                                    class="fb-img" data-index="0">
+                {% else %}
+                    <div class="fb-gallery-three">
+                        <div class="fb-main">
+                            <img src="{{ '/uploads/cards/' ~ images[0].fileName ~ '-medium.webp' }}"
+                                alt="{{ images[0].alt ?? card.title }}"
+                                class="fb-img" data-index="0">
+                        </div>
+                        <div class="fb-side">
+                            <div class="fb-side-top">
+                                <img src="{{ '/uploads/cards/' ~ images[1].fileName ~ '-medium.webp' }}"
+                                    alt="{{ images[1].alt ?? card.title }}"
+                                    class="fb-img" data-index="1">
                             </div>
-                            <div class="fb-side">
-                                <div class="fb-side-top">
-                                    <img src="/uploads/cards/{{ images[1].fileName }}"
-                                        alt="{{ images[1].alt ?? card.title }}"
-                                        class="fb-img" data-index="1">
-                                </div>
-                                <div class="fb-side-bottom">
-                                    <img src="/uploads/cards/{{ images[2].fileName }}"
-                                        alt="{{ images[2].alt ?? card.title }}"
-                                        class="fb-img" data-index="2">
-                                    {% if count > 3 %}
-                                        <div class="fb-overlay" data-index="2">
-                                            +{{ count - 3 }}
-                                        </div>
-                                    {% endif %}
-                                </div>
+                            <div class="fb-side-bottom">
+                                <img src="{{ '/uploads/cards/' ~ images[2].fileName ~ '-medium.webp' }}"
+                                    alt="{{ images[2].alt ?? card.title }}"
+                                    class="fb-img" data-index="2">
+                                {% if count > 3 %}
+                                    <div class="fb-overlay" data-index="2">
+                                        +{{ count - 3 }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
-                    {% endif %}
+                    </div>
+                {% endif %}
 
                 </div>
 
@@ -136,36 +164,39 @@
                 </div>
                 {% endif %}
 
-
                 {# Bouton Favori #}
-                {% if app.user %}
-                    <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
-                        {% if app.user in card.fanUsers %}
-                            <i class="bi bi-star-fill"></i>
-                        {% else %}
+                {% if card.state.value == 'published' %}
+                    {% if app.user %}
+                        <a href="{{ path('app_card_favorite', {'id': card.id}) }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
+                            {% if app.user in card.fanUsers %}
+                                <i class="bi bi-star-fill"></i>
+                            {% else %}
+                                <i class="bi bi-star"></i>
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
                             <i class="bi bi-star"></i>
-                        {% endif %}
-                    </a>
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="btn bg-white rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center border" style="bottom: -20px; left: 30px; z-index: 10; width: 42px; height: 42px; color: var(--color-jaune, #ffc107); font-size: 1.2rem;" title="Mettre en favori">
-                        <i class="bi bi-star"></i>
-                    </a>
+                        </a>
+                    {% endif %}
                 {% endif %}
 
                 {# Bouton Réagir #}
-                {% if app.user %}
-                    <button class="btn btn-primary rounded-pill position-absolute shadow-sm" style="bottom: -20px; right: 30px; z-index: 10;" data-action="click->reagir#toggle">
-                        <i class="bi bi-chat-dots-fill me-1"></i> Réagir
-                    </button>
-                {% else %}
-                    <a href="{{ path('app_login') }}" class="btn btn-primary rounded-pill position-absolute shadow-sm" style="bottom: -20px; right: 30px; z-index: 10;">
-                        <i class="bi bi-chat-dots-fill me-1"></i> Réagir
-                    </a>
+                {% if card.state.value == 'published' %}
+                    {% if app.user %}
+                        <button class="btn btn-primary rounded-pill position-absolute shadow-sm" style="bottom: -20px; right: 30px; z-index: 10;" data-action="click->reagir#toggle">
+                            <i class="bi bi-chat-dots-fill me-1"></i> Réagir
+                        </button>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="btn btn-primary rounded-pill position-absolute shadow-sm" style="bottom: -20px; right: 30px; z-index: 10;">
+                            <i class="bi bi-chat-dots-fill me-1"></i> Réagir
+                        </a>
+                    {% endif %}
                 {% endif %}
             </div>
 
             {# Formulaire de création de message #}
-            {% if app.user and message_form is defined %}
+            {% if app.user and message_form is defined and card.state.value == 'published' %}
                 <div class="shadow-sm rounded-4 p-4 bg-white mt-4 d-none" data-reagir-target="form">
                     <h5 class="fw-bold text-primary mb-3">Laisser un message</h5>
                     <div>
@@ -310,10 +341,9 @@
 <script>
     window.galleryImages = [
         {% for image in card.images %}
-        { src: "/uploads/cards/{{ image.fileName }}", alt: "{{ image.alt ?? card.title|e('js') }}" }{{ not loop.last ? ',' : '' }}
+        { src: "/uploads/cards/{{ image.fileName }}-full.webp", alt: "{{ image.alt ?? card.title|e('js') }}" }{{ not loop.last ? ',' : '' }}
         {% endfor %}
     ];
-    console.log('Images chargées :', window.galleryImages);
 </script>
 {% endif %}
 

@@ -353,64 +353,73 @@ footer h6 {
 
 /********* Affichage des annonces **********/
 
+/* ── Barre titre + actions ── */
+.page-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+.page-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ── Grille masonry (Masonry.js) ── */
 .bento-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 16px;
-}
-
-/* Ligne 1 : 4 - 4 - 4 */
-.bento-item:nth-child(9n + 1) {
-    grid-column: span 4;
-}
-.bento-item:nth-child(9n + 2) {
-    grid-column: span 3;
-}
-.bento-item:nth-child(9n + 3) {
-    grid-column: span 5;
-}
-
-/* Ligne 2 : 3 - 5 - 4 */
-.bento-item:nth-child(9n + 4) {
-    grid-column: span 3;
-}
-.bento-item:nth-child(9n + 5) {
-    grid-column: span 5;
-}
-.bento-item:nth-child(9n + 6) {
-    grid-column: span 4;
-}
-
-/* Ligne 3 : 5 - 4 - 3 */
-.bento-item:nth-child(9n + 7) {
-    grid-column: span 5;
-}
-.bento-item:nth-child(9n + 8) {
-    grid-column: span 4;
-}
-.bento-item:nth-child(9n + 9) {
-    grid-column: span 3;
-}
-
-.bento-item {
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s;
-    min-height: 200px;
-    max-height: 250px;
+    display: block;
     position: relative;
 }
 
-/*
-.bento-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
-}*/
+.bento-item {
+    width: calc(33.333% - 10px);
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
 
+.bento-item:nth-child(3n) {
+    margin-right: 0;
+}
+
+.bento-grid::after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+@media (max-width: 900px) {
+    .bento-item { width: calc(50% - 7px); }
+}
+
+@media (max-width: 540px) {
+    .bento-item { width: 100%; }
+    .page-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ── Carte ── */
+.bento-item-inner {
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.bento-item-inner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ── Overlay au survol ── */
 .bento-overlay {
     position: absolute;
     inset: 0;
@@ -420,30 +429,22 @@ footer h6 {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.2rem;
+    gap: 0.4rem;
     opacity: 0;
     transition: opacity 0.25s ease;
     z-index: 2;
 }
 
-.bento-item:hover .bento-overlay {
+.bento-item-inner:hover .bento-overlay {
     opacity: 1;
 }
 
-.bento-overlay a,
-.bento-overlay span {
+.overlay-link {
     color: white !important;
-    font-size: 0.9rem;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.overlay-title {
-    font-size: 1rem;
-    font-weight: 700;
-    color: white;
-    text-align: center;
-    padding: 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: opacity 0.15s;
 }
 
 .overlay-actions {
@@ -455,6 +456,7 @@ footer h6 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 4px;
 }
 
 .overlay-action-item small {
@@ -463,11 +465,48 @@ footer h6 {
     font-weight: 600;
 }
 
+.btn-action-overlay {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: white !important;
+    transition: transform 0.15s;
+}
+
+.btn-action-overlay:hover {
+    transform: scale(1.3);
+}
+
+/* ── Contenu de la carte ── */
+.bento-card {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.user-info {
+    margin-bottom: 0.75rem;
+}
+
+.card-title {
+    margin-bottom: 0.4rem;
+}
+
+.card-description {
+    margin-bottom: 0.75rem;
+}
+
+/* Header utilisateur */
 .user-info {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    margin-bottom: 0.5rem;
     overflow: hidden;
 }
 
@@ -495,7 +534,7 @@ footer h6 {
 
 .user-name {
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.83rem;
     color: #111;
     white-space: nowrap;
     overflow: hidden;
@@ -503,156 +542,50 @@ footer h6 {
 }
 
 .user-sub {
-    font-size: 0.68rem;
+    font-size: 0.76rem;
     color: #6b7280;
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    white-space: nowrap;
+    flex-wrap: wrap;
 }
 
-.btn-action-overlay {
-    width: 60px;
-    height: 60px;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    cursor: pointer;
-    text-decoration: none;
-    color: white;
-    transition: background 0.15s;
-}
-
-.btn-action-overlay:hover {
-    transform: scale(1.4);
-}
-
-.overlay-link {
-    color: white !important;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-decoration: underline;
-    transition: opacity 0.15s;
-}
-
-.overlay-link:hover {
-    text-decoration: underline;
-}
-
-.bento-item:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
-}
-
-.bento-card {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.bento-card-content {
-    flex: 1;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    gap: 0.75rem;
-}
-
-/* Corps : titre et description à gauche, image à droite */
-
+/* Titre */
 .card-title {
     font-weight: 700;
     font-size: 0.82rem;
     color: var(--color-primary);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 0.25rem;
+    line-height: 1.35;
 }
 
-.bento-card-body {
-    display: flex;
-    flex: 1;
-    gap: 0.75rem;
-    min-height: 0;
-    overflow: hidden;
-    align-items: center;
-}
-
+/* Description */
 .card-description {
-    flex: 1;
     font-size: 0.82rem;
     color: #374151;
-    line-height: 1.5;
-    overflow: hidden;
+    line-height: 1.55;
     display: -webkit-box;
-    -webkit-line-clamp: 5;
+    -webkit-line-clamp: 7;
     -webkit-box-orient: vertical;
-    min-width: 0;
+    overflow: hidden;
 }
 
+.card-description p { margin: 0; }
+.card-description ul,
+.card-description ol { margin: 0; padding-left: 1rem; }
+
+/* Image sous la description */
 .bento-card-image {
-    width: 38%;
-    flex-shrink: 0;
     border-radius: 10px;
     overflow: hidden;
+    line-height: 0;
 }
 
 .bento-card-image img {
     width: 100%;
-    height: 100%;
+    display: block;
     object-fit: cover;
-}
-
-/* Petites cartes (span 3) : image en dessous */
-.bento-item:nth-child(9n + 2) .bento-card-body,
-.bento-item:nth-child(9n + 4) .bento-card-body,
-.bento-item:nth-child(9n + 9) .bento-card-body {
-    flex-direction: column;
-}
-
-.bento-item:nth-child(9n + 2) .bento-card-image,
-.bento-item:nth-child(9n + 4) .bento-card-image,
-.bento-item:nth-child(9n + 9) .bento-card-image {
-    width: 100%;
-    height: 100px;
-}
-
-/* Cartes larges (span 5) : image plus grande */
-.bento-item:nth-child(9n + 3) .bento-card-image,
-.bento-item:nth-child(9n + 5) .bento-card-image,
-.bento-item:nth-child(9n + 7) .bento-card-image {
-    width: 45%;
-}
-
-@media (max-width: 900px) {
-    .bento-card-body {
-        flex-direction: column !important;
-    }
-    .bento-card-image {
-        width: 100% !important;
-        height: 120px !important;
-    }
-}
-
-@media (max-width: 900px) {
-    .bento-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-    .bento-item:nth-child(n) {
-        grid-column: span 1;
-    }
-}
-
-@media (max-width: 600px) {
-    .bento-grid {
-        grid-template-columns: 1fr;
-    }
-    .bento-item:nth-child(n) {
-        grid-column: span 1;
-    }
+    max-height: 300px;
+    border-radius: 10px;
 }
 
 /********* Formulaire poster une annonce **********/
@@ -1084,12 +1017,8 @@ footer h6 {
 .studyfield-type-group.open .studyfield-type-content {
     display: block;
 }
-/*********
 
-Page d'affichage d'une annonce
-Galerie d'images
-
-**********/
+/********* Page d'affichage d'une annonce – Galerie **********/
 
 .fb-gallery {
     border-radius: 12px;
@@ -1104,29 +1033,32 @@ Galerie d'images
     transition: filter 0.2s;
     display: block;
 }
+
 .fb-img:hover {
     filter: brightness(0.88);
 }
 
-/* 1 image */
 .fb-gallery-single .fb-img {
-    max-height: 420px;
+    max-height: 600px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    background: #f3f4f6;
     border-radius: 12px;
 }
 
-/* 2 images */
 .fb-gallery-two {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3px;
-    height: 320px;
+    height: 400px;
 }
 
 .fb-gallery-three {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3px;
-    height: 320px;
+    height: 400px;
     overflow: hidden;
     border-radius: 12px;
 }
@@ -1140,7 +1072,7 @@ Galerie d'images
     display: flex;
     flex-direction: column;
     gap: 3px;
-    height: 320px;
+    height: 400px;
     overflow: hidden;
 }
 
@@ -1150,10 +1082,9 @@ Galerie d'images
     position: relative;
     overflow: hidden;
     min-height: 0;
-    max-height: 158px;
+    max-height: 198px;
 }
 
-/* Overlay +N */
 .fb-overlay {
     position: absolute;
     inset: 0;
@@ -1171,7 +1102,7 @@ Galerie d'images
     background: rgba(0, 0, 0, 0.6);
 }
 
-/* ---- Lightbox ---- */
+/* ── Lightbox ── */
 .lb-backdrop {
     display: none;
     position: fixed;
@@ -1238,27 +1169,21 @@ Galerie d'images
     z-index: 10000;
     line-height: 1;
 }
-.lb-prev {
-    left: 16px;
-}
-.lb-next {
-    right: 16px;
-}
+.lb-prev { left: 16px; }
+.lb-next { right: 16px; }
 .lb-prev:hover,
 .lb-next:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
 .dropdown-item:active {
-    background-color: var(
-        --color-primary
-    ); /* Pour garder votre charte graphique */
+    background-color: var(--color-primary);
 }
 .dropdown-menu {
     min-width: 200px;
 }
 
-/************** Pagination **************/
+/********* Pagination **********/
 
 .pagination {
     gap: 3rem;
@@ -1317,3 +1242,120 @@ Galerie d'images
     pointer-events: none;
 }
 
+
+/********* Cartes en statut "brouillion/draft" **********/
+
+/* ── Bouton "Enregistrer en brouillon" dans le formulaire ── */
+.btn-draft {
+    background-color: #6b7280;
+    color: white;
+    border: 2px solid #6b7280;
+    font-weight: bold;
+}
+
+.btn-draft:hover {
+    background-color: transparent;
+    color: #6b7280;
+    border-color: #6b7280;
+}
+
+/* ── Onglets de la page index ── */
+.card-tabs-bar {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 1.5rem;
+}
+
+.card-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #6b7280;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 6px 6px 0 0;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.card-tab:hover {
+    color: var(--color-primary);
+}
+
+.card-tab--active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    background-color: rgba(34, 51, 130, 0.04);
+}
+
+/* Compteur de brouillons dans l'onglet */
+.draft-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6b7280;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 999px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+}
+
+.card-tab--active .draft-badge {
+    background-color: var(--color-primary);
+}
+
+/* ── Carte brouillon : fond grisé ── */
+.bento-item-draft .bento-item-inner,
+.bento-item-draft {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+}
+
+.bento-item-draft .card-title {
+    color: #6b7280;
+}
+
+.bento-item-draft .user-name {
+    color: #6b7280;
+}
+
+.bento-item-draft .card-description {
+    color: #9ca3af;
+}
+
+/* ── Overlay brouillon : fond gris au lieu d'orange ── */
+.bento-overlay-draft {
+    background-color: #4b5563 !important;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.draft-overlay-label {
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    opacity: 0.9;
+}
+
+/* ── Badge "Brouillon" affiché sur la carte ── */
+.draft-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #6b7280;
+    background: #e5e7eb;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+    margin-bottom: 0.5rem;
+    width: fit-content;
+}

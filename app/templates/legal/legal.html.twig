@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales – HubLim{% endblock %}
+{% block body_class %}bg-gris{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 860px;">
+
+    <h1 class="fw-bold text-primary raleway-500 mb-2">Mentions légales</h1>
+    <p class="text-muted mb-5">Conformément à la loi n°2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique.</p>
+
+    <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5">
+
+        <h2 class="h5 fw-bold text-primary mb-3">1. Éditeur du site</h2>
+        <p>
+            <strong>Nom du site :</strong> HubLim<br>
+            <strong>Adresse :</strong> Université de Limoges, 33 Rue François Mitterrand, 87032 Limoges<br>
+            <strong>E-mail :</strong> <a href="mailto:contact@hublim.bradype.fr">contact@hublim.bradype.fr</a><br>
+            <strong>Projet académique :</strong> UE L223 – Université de Limoges
+        </p>
+        <p>
+            <strong>Équipe de développement :</strong><br>
+            Zoe Van De Moortele, Sylvain Chambon, Lucie Lieuve, Jeanne Salvadori
+        </p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">2. Responsable de publication</h2>
+        <p>
+            <strong>Sylvain Chambon</strong><br>
+            E-mail : <a href="mailto:contact@hublim.bradype.fr">contact@hublim.bradype.fr</a>
+        </p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">3. Hébergement</h2>
+        <p>
+            <strong>Hébergeur :</strong> o2switch<br>
+            <strong>Adresse :</strong> 222-224 Boulevard Gustave Flaubert, 63000 Clermont-Ferrand<br>
+            <strong>Site :</strong> <a href="https://www.o2switch.fr" target="_blank" rel="noopener">www.o2switch.fr</a><br>
+            <strong>Téléphone :</strong> 04 44 44 60 40
+        </p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">4. Propriété intellectuelle</h2>
+        <p>L'ensemble du contenu de ce site (structure, textes, logos, images) est la propriété de l'équipe HubLim dans le cadre du projet académique UE L223. Toute reproduction, même partielle, est interdite sans autorisation préalable.</p>
+        <p>Les annonces publiées par les utilisateurs restent la propriété de leurs auteurs. HubLim ne saurait être tenu responsable du contenu des annonces publiées.</p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">5. Limitation de responsabilité</h2>
+        <p>HubLim est un projet académique. L'équipe s'efforce d'assurer la disponibilité et la fiabilité du service, mais ne peut garantir une disponibilité continue. Le site peut être suspendu à tout moment sans préavis dans le cadre du projet universitaire.</p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">6. Droit applicable</h2>
+        <p>Le présent site est soumis au droit français. En cas de litige, les tribunaux français seront seuls compétents.</p>
+
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_main') }}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-1"></i> Retour au site
+        </a>
+    </div>
+
+</div>
+{% endblock %}

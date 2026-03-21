@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité – HubLim{% endblock %}
+{% block body_class %}bg-gris{% endblock %}
+
+{% block body %}
+<div class="container py-5" style="max-width: 860px;">
+
+    <h1 class="fw-bold text-primary raleway-500 mb-2">Politique de confidentialité</h1>
+    <p class="text-muted mb-5">Dernière mise à jour : mars 2026</p>
+
+    <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5">
+
+        <h2 class="h5 fw-bold text-primary mb-3">1. Présentation du site</h2>
+        <p>HubLim est une plateforme d'annonces étudiante développée dans le cadre de l'UE L223 à l'Université de Limoges. Elle est portée par une équipe de quatre étudiants : Zoe Van De Moortele, Sylvain Chambon, Lucie Lieuve et Jeanne Salvadori.</p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">2. Données collectées</h2>
+        <p>Dans le cadre de l'utilisation de HubLim, les données suivantes peuvent être collectées :</p>
+        <ul>
+            <li>Adresse e-mail (lors de la création de compte)</li>
+            <li>Prénom et nom</li>
+            <li>Contenu des annonces publiées (titre, description, images)</li>
+            <li>Messages échangés entre utilisateurs</li>
+            <li>Données de navigation (pages visitées, date et heure de connexion)</li>
+        </ul>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">3. Finalité du traitement</h2>
+        <p>Les données collectées sont utilisées exclusivement pour :</p>
+        <ul>
+            <li>La gestion des comptes utilisateurs et de l'authentification</li>
+            <li>L'affichage et la gestion des annonces publiées</li>
+            <li>La communication entre utilisateurs via la messagerie interne</li>
+            <li>L'amélioration du service dans le cadre académique</li>
+        </ul>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">4. Conservation des données</h2>
+        <p>Les données sont conservées le temps nécessaire à la durée du projet académique. Elles ne sont ni vendues, ni cédées à des tiers.</p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">5. Vos droits</h2>
+        <p>Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez des droits suivants :</p>
+        <ul>
+            <li>Droit d'accès à vos données personnelles</li>
+            <li>Droit de rectification</li>
+            <li>Droit à l'effacement (droit à l'oubli)</li>
+            <li>Droit d'opposition au traitement</li>
+        </ul>
+        <p>Pour exercer ces droits, contactez-nous à : <a href="mailto:contact@hublim.bradype.fr">contact@hublim.bradype.fr</a></p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">6. Cookies</h2>
+        <p>HubLim utilise uniquement des cookies techniques nécessaires au bon fonctionnement du site (session utilisateur, sécurité des formulaires). Aucun cookie publicitaire ou de tracking n'est utilisé.</p>
+
+        <hr class="my-4">
+
+        <h2 class="h5 fw-bold text-primary mb-3">7. Sécurité</h2>
+        <p>Des mesures techniques appropriées sont mises en place pour protéger vos données contre tout accès non autorisé, modification ou suppression.</p>
+
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('app_main') }}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-1"></i> Retour au site
+        </a>
+    </div>
+
+</div>
+{% endblock %}
