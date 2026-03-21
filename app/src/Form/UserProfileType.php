@@ -34,12 +34,6 @@ class UserProfileType extends AbstractType
                 'label' => 'Filière',
                 'required' => false,
             ])
-            ->add('currentPassword', TextType::class, [
-                'label' => 'Mot de passe actuel',
-                'mapped' => false,
-                'disabled' => true,
-                'data' => '••••••••',
-            ])
             ->add('password', PasswordType::class, [
                 'label' => 'Nouveau mot de passe',
                 'required' => false,
