@@ -71,7 +71,7 @@
                             <div class="user-avatar">👤</div>
                             <div class="user-meta">
                                 <div class="user-name">
-                                    {{ card.user.email|split('@')[0] }}
+                                    {{ card.user.firstName }} {{ card.user.lastName }}
                                     {% if card.category %}
                                         {% set color = card.category.parent ? card.category.parent.color : card.category.color %}
                                         <span class="fw-normal"> | 
