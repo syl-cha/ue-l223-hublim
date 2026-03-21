@@ -1,0 +1,8 @@
+scheb_two_factor:
+    security_tokens:
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+    totp:
+        enabled: true
+        server_name: HubLim
+        issuer: HubLim
+        template: security/2fa_form.html.twig

@@ -2,7 +2,6 @@
 
 namespace App\Security;
 
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,23 +44,6 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $user = $token->getUser();
-
-        // Si la 2FA est activée, on redirige vers la vérification du code
-        if ($user instanceof User && $user->isTwoFactorEnabled()) {
-            $session = $request->getSession();
-            $session->set('2fa_pending_user_id', $user->getId());
-            $session->set('2fa_pending_secret', $user->getTwoFactorSecret());
-            $session->set('2fa_verified', false);
-
-            // Sauvegarder la destination initiale
-            $targetPath = $this->getTargetPath($session, $firewallName)
-                ?? $this->urlGenerator->generate('app_card_index');
-            $session->set('2fa_target_path', $targetPath);
-
-            return new RedirectResponse($this->urlGenerator->generate('app_2fa_verify'));
-        }
-
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
