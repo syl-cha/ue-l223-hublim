@@ -49,9 +49,7 @@ class TwoFactorController extends AbstractController
         $user->setIsTwoFactorEnabled(false);
 
         // Générer le QR code avec endroid/qr-code v6
-        $qrCode = QrCode::create($qrContent)
-            ->setSize(250)
-            ->setMargin(10);
+        $qrCode = new QrCode(data: $qrContent, size: 250, margin: 10);
 
         $writer = new PngWriter();
         $result = $writer->write($qrCode);
