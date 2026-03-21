@@ -50,8 +50,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setCreatedAt(new \DateTimeImmutable());
         $admin->setIsVerified(true);
-        $admin->setTwoFactorSecret('none');
-
+        
         $manager->persist($admin);
 
         //On crée les utilisateurs
@@ -70,7 +69,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setIsVerified(true);
-            $user->setTwoFactorSecret('none');
             $user->setRoles(['ROLE_USER']);
 
             $manager->persist($user);

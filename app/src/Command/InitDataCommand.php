@@ -152,8 +152,7 @@ class InitDataCommand extends Command
         $admin->setRoles(['ROLE_ADMIN']);
         $admin->setCreatedAt(new \DateTimeImmutable());
         $admin->setIsVerified(true);
-        $admin->setTwoFactorSecret('none');
-
+        
         $this->entityManager->persist($admin);
         $io->text('👍 L\'utilisateur John Lambda créé avec succès.');
 
@@ -176,7 +175,6 @@ class InitDataCommand extends Command
             $user->setRoles(['ROLE_USER']);
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setIsVerified(true);
-            $user->setTwoFactorSecret('none');
 
             $this->entityManager->persist($user);
             $io->text('👍 L\'utilisateur John Lambda créé avec succès.');

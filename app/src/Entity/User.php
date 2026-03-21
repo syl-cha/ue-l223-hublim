@@ -44,8 +44,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isVerified = false;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $twoFactorSecret = null;
+
+    #[ORM\Column]
+    private bool $isTwoFactorEnabled = false;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -201,9 +204,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->twoFactorSecret;
     }
 
-    public function setTwoFactorSecret(string $twoFactorSecret): static
+    public function setTwoFactorSecret(?string $twoFactorSecret): static
     {
         $this->twoFactorSecret = $twoFactorSecret;
+
+        return $this;
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return $this->isTwoFactorEnabled;
+    }
+
+    public function setIsTwoFactorEnabled(bool $isTwoFactorEnabled): static
+    {
+        $this->isTwoFactorEnabled = $isTwoFactorEnabled;
 
         return $this;
     }
