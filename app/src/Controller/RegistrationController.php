@@ -20,10 +20,31 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
+/**
+ * Contrôleur gérant l'inscription des utilisateurs et la vérification des adresses e-mail.
+ */
 class RegistrationController extends AbstractController
 {
+    /**
+     * Constructeur du contrôleur d'inscription.
+     *
+     * @param EmailVerifier $emailVerifier Le service de vérification d'e-mail.
+     */
     public function __construct(private EmailVerifier $emailVerifier) {}
 
+    /**
+     * Gère la requête d'inscription d'un nouvel utilisateur.
+     *
+     * Affiche le formulaire d'inscription, le traite lors de la soumission,
+     * hache le mot de passe, affecte le statut approprié et envoie un e-mail de confirmation.
+     *
+     * @param Request                     $request            La requête HTTP courante.
+     * @param UserPasswordHasherInterface $userPasswordHasher Le service permettant de hacher le mot de passe.
+     * @param Security                    $security           Le composant de sécurité de Symfony.
+     * @param EntityManagerInterface      $entityManager      Le gestionnaire d'entités de Doctrine.
+     *
+     * @return Response La réponse HTTP (rendu du formulaire ou redirection en cas de succès).
+     */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
@@ -81,6 +102,15 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Gère la vérification de l'adresse e-mail de l'utilisateur à partir du lien envoyé.
+     *
+     * @param Request             $request        La requête HTTP contenant les paramètres de vérification.
+     * @param TranslatorInterface $translator     Le service de traduction pour les messages d'erreur.
+     * @param UserRepository      $userRepository Le dépôt des utilisateurs pour retrouver le compte à vérifier.
+     *
+     * @return Response La réponse HTTP (redirection vers l'accueil ou le formulaire d'inscription en cas d'erreur).
+     */
     #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(Request $request, TranslatorInterface $translator, UserRepository $userRepository): Response
     {
