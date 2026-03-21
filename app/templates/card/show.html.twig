@@ -3,11 +3,30 @@
 {% block title %}{{ card.title }} - HubLim{% endblock %}
 {% block body_class %}bg-gris{% endblock %}
 {% block body %}
+
+{% set can_view = false %}
+{% if app.user and card.user == app.user %}
+    {% set can_view = true %}
+{% elseif card.targetStatus is empty and card.targetStudyFields is empty %}
+    {% set can_view = true %}
+{% elseif app.user and app.user.status and card.targetStatus.contains(app.user.status) %}
+    {% set can_view = true %}
+{% elseif app.user and app.user.studyField and card.targetStudyFields.contains(app.user.studyField) %}
+    {% set can_view = true %}
+{% endif %}
+
 <div class="container px-4 py-5">
 
     <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4 mb-4">
         <i class="bi bi-arrow-left"></i> Retour aux annonces
     </a>
+
+    {% if not can_view %}
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Accès refusé</h4>
+            <p>Vous n'avez pas l'autorisation d'accéder à cette annonce. Elle est restreinte à certains statuts ou filières.</p>
+        </div>
+    {% else %}
 
     <div class="row g-4">
         {# Colonne principale #}
@@ -313,4 +332,5 @@
 </script>
 {% endif %}
 
+    {% endif %} {# Fin du if can_view #}
 {% endblock %}

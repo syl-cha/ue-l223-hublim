@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Utils\FixtureStatusHelperTrait;
+use App\Entity\Status;
 use App\Entity\Card;
 use App\Entity\Image;
 use App\Entity\Category;
@@ -15,6 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class CardFixtures extends Fixture implements DependentFixtureInterface
 {
+    use FixtureStatusHelperTrait;
+
     private const SIZES = [
         'thumb'  => [400, 300],
         'medium' => [800, 600],
@@ -73,6 +77,15 @@ class CardFixtures extends Fixture implements DependentFixtureInterface
                     $manager->persist($image);
                 }
             }
+
+            // Mettre une restriction sur le statut aléatoirement
+            $status = $this->getAllStatuses($this->referenceRepository);
+            // Restriction dans seulement 40% des cas.
+            $hasStatusRestriction = $faker->boolean(40);
+            if ($hasStatusRestriction) {
+                $card->addTargetStatus($faker->randomElement($status));
+            }
+
 
             $manager->persist($card);
         }

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\DataFixtures\Utils\FixtureStatusHelperTrait;
 use App\Entity\User;
 use App\Entity\Status;
 use App\Entity\StudyField;
@@ -13,6 +14,8 @@ use Faker\Factory;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
+    use FixtureStatusHelperTrait;
+
     private $hasher;
     public function __construct(UserPasswordHasherInterface $hasher)
     {
@@ -24,10 +27,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr_FR');
 
         // Récupérer le statut et les filières
-        $statusStudent = $this->getReference('status_student', Status::class);
-        $statusTeacher = $this->getReference('status_teacher', Status::class);
+        $status = $this->getAllStatuses($this->referenceRepository);
         $statusStaff = $this->getReference('status_staff', Status::class);
-        $status = [$statusStudent, $statusTeacher, $statusStaff];
+        // $statusStudent = $this->getReference('status_student', Status::class);
 
         $studyFields = [];
         $index = 0;

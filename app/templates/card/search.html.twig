@@ -32,6 +32,18 @@
 
         <div class="bento-grid">
             {% for card in cards %}
+                {% set show_card = false %}
+                {% if app.user and card.user == app.user %}
+                    {% set show_card = true %}
+                {% elseif card.targetStatus is empty and card.targetStudyFields is empty %}
+                    {% set show_card = true %}
+                {% elseif app.user and app.user.status and card.targetStatus.contains(app.user.status) %}
+                    {% set show_card = true %}
+                {% elseif app.user and app.user.studyField and card.targetStudyFields.contains(app.user.studyField) %}
+                    {% set show_card = true %}
+                {% endif %}
+
+                {% if show_card %}
                 <div class="bento-item shadow-sm">
 
                     <div class="bento-overlay">
@@ -90,6 +102,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             {% endfor %}
         </div>
 
