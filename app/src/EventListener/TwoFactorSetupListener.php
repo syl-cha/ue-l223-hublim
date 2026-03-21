@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[AsEventListener(event: 'kernel.request', priority: 10)]
+#[AsEventListener(event: 'kernel.request', priority: -10)]
 class TwoFactorSetupListener
 {
     public function __construct(
