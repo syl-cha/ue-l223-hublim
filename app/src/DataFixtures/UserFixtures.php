@@ -27,6 +27,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $statusStudent = $this->getReference('status_student', Status::class);
         $statusTeacher = $this->getReference('status_teacher', Status::class);
         $statusStaff = $this->getReference('status_staff', Status::class);
+        $status = [$statusStudent, $statusTeacher, $statusStaff];
 
         $studyFields = [];
         $index = 0;
@@ -65,7 +66,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setLastName($lastName);
             $user->setEmail(strtolower($firstName . '.' . $lastName) . '@etu.unilim.fr');
             $user->setPassword($this->hasher->hashPassword($user, 'password'));
-            $user->setStatus($statusStudent);
+            $user->setStatus($faker->randomElement($status));
             $user->setStudyField($faker->randomElement($studyFields));
 
             $user->setCreatedAt(new \DateTimeImmutable());
