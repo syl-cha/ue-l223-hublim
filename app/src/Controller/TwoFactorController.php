@@ -38,35 +38,15 @@ class TwoFactorController extends AbstractController
             $session->set('2fa_setup_secret', $secret);
         }
 
-        // Stocker temporairement le secret pour générer le QR code
-        $user->setTwoFactorSecret($secret);
-        $user->setIsTwoFactorEnabled(true);
-
-        $qrContent = $totpAuthenticator->getQRContent($user);
-
-        // Remettre l'état initial (pas encore confirmé)
-        $user->setTwoFactorSecret(null);
-        $user->setIsTwoFactorEnabled(false);
-
-        // Générer le QR code avec endroid/qr-code v6
-        $qrCode = new QrCode(data: $qrContent, size: 250, margin: 10);
-
-        $writer = new PngWriter();
-        $result = $writer->write($qrCode);
-        $qrCodeDataUri = $result->getDataUri();
-
-        // Vérification du code soumis
+        // Vérification du code soumis (avant la génération du QR)
         if ($request->isMethod('POST')) {
             $code = $request->request->getString('code');
 
-            // Recréer temporairement pour vérifier
             $user->setTwoFactorSecret($secret);
             $user->setIsTwoFactorEnabled(true);
 
             if ($totpAuthenticator->checkCode($user, $code)) {
-                // Confirmation : on persiste le secret
                 $em->flush();
-
                 $session->remove('2fa_setup_secret');
 
                 $this->addFlash('success', 'Double authentification activée avec succès !');
@@ -79,6 +59,19 @@ class TwoFactorController extends AbstractController
 
             $this->addFlash('error', 'Code invalide. Veuillez réessayer.');
         }
+
+        // Générer le QR code
+        $user->setTwoFactorSecret($secret);
+        $user->setIsTwoFactorEnabled(true);
+
+        $qrContent = $totpAuthenticator->getQRContent($user);
+
+        $user->setTwoFactorSecret(null);
+        $user->setIsTwoFactorEnabled(false);
+
+        $qrCode = new QrCode(data: $qrContent, size: 250, margin: 10);
+        $writer = new PngWriter();
+        $qrCodeDataUri = $writer->write($qrCode)->getDataUri();
 
         return $this->render('two_factor/setup.html.twig', [
             'qrCodeDataUri' => $qrCodeDataUri,
