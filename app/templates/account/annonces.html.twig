@@ -47,23 +47,28 @@
 
                     {# ── Overlay signalée ou message signalé ── #}
                     {% elseif card.state.value == 'flagged' or has_flagged_message %}
-                    <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85);">
-                        <span class="draft-overlay-label text-white text-center w-100 px-3">
-                            <i class="bi bi-exclamation-triangle-fill fs-3 mb-2 d-block"></i>
+                    <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85); padding: 1.5rem;">
+                        <div class="draft-overlay-label text-white text-center w-100 d-flex flex-column align-items-center justify-content-center" style="white-space: normal; line-height: 1.4;">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="bi bi-exclamation-triangle-fill fs-3"></i>
+                                {% if card.state.value == 'flagged' %}
+                                    <span class="fs-5 fw-bold">Annonce signalée</span>
+                                {% else %}
+                                    <span class="fs-5 fw-bold">Message signalé</span>
+                                {% endif %}
+                            </div>
                             {% if card.state.value == 'flagged' %}
-                                Annonce signalée et en attente de modération
+                                <small class="fw-normal mb-3">en attente de modération</small>
                             {% else %}
-                                Message sous cette annonce signalé et en attente
+                                <small class="fw-normal mb-3">sous cette annonce</small>
                             {% endif %}
-                        </span>
-                        <div class="overlay-actions mt-3">
+                        </div>
+                        <div class="overlay-actions mt-0">
                             <div class="overlay-action-item">
-                                <a href="{{ path('app_card_show', {'id': card.id}) }}"
-                                   class="btn-action-overlay text-decoration-none text-white"
-                                   title="Consulter">
-                                    <i class="bi bi-eye"></i>
+                                <a href="{{ path('app_card_show', {'id': card.id}) }}" class="btn btn-sm btn-light rounded-pill px-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm">
+                                    <i class="bi bi-eye text-danger"></i>
+                                    <span class="text-danger fw-bold">Consulter</span>
                                 </a>
-                                <small class="text-white">Consulter</small>
                             </div>
                         </div>
                     </div>

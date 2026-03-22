@@ -24,6 +24,28 @@
             <p>Vous n'avez pas l'autorisation d'accéder à cette annonce. Elle est restreinte à certains statuts ou filières.</p>
         </div>
     {% else %}
+    {# Vérifier si la carte contient un message signalé #}
+    {% set has_flagged_message = false %}
+    {% for msg in card.messages %}
+        {% if msg.state and msg.state.value == 'flagged' %}
+            {% set has_flagged_message = true %}
+        {% endif %}
+    {% endfor %}
+
+    {# ── Bannière Signalée ── #}
+    {% if card.state.value == 'flagged' or has_flagged_message %}
+        <div class="alert alert-danger d-flex align-items-center flex-wrap gap-3 mb-4 rounded-4 px-4 py-3">
+            <div class="d-flex align-items-center gap-2 fw-semibold">
+                <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                {% if card.state.value == 'flagged' %}
+                    Attention : Cette annonce a été signalée et n'est plus visible publiquement. Elle est en attente de modération.
+                {% else %}
+                    Attention : Un message sous cette annonce a été signalé. L'annonce n'est temporairement plus visible publiquement.
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
     {# ── Bannière brouillon ── #}
     {% if card.state.value == 'draft' and app.user == card.user %}
         <div class="alert d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 rounded-4 px-4 py-3" style="background-color: #f3f4f6; border: 2px dashed #9ca3af;">

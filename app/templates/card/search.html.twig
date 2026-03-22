@@ -34,9 +34,48 @@
             {% for card in cards %}
                 {% set show_card = can_view_card(card, app.user) %}
 
+                {# Vérifier si la carte contient un message signalé #}
+                {% set has_flagged_message = false %}
+                {% for msg in card.messages %}
+                    {% if msg.state and msg.state.value == 'flagged' %}
+                        {% set has_flagged_message = true %}
+                    {% endif %}
+                {% endfor %}
+
                 {% if show_card %}
                 <div class="bento-item shadow-sm">
-                    <div class="bento-item-inner">
+                    <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% elseif card.state.value == 'flagged' or has_flagged_message %}bento-item-flagged{% endif %}">
+
+                        {# ── Overlay signalée ou message signalé ── #}
+                        {% if card.state.value == 'flagged' or has_flagged_message %}
+                        <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85); padding: 1.5rem;">
+                            <div class="draft-overlay-label text-white text-center w-100 d-flex flex-column align-items-center justify-content-center" style="white-space: normal; line-height: 1.4;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="bi bi-exclamation-triangle-fill fs-3"></i>
+                                    {% if card.state.value == 'flagged' %}
+                                        <span class="fs-5 fw-bold">Annonce signalée</span>
+                                    {% else %}
+                                        <span class="fs-5 fw-bold">Message signalé</span>
+                                    {% endif %}
+                                </div>
+                                {% if card.state.value == 'flagged' %}
+                                    <small class="fw-normal mb-3">en attente de modération</small>
+                                {% else %}
+                                    <small class="fw-normal mb-3">sous cette annonce</small>
+                                {% endif %}
+                            </div>
+                            <div class="overlay-actions mt-0">
+                                <div class="overlay-action-item">
+                                    <a href="{{ path('app_card_show', {'id': card.id}) }}" class="btn btn-sm btn-light rounded-pill px-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm">
+                                        <i class="bi bi-eye text-danger"></i>
+                                        <span class="text-danger fw-bold">Consulter</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# ── Overlay normal ── #}
+                        {% else %}
                         <div class="bento-overlay">
                             <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                             <div class="overlay-actions">
@@ -66,8 +105,20 @@
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
 
                         <div class="bento-card">
+                            {# Badge en haut à droite #}
+                            {% if card.state.value == 'draft' %}
+                                <div class="draft-status-badge">
+                                    <i class="bi bi-floppy-fill me-1"></i> Brouillon
+                                </div>
+                            {% elseif card.state.value == 'flagged' or has_flagged_message %}
+                                <div class="draft-status-badge bg-danger text-white">
+                                    <i class="bi bi-flag-fill me-1"></i> Signalée
+                                </div>
+                            {% endif %}
+
                             {# Header : avatar + nom + date #}
                             <div class="user-info">
                                 <div class="user-avatar">👤</div>
