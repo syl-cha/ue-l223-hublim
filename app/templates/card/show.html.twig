@@ -9,6 +9,12 @@
         <i class="bi bi-arrow-left"></i> Retour aux annonces
     </a>
 
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {# ── Bannière brouillon ── #}
     {% if card.state.value == 'draft' and app.user == card.user %}
         <div class="alert d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 rounded-4 px-4 py-3" style="background-color: #f3f4f6; border: 2px dashed #9ca3af;">
