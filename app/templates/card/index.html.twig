@@ -206,7 +206,8 @@
                                         {% endif %}
                                         <span>{{ card.fanUsers|length }}</span>
                                     </span>
-                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ card.messages|length }}</span></span>
+                                    {% set visible_messages = card.messages|filter(m => m.state and m.state.value != 'archived') %}
+                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ visible_messages|length }}</span></span>
                                 </div>
                             </div>
                         </div>

@@ -242,9 +242,10 @@
 
             {# Liste des messages #}
             <div class="mt-5">
-                <h4 class="fw-bold mb-4">Messages ({{ card.messages|length }})</h4>
+                {% set visible_messages = card.messages|filter(m => m.state.value != 'archived') %}
+                <h4 class="fw-bold mb-4">Messages ({{ visible_messages|length }})</h4>
 
-                {% set sorted_messages = card.messages|sort((a, b) => a.createdAt <=> b.createdAt) %}
+                {% set sorted_messages = visible_messages|sort((a, b) => a.createdAt <=> b.createdAt) %}
 
                 {% for message in sorted_messages %}
                     <div class="shadow-sm rounded-4 p-4 bg-white mb-3 position-relative border-start border-4 border-primary">
