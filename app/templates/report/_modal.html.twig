@@ -1,0 +1,25 @@
+{# templates/report/_modal.html.twig #}
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header bg-danger text-white rounded-top-4">
+                <h5 class="modal-title fw-bold" id="reportModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Signaler un contenu</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted mb-4 small">
+                    Veuillez indiquer pourquoi ce contenu vous semble inapproprié ou contraire aux règles de la plateforme. Votre signalement sera examiné par un administrateur.
+                </p>
+                {{ form_start(report_form, {'attr': {'id': 'reportFormElement'}}) }}
+                    {{ form_widget(report_form) }}
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">
+                            <i class="bi bi-send-fill me-1"></i> Envoyer
+                        </button>
+                    </div>
+                {{ form_end(report_form) }}
+            </div>
+        </div>
+    </div>
+</div>

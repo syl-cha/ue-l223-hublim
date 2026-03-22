@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Repository\CardRepository;
 use App\Repository\UserRepository;
+use App\Repository\MessageRepository;
+use App\Enum\CardState;
+use App\Enum\MessageState;
 use App\Entity\Card;
 use App\Entity\User;
 use App\Service\ImageUploadService;
@@ -24,10 +27,15 @@ final class AdminController extends AbstractController
         Request $request,
         CardRepository $cardRepository,
         UserRepository $userRepository,
+        MessageRepository $messageRepository,
         PaginatorInterface $paginator
     ): Response {
         $searchCards = $request->query->get('search_cards', '');
         $searchUsers = $request->query->get('search_users', '');
+
+        // Récupération des éléments signalés
+        $flaggedCards = $cardRepository->findBy(['state' => CardState::FLAGGED]);
+        $flaggedMessages = $messageRepository->findBy(['state' => MessageState::FLAGGED->value]);
 
         // Query annonces avec recherche
         $cardsQb = $cardRepository->createQueryBuilder('c')
@@ -69,6 +77,8 @@ final class AdminController extends AbstractController
             'totalUsers' => $userRepository->count([]),
             'searchCards' => $searchCards,
             'searchUsers' => $searchUsers,
+            'flaggedCards' => $flaggedCards,
+            'flaggedMessages' => $flaggedMessages,
         ]);
     }
 

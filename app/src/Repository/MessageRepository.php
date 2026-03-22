@@ -25,6 +25,19 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    /**
+     * Compte le nombre de messages signalés.
+     */
+    public function countFlaggedMessages(): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.state = :state')
+            ->setParameter('state', \App\Enum\MessageState::FLAGGED->value)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Message[] Returns an array of Message objects
     //     */

@@ -76,36 +76,47 @@
                         </div>
                     </div>
 
-                    {# Menu 3 petits points (visible uniquement par l'auteur ou l'admin) #}
-                    {% if app.user == card.user or is_granted('ROLE_ADMIN') %}
-                        <div class="dropdown">
-                            <button class="btn btn-link text-dark shadow-none p-0 dropdown-toggle-split"
-                                    type="button"
-                                    id="dropdownMenuCard"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                    style="font-size: 1.5rem; line-height: 1;">
-                                <i class="bi bi-three-dots-vertical"></i>
+                    <div class="d-flex align-items-center gap-2">
+                        {# Bouton de signalement pour les autres utilisateurs #}
+                        {% if app.user and app.user != card.user %}
+                            <button type="button" class="btn btn-link text-muted shadow-none p-0" title="Signaler l'annonce"
+                                    data-bs-toggle="modal" data-bs-target="#reportModal"
+                                    data-report-type="card" data-report-id="{{ card.id }}">
+                                <i class="bi bi-flag"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="dropdownMenuCard">
-                                <li>
-                                    <a class="dropdown-item py-2" href="{{ path('app_card_edit', {'id': card.id}) }}">
-                                        <i class="bi bi-pencil me-2 text-primary"></i> Modifier l'annonce
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="post" action="{{ path('app_card_delete', {'id': card.id}) }}"
-                                        onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ card.id) }}">
-                                        <button type="submit" class="dropdown-item py-2 text-danger">
-                                            <i class="bi bi-trash me-2"></i> Supprimer l'annonce
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+
+                        {# Menu 3 petits points (visible uniquement par l'auteur ou l'admin) #}
+                        {% if app.user == card.user or is_granted('ROLE_ADMIN') %}
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark shadow-none p-0 dropdown-toggle-split"
+                                        type="button"
+                                        id="dropdownMenuCard"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                        style="font-size: 1.5rem; line-height: 1;">
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3" aria-labelledby="dropdownMenuCard">
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ path('app_card_edit', {'id': card.id}) }}">
+                                            <i class="bi bi-pencil me-2 text-primary"></i> Modifier l'annonce
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="{{ path('app_card_delete', {'id': card.id}) }}"
+                                            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ card.id) }}">
+                                            <button type="submit" class="dropdown-item py-2 text-danger">
+                                                <i class="bi bi-trash me-2"></i> Supprimer l'annonce
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
                 {# Titre #}
@@ -247,11 +258,20 @@
                                 {% endif %}
                                 <small class="text-muted ms-2">{{ message.createdAt|date('d/m/Y à H:i') }}</small>
                             </div>
-                            {% if app.user and app.user == message.user and not message.isRead %}
-                                <a href="{{ path('app_message_edit', {'id': message.id}) }}" class="btn btn-sm btn-outline-secondary rounded-pill">
-                                    <i class="bi bi-pencil-fill"></i> Corriger
-                                </a>
-                            {% endif %}
+                            <div class="d-flex align-items-center gap-2">
+                                {% if app.user and app.user == message.user and not message.isRead %}
+                                    <a href="{{ path('app_message_edit', {'id': message.id}) }}" class="btn btn-sm btn-outline-secondary rounded-pill">
+                                        <i class="bi bi-pencil-fill"></i> Corriger
+                                    </a>
+                                {% endif %}
+                                {% if app.user and app.user != message.user %}
+                                    <button type="button" class="btn btn-link text-muted shadow-none p-0 m-0" title="Signaler le message"
+                                            data-bs-toggle="modal" data-bs-target="#reportModal"
+                                            data-report-type="message" data-report-id="{{ message.id }}">
+                                        <i class="bi bi-flag"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
                         <div class="mb-0 markdown-content">
                             {{ message.content|markdown_to_html|sanitize_html }}
@@ -362,5 +382,33 @@
 </script>
 {% endif %}
 
+    {% if report_form is defined %}
+        {% include 'report/_modal.html.twig' with {'report_form': report_form} %}
+    {% endif %}
+
+    <script>
+        (function() {
+            const reportModal = document.getElementById('reportModal');
+            if (reportModal) {
+                reportModal.addEventListener('show.bs.modal', function (event) {
+                    const button = event.relatedTarget;
+                    if (!button) return;
+
+                    const reportType = button.getAttribute('data-report-type');
+                    const reportId = button.getAttribute('data-report-id');
+
+                    const formElement = document.getElementById('reportFormElement');
+                    if (formElement) {
+                        if (reportType === 'card') {
+                            formElement.action = '/report/card/' + reportId;
+                        } else if (reportType === 'message') {
+                            formElement.action = '/report/message/' + reportId;
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
+
     {% endif %} {# Fin du if can_view #}
-{% endblock %}
+    {% endblock %}

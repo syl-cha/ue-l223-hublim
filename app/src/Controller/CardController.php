@@ -8,6 +8,8 @@ use App\Form\CardType;
 use App\Repository\CardRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\StudyFieldRepository;
+use App\Entity\Report;
+use App\Form\ReportType;
 use App\Entity\Image;
 use App\Service\ImageUploadService;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -218,6 +220,8 @@ final class CardController extends AbstractController
             'method' => 'POST',
         ]);
 
+        $reportForm = $this->createForm(ReportType::class, new Report());
+
         $isAuthor = $user && $user === $card->getUser();
         if (!$isAuthor) {
             $session = $request->getSession();
@@ -233,6 +237,7 @@ final class CardController extends AbstractController
         return $this->render('card/show.html.twig', [
             'card'         => $card,
             'message_form' => $messageForm->createView(),
+            'report_form'  => $reportForm->createView(),
         ]);
     }
 
@@ -287,7 +292,7 @@ final class CardController extends AbstractController
             $publishOnSave = $request->request->has('publish_on_save');
             if ($publishOnSave) {
                 $card->setState(CardState::PUBLISHED);
-                $card->setCreatedAt(new \DateTimeImmutable()); 
+                $card->setCreatedAt(new \DateTimeImmutable());
             } elseif ($card->getState() === CardState::DRAFT) {
                 // On garde le brouillon en brouillon
                 $card->setState(CardState::DRAFT);

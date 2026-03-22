@@ -90,7 +90,12 @@
         {% endif %}
         <li class="mx-5"><a href="#footer" class="text-decoration-none">Contact</a></li>
         {% if is_granted('ROLE_ADMIN') %}
-            <li class="mx-5"><a href="{{ path('app_admin_dashboard') }}" class="text-decoration-none text-danger fw-bold"><i class="bi bi-shield-lock-fill"></i> Admin</a></li>
+            <li class="mx-5">
+                <a href="{{ path('app_admin_dashboard') }}" class="text-decoration-none text-danger fw-bold position-relative d-inline-flex align-items-center">
+                    <i class="bi bi-shield-lock-fill me-1"></i> Admin
+                    {{ render(controller('App\\Controller\\AdminNotificationController::badge')) }}
+                </a>
+            </li>
         {% endif %}
     </ul>
 
