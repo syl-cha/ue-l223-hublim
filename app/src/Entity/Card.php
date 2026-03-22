@@ -81,6 +81,12 @@ class Card
     #[ORM\Column]
     private ?int $views = null;
 
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'card')]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -91,6 +97,7 @@ class Card
         $this->createdAt = new \DateTimeImmutable();
         $this->state = CardState::PUBLISHED;
         $this->views = 0;
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -332,6 +339,36 @@ class Card
     public function setViews(int $views): static
     {
         $this->views = $views;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setCard($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getCard() === $this) {
+                $report->setCard(null);
+            }
+        }
 
         return $this;
     }

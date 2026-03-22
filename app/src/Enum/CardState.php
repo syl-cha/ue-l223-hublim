@@ -9,6 +9,7 @@ namespace App\Enum;
  *
  * - `DRAFT` : l'annonce est à l'état de brouillon
  * - `PUBLISHED` : l'annonce est publiée et visible
+ * - `FLAGGED` : l'annonce a étésignalée pour un propos licencieux dans le contenu ou dans le fil de messages
  * - `DONE` : l'annonce est marquée comme terminée ou résolue
  * - `ARCHIVED` : l'annonce est archivée
  *
@@ -17,6 +18,7 @@ enum CardState: string
 {
     case DRAFT = 'draft';
     case PUBLISHED = 'published';
+    case FLAGGED = 'flagged';
     case DONE = 'done';
     case ARCHIVED = 'archived';
 }

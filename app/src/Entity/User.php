@@ -78,11 +78,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Card::class, inversedBy: 'fanUsers')]
     private Collection $userFavoriteCards;
 
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'reporter')]
+    private Collection $reports;
+
     public function __construct()
     {
         $this->card = new ArrayCollection();
         $this->messages = new ArrayCollection();
         $this->userFavoriteCards = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -336,6 +343,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeUserFavoriteCard(Card $userFavoriteCard): static
     {
         $this->userFavoriteCards->removeElement($userFavoriteCard);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReporter($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReporter() === $this) {
+                $report->setReporter(null);
+            }
+        }
 
         return $this;
     }

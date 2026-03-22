@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MessageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,6 +32,20 @@ class Message
     #[ORM\ManyToOne(inversedBy: 'messages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Card $card = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $state = null;
+
+    /**
+     * @var Collection<int, Report>
+     */
+    #[ORM\OneToMany(targetEntity: Report::class, mappedBy: 'message')]
+    private Collection $reports;
+
+    public function __construct()
+    {
+        $this->reports = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -92,6 +108,48 @@ class Message
     public function setCard(?Card $card): static
     {
         $this->card = $card;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(string $state): static
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Report>
+     */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(Report $report): static
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setMessage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(Report $report): static
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getMessage() === $this) {
+                $report->setMessage(null);
+            }
+        }
 
         return $this;
     }
