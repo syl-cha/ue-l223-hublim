@@ -16,8 +16,7 @@ class EmailVerifier
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
         private EntityManagerInterface $entityManager,
-    ) {
-    }
+    ) {}
 
     public function sendEmailConfirmation(string $verifyEmailRouteName, User $user, TemplatedEmail $email): void
     {
@@ -34,6 +33,8 @@ class EmailVerifier
         $context['expiresAtMessageData'] = $signatureComponents->getExpirationMessageData();
 
         $email->context($context);
+
+        $email->getHeaders()->addTextHeader('X-Transport', 'registration');
 
         $this->mailer->send($email);
     }

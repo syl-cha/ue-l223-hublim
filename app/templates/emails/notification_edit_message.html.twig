@@ -1,0 +1,14 @@
+<h1>Message modifié sur votre annonce "{{ card.title }}" du {{ card.createdAt|date('d/m/Y') }}</h1>
+
+<p>Bonjour {{ card.user.firstName }},</p>
+
+<p>L'utilisateur <strong>{{ message.user.firstName }} {{ message.user.lastName }}</strong> ({{ message.user.email }}) a modifié son message sur votre annonce <em>"{{ card.title }}"</em> (créée le {{ card.createdAt|date('d/m/Y') }}).</p>
+
+<p>Voici son nouveau message (modifié le {{ message.createdAt|date('d/m/Y à H:i') }}) :</p>
+
+<blockquote style="border-left: 4px solid #ccc; padding-left: 10px; color: #555;">
+    {{ message.content|nl2br }}
+</blockquote>
+
+<p>Vous pouvez consulter votre annonce en cliquant sur le lien ci-dessous :<br>
+<a href="{{ url('app_card_show', {'id': card.id}) }}">Voir mon annonce</a></p>

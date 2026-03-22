@@ -1,3 +1,7 @@
 framework:
     mailer:
-        dsn: '%env(MAILER_DSN)%'
+        transports:
+            main: "%env(MAILER_DSN)%"
+            registration: "%env(MAILER_DSN_REGISTRATION)%"
+            notifications: "%env(MAILER_DSN_NOTIFICATIONS)%"
+            reports: "%env(MAILER_DSN_REPORTS)%"
