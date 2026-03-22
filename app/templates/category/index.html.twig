@@ -1,11 +1,11 @@
-{% extends 'account/base_account.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body_class %}bg-gris{% endblock %}
-{% block account_content %}
+{% block body %}
 
 <div class="container px-4 pb-5">
     <div class="my-5">
-        <h1 class="fw-bold text-center text-primary raleway-500 my-5">Retrouvez toutes vos annonces</h1>
+        <h1 class="fw-bold text-center text-primary raleway-500 my-5">{{ category.name }}</h1>
         <div class="d-flex justify-content-between align-items-center pt-3 px-2 mb-4">
             <div>
                 <a href="{{ path('app_card_new') }}" class="btn btn-orange rounded-pill px-4">Poster +</a>

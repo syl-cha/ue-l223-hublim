@@ -16,12 +16,12 @@
                 <a href="" class="text-decoration-none">Catégories</a>
                 <ul class="dropdown-menu-custom">
                     <li class="dropdown-item-custom has-sub">
-                        <a href="#">Pédagogie & Savoirs</a>
+                        <a href="{{ path('app_category', {slug: 'pedagogie-savoirs'}) }}">Pédagogie & Savoirs</a>
                         <ul class="dropdown-submenu">
-                            <li><a href="#">Livres & Manuels</a></li>
-                            <li><a href="#">Tutorat & Soutien</a></li>
-                            <li><a href="#">Groupes de travail</a></li>
-                            <li><a href="#">Partage de fiches & Notes</a></li>
+                            <li><a href="{{ path('app_category', {slug: 'livres-manuels'}) }}">Livres & Manuels</a></li>
+                            <li><a href="{{ path('app_category', {slug: 'tutorat-soutien'}) }}">Tutorat & Soutien</a></li>
+                            <li><a href="{{ path('app_category', {slug: 'groupes-travail'}) }}">Groupes de travail</a></li>
+                            <li><a href="{{ path('app_category', {slug: 'fiches-notes'}) }}">Partage de fiches & Notes</a></li>
                         </ul>
                     </li>
                     <li class="dropdown-item-custom has-sub">
