@@ -13,8 +13,8 @@
             <div class="col-lg-4">
                 <h6 class="fw-bold mb-3 raleway-500">Liens utiles</h6>
                 <ul class="list-unstyled mb-0">
-                    <li class="mb-1"><a href="" class="text-decoration-none text-white">Accueil</a></li>
-                    <li class="mb-1"><a href="" class="text-decoration-none text-white">Toutes les annonces</a></li>
+                    <li class="mb-1"><a href="{{ path('app_login') }}" class="text-decoration-none text-white">Accueil</a></li>
+                    <li class="mb-1"><a href="{{ app.user ? path('app_card_index') : path('app_login') }}" class="text-decoration-none text-white">Toutes les annonces</a></li>
                     <li class="mb-1"><a href="" class="text-decoration-none text-white">Mon espace</a></li>
                 </ul>
             </div>
