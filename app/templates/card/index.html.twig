@@ -30,28 +30,28 @@
                     </button>
                 </div>
             </form>
+        </div>
 
-            {% for message in app.flashes('success') %}
+        {% for message in app.flashes('success') %}
                 <div class="alert alert-success">
                     {{ message }}
                 </div>
-            {% endfor %}
-        </div>
+        {% endfor %}
 
         {# ── Onglets Toutes les annonces / Mes brouillons ── #}
         {% if app.user %}
         <div class="card-tabs-bar px-2">
             <a href="{{ path('app_card_index') }}"
-               class="card-tab {% if activeTab == 'all' %}card-tab--active{% endif %}">
+            class="card-tab {% if activeTab == 'all' %}card-tab--active{% endif %}">
                 <i class="bi bi-grid me-1"></i> Toutes les annonces
             </a>
-            <a href="{{ path('app_card_index', {'tab': 'drafts'}) }}"
-               class="card-tab {% if activeTab == 'drafts' %}card-tab--active{% endif %}">
-                <i class="bi bi-floppy me-1"></i> Mes brouillons
-                {% if draftCount > 0 %}
+            {% if draftCount > 0 %}
+                <a href="{{ path('app_card_index', {'tab': 'drafts'}) }}"
+                class="card-tab {% if activeTab == 'drafts' %}card-tab--active{% endif %}">
+                    <i class="bi bi-floppy me-1"></i> Mes brouillons
                     <span class="draft-badge">{{ draftCount }}</span>
-                {% endif %}
-            </a>
+                </a>
+            {% endif %}
         </div>
         {% endif %}
     </div>
@@ -145,7 +145,15 @@
                         {% endif %}
 
                         <div class="user-info">
-                            <div class="user-avatar">👤</div>
+                            <div class="user-avatar">
+                                {% if card.user.avatarFileName %}
+                                    <img src="{{ asset('uploads/avatars/' ~ card.user.avatarFileName) }}"
+                                        alt="{{ card.user.firstName }}"
+                                        style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                {% else %}
+                                    👤
+                                {% endif %}
+                            </div>
                             <div class="user-meta">
                                 <div class="user-name">
                                     {{ card.user.firstName }} {{ card.user.lastName }}

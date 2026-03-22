@@ -46,7 +46,15 @@
                     {# ── Contenu de la carte ── #}
                     <div class="bento-card">
                         <div class="user-info">
-                            <div class="user-avatar">👤</div>
+                            <div class="user-avatar">
+                                {% if card.user.avatarFileName %}
+                                    <img src="{{ asset('uploads/avatars/' ~ card.user.avatarFileName) }}"
+                                        alt="{{ card.user.firstName }}"
+                                        style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                {% else %}
+                                    👤
+                                {% endif %}
+                            </div>
                             <div class="user-meta">
                                 <div class="user-name">
                                     {{ card.user.firstName }} {{ card.user.lastName }}

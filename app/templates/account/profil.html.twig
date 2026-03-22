@@ -17,8 +17,32 @@
 
             {% form_theme form 'bootstrap_5_layout.html.twig' %}
 
-            {{ form_start(form) }}
+            <div class="text-center mb-4">
+                {% if app.user.avatarFileName %}
+                    <img src="{{ asset('uploads/avatars/' ~ app.user.avatarFileName) }}"
+                        class="rounded-circle"
+                        style="width: 100px; height: 100px; object-fit: cover;">
+                    <div class="mt-2">
+                        <form method="post" action="{{ path('app_profile_delete_avatar') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar') }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill"
+                                    onclick="return confirm('Supprimer la photo de profil ?')">
+                                <i class="bi bi-trash me-1"></i> Supprimer la photo
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="user-avatar rounded-circle bg-d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 100px; height: 100px;">
+                        <span class="text-white fs-1">👤</span>
+                    </div>
+                {% endif %}
+            </div>
 
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+
+                {{ form_row(form.avatarFile) }}
+                
                 {{ form_row(form.firstName) }}
 
                 {{ form_row(form.lastName) }}
