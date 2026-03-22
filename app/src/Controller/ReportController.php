@@ -43,7 +43,15 @@ class ReportController extends AbstractController
             $em->persist($report);
             $em->flush();
 
-            $this->sendReportEmails($mailer, $report, 'Carte', $card->getUser()->getEmail(), $card->getTitle());
+            $this->sendReportEmails(
+                $mailer,
+                $report,
+                'Carte',
+                $card->getUser()->getEmail(),
+                $card->getTitle(),
+                $card->getTitle(),
+                $card->getCreatedAt()->format('d/m/Y')
+            );
 
             $this->addFlash('success', 'Votre signalement concernant cette annonce a bien été pris en compte.');
         }
@@ -72,8 +80,21 @@ class ReportController extends AbstractController
             $em->persist($report);
             $em->flush();
 
-            $this->sendReportEmails($mailer, $report, 'Message', $message->getUser()->getEmail(), mb_substr($message->getContent(), 0, 50) . '...');
+            $cardTitle = $message->getCard() ? $message->getCard()->getTitle() : 'Annonce inconnue';
+            $cardCreatedAt = $message->getCard() && $message->getCard()->getCreatedAt()
+                ? $message->getCard()->getCreatedAt()->format('d/m/Y')
+                : 'Date inconnue';
+            $cardAuthorEmail = $message->getCard() ? $message->getCard()->getUser()->getEmail() : $message->getUser()->getEmail();
 
+            $this->sendReportEmails(
+                $mailer,
+                $report,
+                'Message',
+                $cardAuthorEmail,
+                mb_substr($message->getContent(), 0, 50) . '...',
+                $cardTitle,
+                $cardCreatedAt
+            );
             $this->addFlash('success', 'Votre signalement concernant ce message a bien été pris en compte.');
         }
 
@@ -85,7 +106,7 @@ class ReportController extends AbstractController
         return $this->redirectToRoute('app_card_index');
     }
 
-    private function sendReportEmails(MailerInterface $mailer, Report $report, string $contentType, string $creatorEmail, string $contentPreview): void
+    private function sendReportEmails(MailerInterface $mailer, Report $report, string $contentType, string $creatorEmail, string $contentPreview, string $cardTitle, string $cardCreatedAt): void
     {
         // Email à l'Administrateur
         $adminEmail = (new Email())
@@ -108,8 +129,10 @@ class ReportController extends AbstractController
             ->to($creatorEmail)
             ->subject("Votre contenu a été signalé")
             ->text(sprintf(
-                "Bonjour,\n\nNous vous informons qu'un problème a été détecté concernant votre %s.\nCelui-ci a été temporairement mis en quarantaine pour vérification.\n\nUn administrateur traitera le dossier prochainement.\n\nL'équipe HubLim",
-                strtolower($contentType)
+                "Bonjour,\n\nNous vous informons qu'un problème a été détecté concernant votre %s.\nCelui-ci a été temporairement mis en quarantaine pour vérification.\n\nDétails de l'annonce concernée :\n- Titre : %s\n- Date de publication : %s\n\nUn administrateur traitera le dossier prochainement.\n\nL'équipe HubLim",
+                strtolower($contentType),
+                $cardTitle,
+                $cardCreatedAt
             ));
 
         $mailer->send($adminEmail);
