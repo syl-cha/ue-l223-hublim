@@ -17,20 +17,15 @@
                     Échangez biens, services et idées dans un espace numérique réservé à l'Université de Limoges, authentifié et de confiance.
                 </p>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="{{ path('app_register') }}" class="btn btn-lg px-5" style="background-color: #094074; color: white; border-radius: 30px; font-weight: 700;">
+                    <a href="{{ path('app_register') }}" class="btn btn-lg px-5 btn-inscrit">
                         S'inscrire
                     </a>
                 </div>
             </div>
             <div class="col-lg-5">
-                <div style="position: relative;">
-                    <img src="{{ asset('../assets/svg/logo_badge.svg') }}"
-                        alt=""
-                        style="position: absolute; width: 120%; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.06; pointer-events: none; z-index: 2;">
-                    <div class="carousel-container collection" style="position: relative; z-index: 1;">
-                        <img src="{{ asset('images/bg-carousel.png') }}" alt="" class="carousel-bg">
-                        {% include 'partials/_carousel.html.twig' %}
-                    </div>
+                <div class="carousel-container collection">
+                    <img src="{{ asset('images/bg-carousel.png') }}" alt="" class="carousel-bg">
+                    {% include 'partials/_carousel.html.twig' %}
                 </div>
             </div>
         </div>

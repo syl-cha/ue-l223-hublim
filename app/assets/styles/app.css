@@ -74,7 +74,7 @@ nav {
 }
 
 nav a {
-    color: var(--color-primary);
+    color: var(--color-primary) !important;
     transition: color 0.4s ease;
     font-weight: bold;
 }
@@ -86,6 +86,9 @@ nav .btn-orange {
 nav ul a, .account-nav ul a {
     display: inline-block;
     transition: transform 0.2s ease;
+}
+
+.account-nav {
     color: white;
 }
 
@@ -118,15 +121,19 @@ header.scrolled nav .btn-orange:hover {
     background-color: #f9f9f9;
 }
 
+
+
 #hero-header::before {
     content: '';
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 45%;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 200'%3E%3Cpath fill='%23094074' fill-opacity='0.12' d='M0 80 Q360 30 720 80 Q1080 130 1440 80 L1440 200 L0 200 Z'/%3E%3Cpath fill='%23094074' fill-opacity='0.10' d='M0 100 Q360 55 720 100 Q1080 148 1440 100 L1440 200 L0 200 Z'/%3E%3Cpath fill='%23094074' fill-opacity='0.15' d='M0 125 Q360 90 720 120 Q1080 155 1440 125 L1440 200 L0 200 Z'/%3E%3C/svg%3E") no-repeat bottom;
-    background-size: cover;
+    height: 100%;
+    background: url('../svg/background1.svg') no-repeat center;
+    background-size: 120%;
+    background-attachment: fixed;
+    opacity: 0.4;
     pointer-events: none;
 }
 
@@ -138,6 +145,43 @@ header.scrolled nav .btn-orange:hover {
     width: 5px;
     height: 100%;
     background-color: #B60017;
+}
+
+#hero-header .btn-inscrit {
+    background-color: #094074;
+    color: white;
+    border: 2px solid #094074;
+    border-radius: 30px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#hero-header .btn-inscrit::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
+
+#hero-header .btn-inscrit:hover {
+    background-color: transparent;
+    color: #094074;
+    border-color: #094074;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(9, 64, 116, 0.3);
+}
+
+#hero-header .btn-inscrit:hover::after {
+    width: 300px;
+    height: 300px;
 }
 
 
@@ -328,7 +372,7 @@ body:not(.home-page) {
 }
 
 .swiper-pagination-bullet {
-    background-color: var(--color-bg-beige);
+    background-color: var(--color-white);
     opacity: 0.4;
 }
 
@@ -379,8 +423,17 @@ body:not(.home-page) {
 
 #contact input,
 #contact textarea {
-    background-color: var(--color-bg-beige);
+    background-color: #fafafa;
     color: var(--color-primary);
+    border: 0.2px solid rgb(151, 151, 151) !important;
+    border-radius: 8px;
+}
+
+#contact input:focus,
+#contact textarea:focus {
+    border-color: #094074 !important;
+    box-shadow: 0 0 0 0.2rem rgba(9, 64, 116, 0.15);
+    outline: none;
 }
 
 /**** Footer ****/
