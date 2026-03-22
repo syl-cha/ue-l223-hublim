@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Activer la double authentification{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="h3 mb-4">Activer la double authentification (2FA)</h1>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Étape 1 : Scanner le QR code</h5>
+                    <p class="card-text">
+                        Ouvrez votre application <strong>2FAS Auth</strong> et scannez le QR code ci-dessous.
+                    </p>
+                    <div class="text-center my-3">
+                        <img src="{{ qrCodeDataUri }}" alt="QR Code 2FA" class="img-fluid">
+                    </div>
+                    <p class="text-muted small text-center">
+                        Ou entrez manuellement cette clé : <code>{{ secret }}</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Étape 2 : Vérifier le code</h5>
+                    <p class="card-text">
+                        Entrez le code à 6 chiffres affiché dans votre application pour confirmer l'activation.
+                    </p>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Code de vérification</label>
+                            <input type="text" name="code" id="code" class="form-control text-center"
+                                   maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+                                   placeholder="000000" required autofocus autocomplete="one-time-code">
+                        </div>
+                        <button type="submit" class="btn btn-orange w-100">
+                            Activer la 2FA
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

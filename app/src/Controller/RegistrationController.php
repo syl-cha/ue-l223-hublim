@@ -40,7 +40,6 @@ class RegistrationController extends AbstractController
 
             // default values
             $user->setCreatedAt(new \DateTimeImmutable());
-            $user->setTwoFactorSecret('none');
             $user->setRoles(['ROLE_USER']);
             // Cas particulier su statut (car il y a 'mapped' => false dans le fichier RegistrationFormType.php)
             // 1. On va chercher ce que l'utilisateur a coché (qui était "non-mappé")
