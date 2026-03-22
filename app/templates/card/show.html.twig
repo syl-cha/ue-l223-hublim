@@ -4,16 +4,7 @@
 {% block body_class %}bg-gris{% endblock %}
 {% block body %}
 
-{% set can_view = false %}
-{% if app.user and card.user == app.user %}
-    {% set can_view = true %}
-{% elseif card.targetStatus is empty and card.targetStudyFields is empty %}
-    {% set can_view = true %}
-{% elseif app.user and app.user.status and card.targetStatus.contains(app.user.status) %}
-    {% set can_view = true %}
-{% elseif app.user and app.user.studyField and card.targetStudyFields.contains(app.user.studyField) %}
-    {% set can_view = true %}
-{% endif %}
+{% set can_view = can_view_card(card, app.user) %}
 
 <div class="container px-4 py-5">
 
