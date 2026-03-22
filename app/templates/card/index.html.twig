@@ -8,7 +8,7 @@
         Bonjour {{ app.user.firstName }} !
     </div>
     <div class="my-5">
-        <h1 class="fw-bold text-center text-primary raleway-500">Retrouvez toutes les annonces</h1>
+        <h1 class="fw-bold text-center text-primary raleway-500 my-5">Retrouvez toutes les annonces</h1>
         <div class="d-flex justify-content-between align-items-center pt-3 px-2 mb-4">
 
             <div>
@@ -31,8 +31,33 @@
                 </div>
             </form>
         </div>
+
+        {# ── Onglets Toutes les annonces / Mes brouillons ── #}
+        {% if app.user %}
+        <div class="card-tabs-bar px-2">
+            <a href="{{ path('app_card_index') }}"
+               class="card-tab {% if activeTab == 'all' %}card-tab--active{% endif %}">
+                <i class="bi bi-grid me-1"></i> Toutes les annonces
+            </a>
+            <a href="{{ path('app_card_index', {'tab': 'drafts'}) }}"
+               class="card-tab {% if activeTab == 'drafts' %}card-tab--active{% endif %}">
+                <i class="bi bi-floppy me-1"></i> Mes brouillons
+                {% if draftCount > 0 %}
+                    <span class="draft-badge">{{ draftCount }}</span>
+                {% endif %}
+            </a>
+        </div>
+        {% endif %}
     </div>
 
+    {# Message vide pour les brouillons #}
+    {% if activeTab == 'drafts' and cards|length == 0 %}
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-floppy" style="font-size: 2.5rem; opacity: 0.4;"></i>
+            <p class="mt-3">Tu n'as aucun brouillon pour l'instant.</p>
+            <a href="{{ path('app_card_new') }}" class="btn btn-orange rounded-pill px-4 mt-2">Créer une annonce</a>
+        </div>
+    {% else %}
     <div class="bento-grid">
         {% for card in cards %}
             {% set show_card = false %}
@@ -48,9 +73,42 @@
 
             {% if show_card %}
             <div class="bento-item">
-                <div class="bento-item-inner">
+                <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% endif %}">
 
-                    {# Overlay au survol #}
+                    {# ── Overlay brouillon ── #}
+                    {% if card.state.value == 'draft' %}
+                    <div class="bento-overlay bento-overlay-draft">
+                        <span class="draft-overlay-label">
+                            <i class="bi bi-floppy me-1"></i> Brouillon
+                        </span>
+                        <div class="overlay-actions">
+                            <div class="overlay-action-item">
+                                <a href="{{ path('app_card_edit', {'id': card.id}) }}"
+                                   class="btn-action-overlay text-decoration-none"
+                                   title="Éditer">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <small>Éditer</small>
+                            </div>
+                            <div class="overlay-action-item">
+                                <form method="post"
+                                      action="{{ path('app_card_publish', {'id': card.id}) }}"
+                                      style="display:contents">
+                                    <input type="hidden" name="_token"
+                                           value="{{ csrf_token('publish' ~ card.id) }}">
+                                    <button type="submit"
+                                            class="btn-action-overlay border-0 bg-transparent"
+                                            title="Publier">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </form>
+                                <small>Publier</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# ── Overlay normal (annonces publiées) ── #}
+                    {% else %}
                     <div class="bento-overlay">
                         <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                         <div class="overlay-actions">
@@ -80,16 +138,23 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
 
-                    {# Contenu de la carte #}
+                    {# ── Contenu de la carte ── #}
                     <div class="bento-card">
 
-                        {# Header : avatar + nom + date #}
+                        {# Badge brouillon en haut à droite #}
+                        {% if card.state.value == 'draft' %}
+                            <div class="draft-status-badge">
+                                <i class="bi bi-floppy-fill me-1"></i> Brouillon
+                            </div>
+                        {% endif %}
+
                         <div class="user-info">
                             <div class="user-avatar">👤</div>
                             <div class="user-meta">
                                 <div class="user-name">
-                                    {{ card.user.email|split('@')[0] }}
+                                    {{ card.user.firstName }} {{ card.user.lastName }}
                                     {% if card.category %}
                                         {% set color = card.category.parent ? card.category.parent.color : card.category.color %}
                                         <span class="fw-normal"> |
@@ -114,15 +179,12 @@
                             </div>
                         </div>
 
-                        {# Titre #}
                         <div class="card-title">{{ card.title }}</div>
 
-                        {# Description #}
                         <div class="card-description markdown-preview">
                             {{ card.description|markdown_to_html|sanitize_html }}
                         </div>
 
-                        {# Image sous la description #}
                         {% if card.coverImage %}
                             <div class="bento-card-image">
                                 <img
@@ -139,10 +201,14 @@
             {% endif %}
         {% endfor %}
     </div>
+    {% endif %}
 
     <div class="d-flex justify-content-center mt-5">
         {{ knp_pagination_render(cards) }}
     </div>
-
+    
 </div>
+
+   
+
 {% endblock %}

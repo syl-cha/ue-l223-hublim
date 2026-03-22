@@ -66,27 +66,17 @@ function initPage() {
     // Masonry grid
     const bentoGrid = document.querySelector('.bento-grid');
     if (bentoGrid) {
-        setTimeout(() => {
-            const msnry = new Masonry(bentoGrid, {
-                itemSelector: '.bento-item',
-                columnWidth: '.bento-item',
-                percentPosition: true,
-                gutter: 14,
-                fitWidth: false
-            });
+        const msnry = new Masonry(bentoGrid, {
+            itemSelector: '.bento-item',
+            columnWidth: '.bento-item',
+            percentPosition: true,
+            gutter: 14,
+            fitWidth: false
+        });
 
-            imagesLoaded(bentoGrid, function () {
-                msnry.layout();
-                // Ajuste la hauteur du container après placement
-                const items = bentoGrid.querySelectorAll('.bento-item');
-                let maxBottom = 0;
-                items.forEach(item => {
-                    const bottom = item.offsetTop + item.offsetHeight;
-                    if (bottom > maxBottom) maxBottom = bottom;
-                });
-                bentoGrid.style.height = maxBottom + 'px';
-            });
-        }, 100);
+        imagesLoaded(bentoGrid, function () {
+            msnry.layout();
+        });
     }
 
     // 3. Prévisualisation des nouvelles photos (SANS DOUBLONS)

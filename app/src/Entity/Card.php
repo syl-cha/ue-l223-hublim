@@ -49,7 +49,7 @@ class Card
     private Collection $messages;
 
     #[ORM\ManyToOne(inversedBy: 'cards')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     #[Assert\NotBlank(message: 'Veuillez choisir une catégorie.')]
     private ?Category $category = null;
 
