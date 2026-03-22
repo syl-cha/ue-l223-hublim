@@ -30,6 +30,12 @@
                     </button>
                 </div>
             </form>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
 
         {# ── Onglets Toutes les annonces / Mes brouillons ── #}

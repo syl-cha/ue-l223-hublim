@@ -12,6 +12,12 @@
         <i class="bi bi-arrow-left"></i> Retour aux annonces
     </a>
 
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     {% if not can_view %}
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading">Accès refusé</h4>
