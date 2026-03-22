@@ -11,7 +11,11 @@
                     Veuillez indiquer pourquoi ce contenu vous semble inapproprié ou contraire aux règles de la plateforme. Votre signalement sera examiné par un administrateur.
                 </p>
                 {{ form_start(report_form, {'attr': {'id': 'reportFormElement'}}) }}
-                    {{ form_widget(report_form) }}
+                    <div class="mb-3">
+                        {{ form_label(report_form.reason, null, {'label_attr': {'class': 'form-label fw-bold d-block'}}) }}
+                        {{ form_widget(report_form.reason, {'attr': {'class': 'form-control w-100'}}) }}
+                        {{ form_errors(report_form.reason) }}
+                    </div>
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-danger rounded-pill px-4">
