@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification 2FA{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <h1 class="h3 mb-3 text-center">Double authentification</h1>
+            <p class="text-center text-muted mb-4">
+                Ouvrez votre application <strong>2FAS Auth</strong> et entrez le code à 6 chiffres.
+            </p>
+
+            <form method="post">
+                <div class="mb-3">
+                    <label for="code" class="form-label">Code de vérification</label>
+                    <input type="text" name="code" id="code" class="form-control form-control-lg text-center"
+                           maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
+                           placeholder="000000" required autofocus autocomplete="one-time-code">
+                </div>
+                <button type="submit" class="btn btn-lg btn-orange w-100">
+                    Vérifier
+                </button>
+            </form>
+
+            <p class="text-center mt-3">
+                <a href="{{ path('app_logout') }}" class="text-decoration-none">Se déconnecter</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

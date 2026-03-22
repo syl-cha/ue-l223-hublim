@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification en deux étapes{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            {% if authenticationError %}
+                <div class="alert alert-danger">
+                    {{ authenticationError|trans(authenticationErrorData, 'SchebTwoFactorBundle') }}
+                </div>
+            {% endif %}
+
+            <h1 class="h3 mb-3 font-weight-normal">Vérification en deux étapes</h1>
+            <p class="text-muted">Ouvrez votre application <strong>2FAS Auth</strong> et entrez le code à 6 chiffres.</p>
+
+            <form method="post" action="{{ checkPathUrl ?? path('2fa_login_check') }}">
+                <label for="inputCode">Code d'authentification</label>
+                <input type="text" name="_auth_code" id="inputCode"
+                       class="form-control mb-3"
+                       autocomplete="one-time-code"
+                       autofocus
+                       inputmode="numeric"
+                       pattern="[0-9]{6}"
+                       maxlength="6"
+                       required>
+
+                {% if isCsrfProtectionEnabled %}
+                    <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrf_token(csrfTokenId) }}">
+                {% endif %}
+
+                <button type="submit" class="btn btn-lg btn-orange w-100 mt-3">
+                    Vérifier
+                </button>
+            </form>
+
+            <p class="text-center mt-3">
+                <a href="{{ logout_path() }}" class="text-decoration-none">Annuler et se déconnecter</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
