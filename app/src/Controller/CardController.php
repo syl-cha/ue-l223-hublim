@@ -51,11 +51,26 @@ final class CardController extends AbstractController
                 ->orderBy('c.createdAt', 'DESC')
                 ->getQuery();
         } else {
-            $query = $cardRepository->createQueryBuilder('c')
-                ->where('c.state != :draft')
-                ->setParameter('draft', CardState::DRAFT->value, \Doctrine\DBAL\Types\Types::STRING)
-                ->orderBy('c.createdAt', 'DESC')
-                ->getQuery();
+            $qb = $cardRepository->createQueryBuilder('c');
+
+            if ($this->isGranted('ROLE_ADMIN')) {
+                // L'admin voit tout sauf les brouillons
+                $qb->where('c.state != :draft')
+                    ->setParameter('draft', CardState::DRAFT);
+            } elseif ($this->getUser()) {
+                // L'utilisateur connecté voit les cartes publiées, et SES cartes signalées
+                $qb->where('c.state = :published')
+                    ->orWhere('c.state = :flagged AND c.user = :user')
+                    ->setParameter('published', CardState::PUBLISHED)
+                    ->setParameter('flagged', CardState::FLAGGED)
+                    ->setParameter('user', $this->getUser());
+            } else {
+                // Visiteur non connecté : uniquement le publié
+                $qb->where('c.state = :published')
+                    ->setParameter('published', CardState::PUBLISHED);
+            }
+
+            $query = $qb->orderBy('c.createdAt', 'DESC')->getQuery();
         }
 
         $pagination = $paginator->paginate(
@@ -198,6 +213,12 @@ final class CardController extends AbstractController
         // Bloquer l'accès aux brouillons pour les non-propriétaires
         if ($card->getState() === CardState::DRAFT && $card->getUser() !== $this->getUser()) {
             $this->addFlash('error', 'Cette annonce n\'est pas encore publiée.');
+            return $this->redirectToRoute('app_card_index');
+        }
+
+        // Bloquer l'accès aux annonces signalées pour les non-propriétaires et non-admins
+        if ($card->getState() === CardState::FLAGGED && $card->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Cette annonce a été signalée et est en attente de modération.');
             return $this->redirectToRoute('app_card_index');
         }
 

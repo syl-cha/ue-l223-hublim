@@ -70,7 +70,7 @@
 
             {% if show_card %}
             <div class="bento-item">
-                <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% endif %}">
+                <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% elseif card.state.value == 'flagged' %}bento-item-flagged{% endif %}">
 
                     {# ── Overlay brouillon ── #}
                     {% if card.state.value == 'draft' %}
@@ -100,6 +100,25 @@
                                     </button>
                                 </form>
                                 <small>Publier</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# ── Overlay signalée ── #}
+                    {% elseif card.state.value == 'flagged' %}
+                    <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85);">
+                        <span class="draft-overlay-label text-white text-center w-100 px-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-3 mb-2 d-block"></i>
+                            Annonce signalée et en attente de modération
+                        </span>
+                        <div class="overlay-actions mt-3">
+                            <div class="overlay-action-item">
+                                <a href="{{ path('app_card_show', {'id': card.id}) }}"
+                                   class="btn-action-overlay text-decoration-none text-white"
+                                   title="Consulter">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <small class="text-white">Consulter</small>
                             </div>
                         </div>
                     </div>
@@ -144,6 +163,10 @@
                         {% if card.state.value == 'draft' %}
                             <div class="draft-status-badge">
                                 <i class="bi bi-floppy-fill me-1"></i> Brouillon
+                            </div>
+                        {% elseif card.state.value == 'flagged' %}
+                            <div class="draft-status-badge bg-danger text-white">
+                                <i class="bi bi-flag-fill me-1"></i> Signalée
                             </div>
                         {% endif %}
 
