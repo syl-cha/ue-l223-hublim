@@ -60,7 +60,7 @@ class AdminModerationController extends AbstractController
     {
         if ($this->isCsrfTokenValid('approve_message' . $message->getId(), $request->request->get('_token'))) {
             // Rétablir le message
-            $message->setState(MessageState::PUBLISHED->value);
+            $message->setState(MessageState::PUBLISHED);
 
             // Nettoyer les signalements
             foreach ($message->getReports() as $report) {
@@ -79,8 +79,7 @@ class AdminModerationController extends AbstractController
     {
         if ($this->isCsrfTokenValid('archive_message' . $message->getId(), $request->request->get('_token'))) {
             // Archiver le message
-            $message->setState(MessageState::ARCHIVED->value);
-
+            $message->setState(MessageState::ARCHIVED);
             // Nettoyer les signalements
             foreach ($message->getReports() as $report) {
                 $em->remove($report);

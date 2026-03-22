@@ -58,16 +58,18 @@ final class CardController extends AbstractController
                 $qb->where('c.state != :draft')
                     ->setParameter('draft', CardState::DRAFT);
             } elseif ($this->getUser()) {
-                // L'utilisateur connecté voit les cartes publiées, et SES cartes signalées
-                $qb->where('c.state = :published')
+                // L'utilisateur connecté voit les cartes publiées (sans message signalé, sauf s'il est l'auteur), et SES cartes signalées
+                $qb->where('c.state = :published AND (c.user = :user OR NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = c AND m.state = :msg_flagged))')
                     ->orWhere('c.state = :flagged AND c.user = :user')
                     ->setParameter('published', CardState::PUBLISHED)
                     ->setParameter('flagged', CardState::FLAGGED)
+                    ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED)
                     ->setParameter('user', $this->getUser());
             } else {
-                // Visiteur non connecté : uniquement le publié
-                $qb->where('c.state = :published')
-                    ->setParameter('published', CardState::PUBLISHED);
+                // Visiteur non connecté : uniquement le publié sans message signalé
+                $qb->where('c.state = :published AND NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = c AND m.state = :msg_flagged)')
+                    ->setParameter('published', CardState::PUBLISHED)
+                    ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED);
             }
 
             $query = $qb->orderBy('c.createdAt', 'DESC')->getQuery();
@@ -91,10 +93,30 @@ final class CardController extends AbstractController
     {
         $recherche = $request->query->get('query', '');
 
+        $user = $this->getUser();
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+
         if (!empty(trim($recherche))) {
-            $cards = $cardRepository->searchFunction($recherche);
+            $cards = $cardRepository->searchFunction($recherche, $user, $isAdmin);
         } else {
-            $cards = $cardRepository->findAll();
+            // Utiliser la même logique que l'index pour findAll
+            $qb = $cardRepository->createQueryBuilder('c');
+            if ($isAdmin) {
+                $qb->where('c.state != :draft')
+                    ->setParameter('draft', CardState::DRAFT);
+            } elseif ($user) {
+                $qb->where('c.state = :published AND (c.user = :user OR NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = c AND m.state = :msg_flagged))')
+                    ->orWhere('c.state = :flagged AND c.user = :user')
+                    ->setParameter('published', CardState::PUBLISHED)
+                    ->setParameter('flagged', CardState::FLAGGED)
+                    ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED)
+                    ->setParameter('user', $user);
+            } else {
+                $qb->where('c.state = :published AND NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = c AND m.state = :msg_flagged)')
+                    ->setParameter('published', CardState::PUBLISHED)
+                    ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED);
+            }
+            $cards = $qb->orderBy('c.createdAt', 'DESC')->getQuery()->getResult();
         }
 
         return $this->render('card/search.html.twig', [
@@ -219,6 +241,20 @@ final class CardController extends AbstractController
         // Bloquer l'accès aux annonces signalées pour les non-propriétaires et non-admins
         if ($card->getState() === CardState::FLAGGED && $card->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'Cette annonce a été signalée et est en attente de modération.');
+            return $this->redirectToRoute('app_card_index');
+        }
+
+        $hasFlaggedMessage = false;
+        foreach ($card->getMessages() as $msg) {
+            if ($msg->getState() === \App\Enum\MessageState::FLAGGED) {
+                $hasFlaggedMessage = true;
+                break;
+            }
+        }
+
+        // Bloquer l'accès aux annonces contenant un message signalé pour les non-propriétaires et non-admins
+        if ($hasFlaggedMessage && $card->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
+            $this->addFlash('error', 'Cette annonce est temporairement masquée suite au signalement d\'un message.');
             return $this->redirectToRoute('app_card_index');
         }
 

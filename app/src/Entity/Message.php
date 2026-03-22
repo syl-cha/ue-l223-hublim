@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\MessageState;
 
 #[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
@@ -33,8 +34,8 @@ class Message
     #[ORM\JoinColumn(nullable: false)]
     private ?Card $card = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $state = null;
+    #[ORM\Column(length: 20, enumType: MessageState::class)]
+    private ?MessageState $state = null;
 
     /**
      * @var Collection<int, Report>
@@ -112,12 +113,12 @@ class Message
         return $this;
     }
 
-    public function getState(): ?string
+    public function getState(): ?MessageState
     {
         return $this->state;
     }
 
-    public function setState(string $state): static
+    public function setState(MessageState $state): static
     {
         $this->state = $state;
 

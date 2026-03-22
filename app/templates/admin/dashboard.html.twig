@@ -111,7 +111,7 @@
                                 <td>{{ message.user.firstName }} {{ message.user.lastName }}</td>
                                 <td>{{ report.reporter.firstName }} {{ report.reporter.lastName }}</td>
                                 <td><small>{{ report.reason }}</small></td>
-                                <td>{{ report.createdAt|date('d/m/Y H:i') }}</td>
+                                <td>{{ report.createAt|date('d/m/Y H:i') }}</td>
                                 <td class="text-end text-nowrap">
                                     <form method="post" action="{{ path('admin_moderate_message_approve', {id: message.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('approve_message' ~ message.id) }}">

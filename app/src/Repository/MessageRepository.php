@@ -33,7 +33,7 @@ class MessageRepository extends ServiceEntityRepository
         return (int) $this->createQueryBuilder('m')
             ->select('COUNT(m.id)')
             ->where('m.state = :state')
-            ->setParameter('state', \App\Enum\MessageState::FLAGGED->value)
+            ->setParameter('state', \App\Enum\MessageState::FLAGGED)
             ->getQuery()
             ->getSingleScalarResult();
     }

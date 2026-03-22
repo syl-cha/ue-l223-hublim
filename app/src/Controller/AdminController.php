@@ -35,7 +35,7 @@ final class AdminController extends AbstractController
 
         // Récupération des éléments signalés
         $flaggedCards = $cardRepository->findBy(['state' => CardState::FLAGGED]);
-        $flaggedMessages = $messageRepository->findBy(['state' => MessageState::FLAGGED->value]);
+        $flaggedMessages = $messageRepository->findBy(['state' => MessageState::FLAGGED]);
 
         // Query annonces avec recherche
         $cardsQb = $cardRepository->createQueryBuilder('c')

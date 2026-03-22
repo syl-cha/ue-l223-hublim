@@ -66,8 +66,8 @@ class ReportController extends AbstractController
                 $report->setCreateAt(new \DateTimeImmutable());
             }
 
-            // Modifier le statut du message (MessageState est une string dans l'entité Message)
-            $message->setState(MessageState::FLAGGED->value);
+            // Modifier le statut du message
+            $message->setState(MessageState::FLAGGED);
 
             $em->persist($report);
             $em->flush();

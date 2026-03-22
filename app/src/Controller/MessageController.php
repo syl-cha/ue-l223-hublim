@@ -42,6 +42,7 @@ final class MessageController extends AbstractController
         $message->setUser($user);
         $message->setCreatedAt(new \DateTimeImmutable());
         $message->setIsRead(false);
+        $message->setState(\App\Enum\MessageState::PUBLISHED);
 
         $form = $this->createForm(MessageType::class, $message);
         $form->handleRequest($request);

@@ -16,8 +16,60 @@
 
     <div class="bento-grid">
         {% for card in cards %}
+            {# Vérifier si la carte contient un message signalé #}
+            {% set has_flagged_message = false %}
+            {% for msg in card.messages %}
+                {% if msg.state and msg.state.value == 'flagged' %}
+                    {% set has_flagged_message = true %}
+                {% endif %}
+            {% endfor %}
+
             <div class="bento-item">
-                <div class="bento-item-inner">
+                <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% elseif card.state.value == 'flagged' or has_flagged_message %}bento-item-flagged{% endif %}">
+
+                    {# ── Overlay brouillon ── #}
+                    {% if card.state.value == 'draft' %}
+                    <div class="bento-overlay bento-overlay-draft">
+                        <span class="draft-overlay-label">
+                            <i class="bi bi-floppy me-1"></i> Brouillon
+                        </span>
+                        <div class="overlay-actions">
+                            <div class="overlay-action-item">
+                                <a href="{{ path('app_card_edit', {'id': card.id}) }}"
+                                   class="btn-action-overlay text-decoration-none"
+                                   title="Éditer">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <small>Éditer</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# ── Overlay signalée ou message signalé ── #}
+                    {% elseif card.state.value == 'flagged' or has_flagged_message %}
+                    <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85);">
+                        <span class="draft-overlay-label text-white text-center w-100 px-3">
+                            <i class="bi bi-exclamation-triangle-fill fs-3 mb-2 d-block"></i>
+                            {% if card.state.value == 'flagged' %}
+                                Annonce signalée et en attente de modération
+                            {% else %}
+                                Message sous cette annonce signalé et en attente
+                            {% endif %}
+                        </span>
+                        <div class="overlay-actions mt-3">
+                            <div class="overlay-action-item">
+                                <a href="{{ path('app_card_show', {'id': card.id}) }}"
+                                   class="btn-action-overlay text-decoration-none text-white"
+                                   title="Consulter">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <small class="text-white">Consulter</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# ── Overlay normal ── #}
+                    {% else %}
                     <div class="bento-overlay">
                         <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                         <div class="overlay-actions">
@@ -47,9 +99,21 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
 
                     {# ── Contenu de la carte ── #}
                     <div class="bento-card">
+                        {# Badge de statut en haut à droite #}
+                        {% if card.state.value == 'draft' %}
+                            <div class="draft-status-badge">
+                                <i class="bi bi-floppy-fill me-1"></i> Brouillon
+                            </div>
+                        {% elseif card.state.value == 'flagged' or has_flagged_message %}
+                            <div class="draft-status-badge bg-danger text-white">
+                                <i class="bi bi-flag-fill me-1"></i> Signalée
+                            </div>
+                        {% endif %}
+
                         <div class="user-info">
                             <div class="user-avatar">👤</div>
                             <div class="user-meta">

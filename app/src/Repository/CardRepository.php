@@ -23,15 +23,28 @@ class CardRepository extends ServiceEntityRepository
      * @return array tableau des cartes contenant la recherche
      */
 
-    public function searchFunction(string $recherche): array
+    public function searchFunction(string $recherche, ?\App\Entity\User $user = null, bool $isAdmin = false): array
     {
-        return
-            $this->createQueryBuilder('card') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
+        $qb = $this->createQueryBuilder('card') //createQueryBuilder crée une requête SQL à l'aide de Doctrine
             ->leftJoin('card.category', 'c') //Jointure sur category
-            ->where('card.title LIKE :recherche')
-            ->orWhere('card.description LIKE :recherche')
-            ->setParameter('recherche', '%' . $recherche . '%')
-            ->getQuery() // transforme la requête en objet Query, prêt à être éxecuté
+            ->where('card.title LIKE :recherche OR card.description LIKE :recherche')
+            ->setParameter('recherche', '%' . $recherche . '%');
+
+        if ($isAdmin) {
+            $qb->andWhere('card.state != :draft')
+                ->setParameter('draft', \App\Enum\CardState::DRAFT);
+        } elseif ($user) {
+            $qb->andWhere('(card.state = :published AND (card.user = :user OR NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = card AND m.state = :msg_flagged))) OR (card.state = :flagged AND card.user = :user)')
+                ->setParameter('published', \App\Enum\CardState::PUBLISHED)
+                ->setParameter('flagged', \App\Enum\CardState::FLAGGED)
+                ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED)
+                ->setParameter('user', $user);
+        } else {
+            $qb->andWhere('card.state = :published AND NOT EXISTS (SELECT 1 FROM App\Entity\Message m WHERE m.card = card AND m.state = :msg_flagged)')
+                ->setParameter('published', \App\Enum\CardState::PUBLISHED)
+                ->setParameter('msg_flagged', \App\Enum\MessageState::FLAGGED);
+        }
+        return $qb->getQuery() // transforme la requête en objet Query, prêt à être éxecuté
             ->getResult(); //envoie la requête
     }
 
