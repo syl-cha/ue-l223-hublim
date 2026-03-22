@@ -1,6 +1,6 @@
 :root {
-    --color-text: #094074;
-    --color-primary: #094074;
+    --color-text: #4B575F;
+    --color-primary: #4B575F;
     --color-secondary: #B60017;
     --color-ternary: #6C809A;
     --color-white: #FFFFFF;
@@ -8,6 +8,6 @@
 
     --bs-primary: var(--color-primary);
     --bs-secondary: var(--color-secondary);
-    --bs-primary-rgb: 9, 64, 116;
+    --bs-primary-rgb: 75, 87, 95;
     --bs-secondary-rgb: 182, 0, 23;
 }

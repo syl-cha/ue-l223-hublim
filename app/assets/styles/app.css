@@ -148,9 +148,9 @@ header.scrolled nav .btn-orange:hover {
 }
 
 #hero-header .btn-inscrit {
-    background-color: #094074;
+    background-color: #4B575F;
     color: white;
-    border: 2px solid #094074;
+    border: 2px solid #4B575F;
     border-radius: 30px;
     font-weight: 700;
     transition: all 0.3s ease;
@@ -173,10 +173,10 @@ header.scrolled nav .btn-orange:hover {
 
 #hero-header .btn-inscrit:hover {
     background-color: transparent;
-    color: #094074;
-    border-color: #094074;
+    color: #4B575F;
+    border-color: #4B575F;
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(9, 64, 116, 0.3);
+    box-shadow: 0 8px 20px rgba(75, 87, 95, 0.3);
 }
 
 #hero-header .btn-inscrit:hover::after {
@@ -431,8 +431,8 @@ body:not(.home-page) {
 
 #contact input:focus,
 #contact textarea:focus {
-    border-color: #094074 !important;
-    box-shadow: 0 0 0 0.2rem rgba(9, 64, 116, 0.15);
+    border-color: #4B575F !important;
+    box-shadow: 0 0 0 0.2rem rgba(75, 87, 95, 0.15);
     outline: none;
 }
 
