@@ -1,5 +1,15 @@
 # config/services_dev.yaml
 services:
+    # On réactive l'autoconfiguration pour que Symfony reconnaisse les Fixtures
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # On demande à Symfony de scanner à nouveau tout le dossier DataFixtures (uniquement en dev)
+    App\DataFixtures\:
+        resource: "../src/DataFixtures/"
+
+    # On garde la configuration spécifique pour les images de CardFixtures
     App\DataFixtures\CardFixtures:
         arguments:
             $uploadDir: "%cards_directory%"

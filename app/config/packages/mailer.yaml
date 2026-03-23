@@ -5,3 +5,4 @@ framework:
             registration: "%env(MAILER_DSN_REGISTRATION)%"
             notifications: "%env(MAILER_DSN_NOTIFICATIONS)%"
             reports: "%env(MAILER_DSN_REPORTS)%"
+            noreply: "%env(MAILER_DSN_NOREPLY)%"

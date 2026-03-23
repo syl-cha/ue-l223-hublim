@@ -8,7 +8,5 @@ scheb_two_factor:
         template: security/2fa_form.html.twig
     email:
         enabled: true
-        sender_email: noreply@hublim.bradype.fr
-        sender_name: HubLim
         digits: 6
-        template: security/2fa_form_email.html.twig
+        mailer: App\Mailer\TwoFactorMailer
