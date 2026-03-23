@@ -1,0 +1,5 @@
+# config/services_dev.yaml
+services:
+    App\DataFixtures\CardFixtures:
+        arguments:
+            $uploadDir: "%cards_directory%"
