@@ -15,6 +15,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TwoFactorController extends AbstractController
 {
+    #[Route('/2fa/choose', name: 'app_2fa_choose')]
+    #[IsGranted('ROLE_USER')]
+    public function choose(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->isTwoFactorEnabled()) {
+            return $this->redirectToRoute('app_card_index');
+        }
+
+        return $this->render('two_factor/choose.html.twig');
+    }
+
     #[Route('/2fa/setup', name: 'app_2fa_setup')]
     #[IsGranted('ROLE_USER')]
     public function setup(
@@ -44,6 +58,7 @@ class TwoFactorController extends AbstractController
 
             $user->setTwoFactorSecret($secret);
             $user->setIsTwoFactorEnabled(true);
+            $user->setTwoFactorMethod('totp');
 
             if ($totpAuthenticator->checkCode($user, $code)) {
                 $em->flush();
@@ -79,6 +94,27 @@ class TwoFactorController extends AbstractController
         ]);
     }
 
+    #[Route('/2fa/setup-email', name: 'app_2fa_setup_email', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function setupEmail(EntityManagerInterface $em): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->isTwoFactorEnabled()) {
+            $this->addFlash('warning', 'La double authentification est déjà activée.');
+            return $this->redirectToRoute('app_card_index');
+        }
+
+        $user->setTwoFactorSecret(null);
+        $user->setTwoFactorMethod('email');
+        $user->setIsTwoFactorEnabled(true);
+        $em->flush();
+
+        $this->addFlash('success', 'Double authentification par email activée avec succès !');
+        return $this->redirectToRoute('app_card_index');
+    }
+
     #[Route('/2fa/disable', name: 'app_2fa_disable')]
     #[IsGranted('ROLE_USER')]
     public function disable(
@@ -95,10 +131,18 @@ class TwoFactorController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $code = $request->request->getString('code');
+            $isValid = false;
 
-            if ($totpAuthenticator->checkCode($user, $code)) {
+            if ($user->getTwoFactorMethod() === 'totp') {
+                $isValid = $totpAuthenticator->checkCode($user, $code);
+            } elseif ($user->getTwoFactorMethod() === 'email') {
+                $isValid = $user->getEmailAuthCode() === $code;
+            }
+
+            if ($isValid) {
                 $user->setIsTwoFactorEnabled(false);
                 $user->setTwoFactorSecret(null);
+                $user->setTwoFactorMethod('totp');
                 $em->flush();
 
                 $this->addFlash('success', 'Double authentification désactivée.');
@@ -108,6 +152,8 @@ class TwoFactorController extends AbstractController
             $this->addFlash('error', 'Code invalide.');
         }
 
-        return $this->render('two_factor/disable.html.twig');
+        return $this->render('two_factor/disable.html.twig', [
+            'method' => $user->getTwoFactorMethod(),
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface as EmailTwoFactorInterface;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
 use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
 use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, EmailTwoFactorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -52,6 +53,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     #[ORM\Column]
     private bool $isTwoFactorEnabled = false;
+
+    // Mail d'authentification pour le 2FA
+    #[ORM\Column(length: 10, nullable: true)] 
+    private ?string $emailAuthCode = null;
+
+    #[ORM\Column(length: 10, options: ['default' => 'totp'])]
+    private string $twoFactorMethod = 'totp';
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -235,7 +243,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
 
     public function isTotpAuthenticationEnabled(): bool
     {
-        return $this->isTwoFactorEnabled && null !== $this->twoFactorSecret;
+        return $this->isTwoFactorEnabled && $this->twoFactorMethod === 'totp' && null !== $this->twoFactorSecret;
+    }
+
+    // Email 2FA interface methods
+    public function isEmailAuthEnabled(): bool
+    {
+        return $this->isTwoFactorEnabled && $this->twoFactorMethod === 'email';
+    }
+
+    public function getEmailAuthRecipient(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getEmailAuthCode(): string
+    {
+        return (string) $this->emailAuthCode;
+    }
+
+    public function setEmailAuthCode(string $authCode): void
+    {
+        $this->emailAuthCode = $authCode;
+    }
+
+    public function getTwoFactorMethod(): string
+    {
+        return $this->twoFactorMethod;
+    }
+
+    public function setTwoFactorMethod(string $twoFactorMethod): static
+    {
+        $this->twoFactorMethod = $twoFactorMethod;
+
+        return $this;
     }
 
     public function getTotpAuthenticationUsername(): string

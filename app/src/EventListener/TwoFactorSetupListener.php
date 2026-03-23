@@ -36,15 +36,15 @@ class TwoFactorSetupListener
 
         // Routes autorisées sans 2FA (setup, logout, assets)
         $route = $event->getRequest()->attributes->get('_route');
-        $allowedRoutes = ['app_2fa_setup', 'app_logout', '_wdt', '_profiler'];
+        $allowedRoutes = ['app_2fa_choose', 'app_2fa_setup', 'app_2fa_setup_email', 'app_logout', '_wdt', '_profiler'];
 
         if (in_array($route, $allowedRoutes, true)) {
             return;
         }
 
-        // Rediriger vers la page de setup 2FA
+        // Rediriger vers la page de choix 2FA
         $event->setResponse(
-            new RedirectResponse($this->urlGenerator->generate('app_2fa_setup'))
+            new RedirectResponse($this->urlGenerator->generate('app_2fa_choose'))
         );
     }
 }
