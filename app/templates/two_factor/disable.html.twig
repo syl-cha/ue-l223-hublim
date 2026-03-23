@@ -8,7 +8,11 @@
         <div class="col-md-5">
             <h1 class="h3 mb-3">Désactiver la double authentification</h1>
             <p class="text-muted mb-4">
-                Pour confirmer la désactivation, entrez le code à 6 chiffres depuis votre application <strong>2FAS Auth</strong>.
+                {% if method == 'email' %}
+                    Pour confirmer la désactivation, entrez le code à 6 chiffres reçu par <strong>email</strong>.
+                {% else %}
+                    Pour confirmer la désactivation, entrez le code à 6 chiffres depuis votre application d'authentification.
+                {% endif %}
             </p>
 
             <form method="post">

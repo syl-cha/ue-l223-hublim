@@ -45,10 +45,10 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
-    # Note: Only the *first* matching rule is applied
     access_control:
         - { path: ^/logout, role: PUBLIC_ACCESS }
         - { path: ^/2fa/setup, roles: ROLE_USER }
+        - { path: ^/2fa/choose, roles: ROLE_USER }
         - { path: ^/2fa, role: IS_AUTHENTICATED_2FA_IN_PROGRESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
