@@ -10,6 +10,7 @@
     </div>
 
     <ul class="d-flex list-unstyled mb-0">
+    <li class="mx-5"><a href="{{ path('app_main') }}" class="text-decoration-none">Accueil</a></li>
         {% if app.user %}
             <li class="mx-5"><a href="{{ path('app_card_index') }}" class="text-decoration-none">Annonces</a></li>
             <li class="mx-5 nav-dropdown">
