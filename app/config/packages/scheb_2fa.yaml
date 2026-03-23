@@ -10,3 +10,4 @@ scheb_two_factor:
         enabled: true
         digits: 6
         mailer: App\Mailer\TwoFactorMailer
+        template: security/2fa_form_email.html.twig

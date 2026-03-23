@@ -25,7 +25,7 @@ class TwoFactorMailer implements AuthCodeMailerInterface
             ->replyTo('contact@hublim.bradype.fr')    // L'adresse où arriveront les réponses
             ->to($user->getEmailAuthRecipient())
             ->subject('HubLim - Votre code de sécurité')
-            ->html($this->twig->render('security/2fa_form_email.html.twig', [
+            ->html($this->twig->render('security/2fa_code.html.twig', [
                 'auth_code' => $authCode // On passe le code au template Twig
             ]));
         // on utilise le service SMTP spécifique
