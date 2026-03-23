@@ -14,13 +14,11 @@ services:
             - "../src/DependencyInjection/"
             - "../src/Entity/"
             - "../src/Kernel.php"
-            - "../src/DataFixtures/" # <-- 1. AJOUTEZ CETTE LIGNE ICI
+            - "../src/DataFixtures/"
 
     App\Service\ImageUploadService:
         arguments:
             $uploadDir: "%cards_directory%"
-
-    # <-- 2. SUPPRIMEZ LE BLOC App\DataFixtures\CardFixtures QUI ÉTAIT ICI
 
     # Tableaux Markdown
     League\CommonMark\Extension\Table\TableExtension:
