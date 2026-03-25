@@ -1,18 +1,20 @@
 # HubLim
 
 ## Présentation
-[HubLim](https://hublim.bradype.fr) est une application web destinée au public universitaire ou étudiant de l'[Université de Limoges](https://www.unilim.fr/).
-Plateforme d'échanges communautaires permettant la publication d'annonces, la discussion via des fils de réactions, et la gestion des profils (filières, statuts, départements). Intègre un système de modération complet.
+[HubLim](https://hublim.bradype.fr) est une application web destinée au public universitaire ou étudiant de l'[Université de Limoges](https://www.unilim.fr/). Elle a été réalisée dans le cadre d'un projet d'équipe de l'UE-L223 de deuxième année de [Licence Professionnelle — Métiers de l'Informatique : Applications Web](https://www.sciences.unilim.fr/tic/licence-professionnelle-metier-de-linformatique-application-web/).
+
+
+HubLim a été pensée comme une plateforme d'échanges communautaires permettant la publication d'annonces, la discussion via des fils de réactions, et la gestion des profils (filières, statuts, départements). Elle intègre un système de modération complet.
 
 ![Accueil HubLim](docs/images/hublim_accueil.png)
 
 ## Fonctionnalités Principales
-* **Annonces (Cards)** : Publication avec titre, description, images, catégories et public cible. Mise en favoris.
+* **Annonces (Cards)** : Publication avec titre, description, images, catégories et public cible (restriction de diffusion par filières et/ou par statuts). Mise en favoris.
 * **Discussions (Messages)** : Fils de réactions sous chaque annonce.
 * **Édition Riche** : Support du [Markdown](https://commonmark.org/help/) pour les descriptions et les messages. Prise en compte de $\LaTeX$ pour les [formules mathématiques](https://www.upyesp.org/posts/makrdown-vscode-math-notation/#latex-cheat-sheet).
 * **Gestion des Médias** : Upload local des images d'illustration.
 * **Modération** : Système de signalements (Reports), notifications par email (auteurs et administrateurs), interface de traitement des litiges.
-* **Profils** : Association stricte des utilisateurs à des filières d'études et/ou des statuts universitaires.
+* **Profils** : Association stricte des utilisateurs à des filières d'études et des statuts universitaires.
 * **Fixtures** : Initialisation des données de base (filières, départements) via sources JSON.
 
 ## Stack Technique & Librairies
