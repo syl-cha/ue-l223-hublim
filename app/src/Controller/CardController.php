@@ -22,7 +22,7 @@ use Knp\Component\Pager\PaginatorInterface;
 final class CardController extends AbstractController
 {
     #[Route(name: 'app_card_index', methods: ['GET'])]
-    public function index(CardRepository $cardRepository, PaginatorInterface $paginator, Request $request): Response
+    public function index(CardRepository $cardRepository, CategoryRepository $categoryRepository, PaginatorInterface $paginator, Request $request): Response
     {
         // Onglet actif : 'all' ou 'drafts'
         $tab = $request->query->get('tab', 'all');
@@ -66,6 +66,7 @@ final class CardController extends AbstractController
             'cards'      => $pagination,
             'activeTab'  => $tab,
             'draftCount' => $draftCount,
+            'categories' => $categoryRepository->findParentsWithChildren(),
         ]);
     }
 

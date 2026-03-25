@@ -21,10 +21,13 @@ final class CategoryController extends AbstractController
             throw $this->createNotFoundException('Catégorie introuvable.');
         }
 
-        $cards = $cardRepository->findBy(['category' => $category]);
+        $categories = [$category];
+        foreach ($category->getSubCategories() as $sub) {
+            $categories[] = $sub;
+        }
 
         $pagination = $paginator->paginate(
-            $cardRepository->findBy(['category' => $category]),
+            $cardRepository->findByCategories($categories),
             $request->query->getInt('page', 1),
             12
         );
@@ -32,6 +35,7 @@ final class CategoryController extends AbstractController
         return $this->render('category/index.html.twig', [
             'category' => $category,
             'cards'    => $pagination,
+            'categories' => $categoryRepository->findParentsWithChildren(),
         ]);
     }
 }
