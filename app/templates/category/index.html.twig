@@ -1,79 +1,100 @@
-{% extends 'account/base_account.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body_class %}bg-gris{% endblock %}
-{% block account_content %}
+{% block body %}
 
 <div class="container px-4 pb-5">
+
+    <a href="{{ path('app_card_index') }}" class="btn btn-outline-secondary rounded-pill px-4 mb-4 mt-4">
+        <i class="bi bi-arrow-left"></i> Retour aux annonces
+    </a>
+
     <div class="my-5">
-        <h1 class="fw-bold text-center text-primary raleway-500 my-5">Retrouvez toutes vos annonces</h1>
+        {% if category.parent %}
+            <div class="text-center">
+                <a href="{{ path('app_category', {slug: category.parent.slug}) }}"
+                class="text-decoration-none d-inline-block mb-3 px-3 py-1"
+                style="border-radius: 20px; color: {{ category.parent.color }}; transition: background 0.2s;"
+                onmouseover="this.style.backgroundColor='{{ category.parent.color }}'; this.style.color='white';"
+                onmouseout="this.style.backgroundColor='#f9f9f9'; this.style.color= '{{ category.parent.color }}'">
+                    ← {{ category.parent.name }}
+                </a>
+            </div>
+        {% endif %}
+
+        <h1 class="fw-bold text-center text-primary raleway-500 my-5">{{ category.name }}</h1>
+
+        {% if category.subCategories|length > 0 %}
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                {% for sub in category.subCategories %}
+                    <a href="{{ path('app_category', {slug: sub.slug}) }}"
+                    class="text-decoration-none px-3 py-1"
+                    style="border-radius: 20px; color: #223382; font-size: 0.9rem; transition: background 0.2s;"
+                    onmouseover="this.style.backgroundColor='{{ category.color }}'; this.style.color='white';"
+                    onmouseout="this.style.backgroundColor='#f9f9f9'; this.style.color= '#223382'">
+                        {{ sub.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <div class="d-flex justify-content-between align-items-center pt-3 px-2 mb-4">
             <div>
                 <a href="{{ path('app_card_new') }}" class="btn btn-orange rounded-pill px-4">Poster +</a>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div class="dropdown">
+                    <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                    style="background-color: #e7e6e6; border: none; border-radius: 20px;">
+                        Catégories
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="{{ path('app_card_index') }}">Toutes</a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% for category in categories %}
+                            <li>
+                                <a class="dropdown-item fw-bold" href="{{ path('app_category', {slug: category.slug}) }}">
+                                    <span style="color: {{ category.color }}">●</span> {{ category.name }}
+                                </a>
+                            </li>
+                            {% for sub in category.subCategories %}
+                                <li>
+                                    <a class="dropdown-item ps-4" href="{{ path('app_category', {slug: sub.slug}) }}">
+                                        {{ sub.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <form method="get" action="{{ path('card_search') }}">
+                    <div class="input-group input-group-sm" style="width: 250px">
+                        <input
+                            type="text"
+                            name="query"
+                            class="form-control"
+                            placeholder="Rechercher sur HubLim..."
+                            autofocus
+                            style="border:none; outline:none; box-shadow: none; background-color: #e7e6e6; border-radius: 20px 0px 0px 20px;"
+                        >
+                        <button class="btn btn-primary" type="submit" style="background-color: #223382; border:none; border-radius: 0 20px 20px 0;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <div class="bento-grid">
         {% for card in cards %}
-            {# Vérifier si la carte contient un message signalé #}
-            {% set has_flagged_message = false %}
-            {% for msg in card.messages %}
-                {% if msg.state and msg.state.value == 'flagged' %}
-                    {% set has_flagged_message = true %}
-                {% endif %}
-            {% endfor %}
-
             <div class="bento-item">
-                <div class="bento-item-inner {% if card.state.value == 'draft' %}bento-item-draft{% elseif card.state.value == 'flagged' or has_flagged_message %}bento-item-flagged{% endif %}">
-
-                    {# ── Overlay brouillon ── #}
-                    {% if card.state.value == 'draft' %}
-                    <div class="bento-overlay bento-overlay-draft">
-                        <span class="draft-overlay-label">
-                            <i class="bi bi-floppy me-1"></i> Brouillon
-                        </span>
-                        <div class="overlay-actions">
-                            <div class="overlay-action-item">
-                                <a href="{{ path('app_card_edit', {'id': card.id}) }}"
-                                   class="btn-action-overlay text-decoration-none"
-                                   title="Éditer">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <small>Éditer</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# ── Overlay signalée ou message signalé ── #}
-                    {% elseif card.state.value == 'flagged' or has_flagged_message %}
-                    <div class="bento-overlay" style="background: rgba(220, 53, 69, 0.85); padding: 1.5rem;">
-                        <div class="draft-overlay-label text-white text-center w-100 d-flex flex-column align-items-center justify-content-center" style="white-space: normal; line-height: 1.4;">
-                            <div class="d-flex align-items-center gap-2 mb-1">
-                                <i class="bi bi-exclamation-triangle-fill fs-3"></i>
-                                {% if card.state.value == 'flagged' %}
-                                    <span class="fs-5 fw-bold">Annonce signalée</span>
-                                {% else %}
-                                    <span class="fs-5 fw-bold">Message signalé</span>
-                                {% endif %}
-                            </div>
-                            {% if card.state.value == 'flagged' %}
-                                <small class="fw-normal mb-3">en attente de modération</small>
-                            {% else %}
-                                <small class="fw-normal mb-3">sous cette annonce</small>
-                            {% endif %}
-                        </div>
-                        <div class="overlay-actions mt-0">
-                            <div class="overlay-action-item">
-                                <a href="{{ path('app_card_show', {'id': card.id}) }}" class="btn btn-sm btn-light rounded-pill px-3 d-flex align-items-center gap-2 text-decoration-none shadow-sm">
-                                    <i class="bi bi-eye text-danger"></i>
-                                    <span class="text-danger fw-bold">Consulter</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    {# ── Overlay normal ── #}
-                    {% else %}
+                <div class="bento-item-inner">
                     <div class="bento-overlay">
                         <a href="{{ path('app_card_show', {'id': card.id}) }}" class="overlay-link">Voir l'annonce →</a>
                         <div class="overlay-actions">
@@ -103,31 +124,11 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
 
                     {# ── Contenu de la carte ── #}
                     <div class="bento-card">
-                        {# Badge de statut en haut à droite #}
-                        {% if card.state.value == 'draft' %}
-                            <div class="draft-status-badge">
-                                <i class="bi bi-floppy-fill me-1"></i> Brouillon
-                            </div>
-                        {% elseif card.state.value == 'flagged' or has_flagged_message %}
-                            <div class="draft-status-badge bg-danger text-white">
-                                <i class="bi bi-flag-fill me-1"></i> Signalée
-                            </div>
-                        {% endif %}
-
                         <div class="user-info">
-                            <div class="user-avatar">
-                                {% if card.user.avatarFileName %}
-                                    <img src="{{ asset('uploads/avatars/' ~ card.user.avatarFileName) }}"
-                                        alt="{{ card.user.firstName }}"
-                                        style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-                                {% else %}
-                                    👤
-                                {% endif %}
-                            </div>
+                            <div class="user-avatar">👤</div>
                             <div class="user-meta">
                                 <div class="user-name">
                                     {{ card.user.firstName }} {{ card.user.lastName }}
@@ -150,8 +151,7 @@
                                         {% endif %}
                                         <span>{{ card.fanUsers|length }}</span>
                                     </span>
-                                    {% set visible_messages = card.messages|filter(m => m.state and m.state.value != 'archived') %}
-                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ visible_messages|length }}</span></span>
+                                    <span class="ms-2 d-inline-flex align-items-center gap-1">{{ ux_icon('bi:chat-right-text') }} <span>{{ card.messages|length }}</span></span>
                                 </div>
                             </div>
                         </div>
@@ -174,6 +174,13 @@
                     </div>
                 </div>
             </div>
+        {% else %}
+        <div class="space text-center my-5">
+            <p class="mt-3 fs-5 text-muted">Pas encore de cartes publiées dans cette catégorie.</p>
+            <a href="{{ path('app_card_index') }}" class="btn btn-orange px-4 mb-5">
+                <i class="bi bi-arrow-left"></i> Parcourir toutes les annonces
+            </a>
+        </div>
         {% endfor %}
     </div>
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Card;
+use Doctrine\ORM\Query;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -60,6 +61,16 @@ class CardRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+    
+    public function findByCategories(array $categories): Query
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.category IN (:categories)')
+            ->setParameter('categories', $categories)
+            ->orderBy('c.id', 'DESC')
+            ->getQuery();
+    }
+
 
     //    /**
     //     * @return Card[] Returns an array of Card objects
