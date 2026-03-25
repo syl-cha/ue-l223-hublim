@@ -43,8 +43,6 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </form>
-        </div>
                 
                 <form method="get" action="{{ path('card_search') }}">
                     <div class="input-group input-group-sm" style="width: 250px">
@@ -62,7 +60,7 @@
                     </div>
                 </form>
             </div>
-
+            </div>
         {% for message in app.flashes('success') %}
                 <div class="alert alert-success">
                     {{ message }}
