@@ -152,6 +152,13 @@
                     </div>
                 </div>
             </div>
+        {% else %}
+        <div class="space text-center my-5">
+            <p class="mt-3 fs-5 text-muted">Vous n'avez pas encore de favoris.</p>
+            <a href="{{ path('app_card_index') }}" class="btn btn-orange px-4 mb-5">
+                <i class="bi bi-arrow-left"></i> Parcourir toutes les annonces
+            </a>
+        </div>
         {% endfor %}
     </div>
 
