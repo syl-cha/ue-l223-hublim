@@ -10,7 +10,7 @@
         {{ form_start(form) }}
             <div class="mb-3">
                 {{ form_label(form.content, null, {'label_attr': {'class': 'form-label fw-bold text-dark'}}) }}
-                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '6'}}) }}
+                {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': '6', 'placeholder': 'Votre message... (Markdown et mathématiques avec LaTeX supportés)'}}) }}
                 {{ form_errors(form.content) }}
             </div>
 

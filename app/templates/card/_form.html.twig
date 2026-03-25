@@ -25,7 +25,7 @@
         <div class="col-12">
             <div class="announce-card-section">
                 {{ form_label(form.description) }}
-                {{ form_widget(form.description) }}
+                {{ form_widget(form.description, {'attr': {'placeholder': 'Description détaillée de l\'annonce... (Markdown et mathématiques avec LaTeX supportés)'}}) }}
                 {{ form_errors(form.description) }}
             </div>
         </div>
@@ -119,6 +119,11 @@
                     <li>Utilise un titre compréhensible en un coup d'œil</li>
                     <li>Contient les infos essentielles</li>
                     <li>Cible les bons destinataires</li>
+                    <li class="markdown-content">
+                        {% apply markdown_to_html|sanitize_html %}
+                        Support du [Markdown](https://commonmark.org/help/) et des mathématiques ($\LaTeX$) pour la description
+                        {% endapply %}
+                    </li>
                 </ul>
             </div>
         </div>
