@@ -1362,9 +1362,7 @@ footer h6 {
     width: fit-content;
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE NAVBAR – hamburger & mobile menu
-═══════════════════════════════════════ */
+/* RESPONSIVE NAVBAR – hamburger & mobile menu */
 
 .nav-hamburger {
     display: flex;
@@ -1399,7 +1397,6 @@ header.scrolled .nav-hamburger span {
     pointer-events: none;
 }
 
-/* Mobile drawer */
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -1486,9 +1483,7 @@ body.mobile-menu-open {
     overflow: hidden;
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE HERO
-═══════════════════════════════════════ */
+/* RESPONSIVE HERO */
 
 @media (max-width: 991px) {
     #hero-header {
@@ -1506,7 +1501,7 @@ body.mobile-menu-open {
 }
 
 @media (max-width: 991px) {
-    /* Footer – center all columns when stacked */
+    /* Footer */
     footer .col-lg-5,
     footer .col-lg-4,
     footer .col-lg-2 {
@@ -1517,12 +1512,10 @@ body.mobile-menu-open {
         justify-content: center;
     }
 
-    /* Footer contact email: <p> is a flex container, text-align alone doesn't work */
     footer .col-lg-2 p.d-flex {
         justify-content: center;
     }
 
-    /* Contact section – center the info column when stacked */
     #contact .col-lg-5 {
         text-align: center;
     }
@@ -1533,12 +1526,10 @@ body.mobile-menu-open {
         align-items: center;
     }
 
-    /* Contact form – center the submit button */
     #contact .col-12:last-child {
         text-align: center;
     }
 
-    /* Hero – center text content when columns stack */
     #hero-header .col-lg-7 {
         text-align: center;
     }

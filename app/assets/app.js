@@ -84,12 +84,10 @@ function initPage() {
 
         document.getElementById('mobile-menu-close')?.addEventListener('click', closeMenu);
 
-        // Close menu when a link is clicked
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', closeMenu);
         });
 
-        // Mobile submenu accordion
         mobileMenu.querySelectorAll('.mobile-sub-toggle').forEach(btn => {
             btn.addEventListener('click', () => {
                 const subnav = btn.nextElementSibling;
