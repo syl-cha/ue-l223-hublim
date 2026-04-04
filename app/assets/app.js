@@ -50,17 +50,56 @@ function initPage() {
         });
     }
 
-    // 2. Header scroll logic
+    // 2. Header scroll logic (always scrolled — nav is always white)
     const header = document.querySelector('header');
-    const handleScroll = () => {
-        if (window.scrollY > 0 || !document.body.classList.contains('home-page')) {
-            header?.classList.add('scrolled');
-        } else {
-            header?.classList.remove('scrolled');
+    header?.classList.add('scrolled');
+
+    // Synchronise le padding-top du body avec la hauteur réelle du header
+    function syncHeaderHeight() {
+        if (header) {
+            document.documentElement.style.setProperty('--header-height', header.offsetHeight + 'px');
         }
-    };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
+    }
+    syncHeaderHeight();
+    window.addEventListener('resize', syncHeaderHeight);
+
+    // 2b. Mobile navigation toggle
+    const hamburger = document.getElementById('nav-hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (hamburger && mobileMenu) {
+        const closeMenu = () => {
+            hamburger.classList.remove('open');
+            mobileMenu.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('mobile-menu-open');
+        };
+
+        hamburger.addEventListener('click', () => {
+            const isOpen = hamburger.classList.toggle('open');
+            mobileMenu.classList.toggle('open', isOpen);
+            hamburger.setAttribute('aria-expanded', String(isOpen));
+            document.body.classList.toggle('mobile-menu-open', isOpen);
+        });
+
+        document.getElementById('mobile-menu-close')?.addEventListener('click', closeMenu);
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        mobileMenu.querySelectorAll('.mobile-sub-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const subnav = btn.nextElementSibling;
+                if (subnav) subnav.classList.toggle('open');
+                const icon = btn.querySelector('.bi');
+                if (icon) {
+                    icon.classList.toggle('bi-chevron-down');
+                    icon.classList.toggle('bi-chevron-up');
+                }
+            });
+        });
+    }
 
 
     // Masonry grid

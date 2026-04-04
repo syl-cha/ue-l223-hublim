@@ -9,13 +9,13 @@
     </div>
     <div class="my-5">
         <h1 class="fw-bold text-center text-primary raleway-500 my-5">Retrouvez toutes les annonces</h1>
-        <div class="d-flex justify-content-between align-items-center pt-3 px-2 mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-3 px-2 mb-4">
 
             <div>
-                <a href="{{ path('app_card_new') }}" class="btn btn-orange rounded-pill px-4">Poster +</a>
+                <a href="{{ path('app_card_new') }}" class="btn btn-orange rounded-pill px-4" style="white-space: nowrap">Poster +</a>
             </div>
 
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2 flex-wrap" style="min-width: 0; flex: 1; justify-content: flex-end;">
 
                 <div class="dropdown">
                     <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -44,8 +44,8 @@
                     </ul>
                 </div>
                 
-                <form method="get" action="{{ path('card_search') }}">
-                    <div class="input-group input-group-sm" style="width: 250px">
+                <form method="get" action="{{ path('card_search') }}" style="min-width: 0; flex: 1 1 160px; max-width: 250px;">
+                    <div class="input-group input-group-sm">
                         <input
                             type="text"
                             name="query"
